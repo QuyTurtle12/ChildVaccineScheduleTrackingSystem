@@ -1,0 +1,122 @@
+﻿@{
+    var jwtToken = ViewContext.HttpContext.Session.GetString("jwt_token");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RazorPage</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/RazorPage.styles.css" asp-append-version="true" />
+    <style>
+        /* CSS for menu */
+        .navbar {
+            padding: 1rem; /* add padding for navbar */
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            color: #343a40; 
+        }
+
+        .nav-link {
+            font-weight: bold; 
+            color: #343a40; 
+        }
+
+            .nav-link:hover {
+                color: #007bff; 
+            }
+
+        /* CSS for modal */
+        .modal-header {
+            background-color: #f8f9fa; 
+        }
+
+        .modal-title {
+            font-weight: bold; 
+        }
+
+        .list-group-item {
+            font-size: 1.1rem; 
+        }
+
+            .list-group-item a {
+                color: #343a40; 
+            }
+
+                .list-group-item a:hover {
+                    color: #007bff; 
+                }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">RazorPage</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <!-- Đã xóa mục Home -->
+                    </ul>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#menuModal">Menu</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Modal -->
+    <div class="modal fade" id="menuModal" tabindex="-1" aria-labelledby="menuModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="menuModalLabel">Menu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+                        <li class="list-group-item"><a asp-area="" asp-page="/Privacy">Privacy</a></li>
+                        <li class="list-group-item">
+                            @if (jwtToken == null)
+                            {
+                                <a asp-area="" asp-page="/Login">Login</a>
+                            }
+                            else
+                            {
+                                <form method="post" asp-area="" asp-page="/Logout" class="d-inline">
+                                    <button type="submit" class="btn btn-link" style="padding: 0; border: none;">Logout</button>
+                                </form>
+                            }
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - RazorPage - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
