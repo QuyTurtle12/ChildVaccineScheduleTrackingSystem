@@ -1,4 +1,5 @@
 using BusinessLogic;
+using Data.Base;
 using Microsoft.EntityFrameworkCore;
 using RazorPage.Middleware;
 
@@ -32,12 +33,12 @@ namespace RazorPage
             var connectionString = builder.Configuration.GetConnectionString("MyCnn");
 
             // Register DbContext with DI
-            //builder.Services.AddDbContext<NewsManagementDbContext>(options =>
-            //    options.UseSqlServer(connectionString));
+            builder.Services.AddDbContext<ChildVaccineScheduleDbContext>(options =>
+                options.UseSqlServer(connectionString));
 
             // Add services to the container.
             builder.Services.AddRazorPages();
-            //builder.Services.AddApplication(builder.Configuration);
+            builder.Services.AddApplication(builder.Configuration);
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
