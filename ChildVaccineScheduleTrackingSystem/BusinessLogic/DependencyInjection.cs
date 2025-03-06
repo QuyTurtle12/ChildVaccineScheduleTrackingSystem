@@ -39,6 +39,7 @@ public static class DependencyInjection
     public static void AddServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<ISystemAccountService, SystemAccountService>();
 
         // JWT Authentication configuration
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

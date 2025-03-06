@@ -28,6 +28,7 @@ namespace RazorPage
                 config.AddConsole();
                 config.AddDebug();
             });
+            builder.Services.AddSession();
 
             // Get connection string from appsettings.json
             var connectionString = builder.Configuration.GetConnectionString("MyCnn");
@@ -68,6 +69,9 @@ namespace RazorPage
          //   app.MapGet("/", () => Results.Redirect("/Auth/Login"));
 
             app.UseRouting();
+            app.UseSession();
+            app.UseAuthorization();
+
             app.UseAuthentication();
 
             app.UseSession();
