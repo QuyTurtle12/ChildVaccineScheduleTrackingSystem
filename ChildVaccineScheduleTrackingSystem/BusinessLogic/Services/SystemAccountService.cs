@@ -1,7 +1,7 @@
 ﻿using BusinessLogic.DTOs.SystemAccountDTOs;
 using BusinessLogic.Interfaces;
 using Data.Entities;
-using Data.Interface; // Ensure IUOW is accessible from here.
+using Data.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -9,7 +9,8 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
+using BCrypt.Net;
+
 
 namespace BusinessLogic.Services
 {
@@ -32,7 +33,7 @@ namespace BusinessLogic.Services
                                      .Include(u => u.Role)
                                      .FirstOrDefault(u => u.Email == loginDto.AccountEmail);
 
-            if (user == null || user.Password != loginDto.AccountPassword)
+            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.AccountPassword, user.Password))
             {
                 return null;
             }
@@ -41,6 +42,48 @@ namespace BusinessLogic.Services
 
             // Generate and return a JWT token if credentials are valid.
             return GenerateJwtToken(user);
+        }
+        public async Task<bool> Register(RegisterDTO registerDto)
+        {
+            var userRepository = _uow.GetRepository<User>();
+
+            // Check if the email is already registered.
+            var existingUser = userRepository.Entities.FirstOrDefault(u => u.Email == registerDto.Email);
+            if (existingUser != null)
+            {
+                // User with this email already exists.
+                return false;
+            }
+            // Get the "Customer" role.
+            var roleRepository = _uow.GetRepository<Role>();
+            var customerRole = roleRepository.Entities.FirstOrDefault(r => r.Name == "Customer");
+            if (customerRole == null)
+            {
+                throw new Exception("Customer role not found. Please ensure the Customer role exists.");
+            }
+
+            // Hash the password using BCrypt.
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
+
+            // Create a new user entity.
+            var newUser = new User
+            {
+                Email = registerDto.Email,
+                Name = registerDto.Name,
+                Password = hashedPassword,
+                PhoneNumber = registerDto.PhoneNumber,
+                Address = registerDto.Address,
+                // If a RoleId is provided, assign it; otherwise, it can be set later or defaulted.
+                RoleId = customerRole.Id,
+
+
+            };
+
+            // Insert the new user.
+            await userRepository.InsertAsync(newUser);
+            await _uow.SaveAsync();
+
+            return true;
         }
 
         private string GenerateJwtToken(User user)
