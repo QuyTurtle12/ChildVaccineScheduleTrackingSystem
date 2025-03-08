@@ -1,0 +1,73 @@
+﻿@page
+@model RazorPage.Pages.Appointments.IndexModel
+@{
+    ViewData["Title"] = "Index";
+    var jwtToken = ViewData["JwtToken"] as string;
+    var userRole = ViewData["UserRole"] as string;
+}
+
+<form asp-action="Search" method="get" class="mb-5">
+    <label for="nameSearch">Search:</label>
+    <input type="text" id="searchString" name="searchString" placeholder="Enter search...">
+    <input type="hidden" id="pageNumber" name="pageNumber" min="1" value="1">
+    <button type="submit">Search</button>
+</form>
+
+<a asp-area="" asp-page="./Create" >Create Appointment</a>
+
+<h1>Appointment</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                User name
+            </th>
+            <th>
+                Appointment Date
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Status
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Appointments.Items)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    <a class="btn btn-primary" href="javascript:void(0)" onclick="loadEditForm(@item.Id)">Edit</a>
+                    <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    @if (Model.Appointments.HasPreviousPage)
+    {
+        <a asp-page="/Categories/Index" asp-route-pageNumber="@(Model.Appointments.PageNumber - 1)" class="btn btn-primary">Previous</a>
+    }
+
+    <span>Page @Model.Appointments.PageNumber of @Model.Appointments.TotalPages</span>
+
+    @if (Model.Appointments.HasNextPage)
+    {
+        <a asp-page="/Categories/Index" asp-route-pageNumber="@(Model.Appointments.PageNumber + 1)" class="btn btn-primary">Next</a>
+    }
+</div>

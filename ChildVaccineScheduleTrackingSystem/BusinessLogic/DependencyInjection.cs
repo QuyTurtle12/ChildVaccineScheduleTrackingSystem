@@ -57,5 +57,7 @@ public static class DependencyInjection
             });
 
         services.AddAuthorization();
+
+        services.AddScoped<IAppointmentService, AppointmentService>();
     }
 }
