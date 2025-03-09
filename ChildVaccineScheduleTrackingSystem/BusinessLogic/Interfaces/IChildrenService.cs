@@ -7,7 +7,7 @@ namespace BusinessLogic.Interfaces
     {
         Task<PaginatedList<GetChildrenDTO>> GetChildrenList(int index, int pageSize, string? idSearch, string? nameSearch, string? parentEmailSearch);
 
-        Task<GetChildrenDTO> GetChildrenAccount(string Id);
+        Task<GetChildrenDTO> GetChildrenAccount(string id);
 
         Task CreateChildrenAccount(PostChildrenDTO postChildrenAccount);
 

@@ -43,6 +43,7 @@ public static class DependencyInjection
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IChildrenService, ChildrenService>();
+        services.AddScoped<IRoleService, RoleService>();
 
         // JWT Authentication configuration
         services.AddAuthentication(options =>

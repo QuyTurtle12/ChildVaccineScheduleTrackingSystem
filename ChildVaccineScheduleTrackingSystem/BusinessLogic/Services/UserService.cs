@@ -34,6 +34,7 @@ namespace BusinessLogic.Services
         // Get list of system user
         public async Task<PaginatedList<GetUserDTO>> GetUserAccounts(int index, int pageSize, string? idSearch, string? nameSearch, string? emailSearch, EnumRole? role)
         {
+            // Validate index & page size
             if (index <= 0 || pageSize <= 0)
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Please input index or page size correctly!");

@@ -81,12 +81,12 @@ namespace BusinessLogic.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<GetChildrenDTO> GetChildrenAccount(string Id)
+        public async Task<GetChildrenDTO> GetChildrenAccount(string id)
         {
             IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Entities;
 
             Child? child = await query
-                .Where(c => c.Id.Equals(Guid.Parse(Id)))
+                .Where(c => c.Id.Equals(Guid.Parse(id)))
                 .Include(c => c.User)
                 .FirstOrDefaultAsync();
 

@@ -1,0 +1,85 @@
+﻿@page
+@model RazorPage.Pages.Children.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Child</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Child.UserId" class="control-label"></label>
+                <select asp-for="Child.UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+                <span asp-validation-for="Child.UserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Child.AppointmentDate" class="control-label"></label>
+                <input asp-for="Child.AppointmentDate" class="form-control" />
+                <span asp-validation-for="Child.AppointmentDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Child.Age" class="control-label"></label>
+                <input asp-for="Child.Age" class="form-control" />
+                <span asp-validation-for="Child.Age" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Child.Id" />
+            <div class="form-group">
+                <label asp-for="Child.Name" class="control-label"></label>
+                <input asp-for="Child.Name" class="form-control" />
+                <span asp-validation-for="Child.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Child.Status" class="control-label"></label>
+                <input asp-for="Child.Status" class="form-control" />
+                <span asp-validation-for="Child.Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Child.CreatedBy" class="control-label"></label>
+                <input asp-for="Child.CreatedBy" class="form-control" />
+                <span asp-validation-for="Child.CreatedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Child.LastUpdatedBy" class="control-label"></label>
+                <input asp-for="Child.LastUpdatedBy" class="form-control" />
+                <span asp-validation-for="Child.LastUpdatedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Child.DeletedBy" class="control-label"></label>
+                <input asp-for="Child.DeletedBy" class="form-control" />
+                <span asp-validation-for="Child.DeletedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Child.CreatedTime" class="control-label"></label>
+                <input asp-for="Child.CreatedTime" class="form-control" />
+                <span asp-validation-for="Child.CreatedTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Child.LastUpdatedTime" class="control-label"></label>
+                <input asp-for="Child.LastUpdatedTime" class="form-control" />
+                <span asp-validation-for="Child.LastUpdatedTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Child.DeletedTime" class="control-label"></label>
+                <input asp-for="Child.DeletedTime" class="form-control" />
+                <span asp-validation-for="Child.DeletedTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
