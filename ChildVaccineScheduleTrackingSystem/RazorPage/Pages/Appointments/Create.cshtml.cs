@@ -34,6 +34,11 @@ namespace RazorPage.Pages.Appointments
                 return Page();
             }
 
+            Appointment.CreatedBy = "system"; // Will use token
+            Appointment.CreatedTime = DateTime.Now;
+            Appointment.LastUpdatedBy = "system"; // Will use token
+            Appointment.LastUpdatedTime = DateTime.Now;
+
             await _appointmentService.CreateAppointment(Appointment);
             return Page();
         }

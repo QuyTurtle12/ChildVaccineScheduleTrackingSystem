@@ -14,8 +14,8 @@ namespace BusinessLogic.Interfaces
         Task<GetAppointmentDTO> GetAppointmentById(Guid id);
         Task<PaginatedList<GetAppointmentDTO>> GetAppointments(int index, int pageSize, Guid? idSearch, string? userSearch, string? nameSearch, DateTimeOffset? fromDateSearch, DateTimeOffset? toDateSearch, int? statusSearch);
 
-        Task<PostAppointmentDTO> CreateAppointment(PostAppointmentDTO appointmentDto);
-        Task<PutAppointmentDTO> UpdateAppointment(Guid id, PutAppointmentDTO appointmentDto);
-        Task<bool> DeleteAppointment(Guid id);
+        Task CreateAppointment(PostAppointmentDTO appointmentDto);
+        Task UpdateAppointment(PutAppointmentDTO appointmentDto);
+        Task DeleteAppointment(Guid id);
     }
 }

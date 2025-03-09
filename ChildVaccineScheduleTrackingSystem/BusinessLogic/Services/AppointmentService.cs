@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using BusinessLogic.DTOs.AppointmentDTO;
 using BusinessLogic.Interfaces;
 using Data.Constants;
@@ -91,7 +92,7 @@ namespace BusinessLogic.Services
                
                 GetAppointmentDTO responseItem = new GetAppointmentDTO();
                 responseItem.Id = item.Id;
-                responseItem.UserName = item.User != null ? item.User.Name : "Unknown";
+                responseItem.UserId = item.User != null ? item.User.Id : Guid.Empty;
                 responseItem.AppointmentDate = item.AppointmentDate;
                 responseItem.Name = item.Name;
                 responseItem.Status = item.Status;
@@ -115,7 +116,7 @@ namespace BusinessLogic.Services
             return paginatedList;
         }
 
-        public async Task<PostAppointmentDTO> CreateAppointment(PostAppointmentDTO appointmentDto)
+        public async Task CreateAppointment(PostAppointmentDTO appointmentDto)
         {
             if (appointmentDto == null)
             {
@@ -127,55 +128,38 @@ namespace BusinessLogic.Services
             await _unitOfWork.GetRepository<Appointment>().InsertAsync(appointment);
             await _unitOfWork.SaveAsync();
 
-            return _mapper.Map<PostAppointmentDTO>(appointment);
         }
 
-        public async Task<PutAppointmentDTO> UpdateAppointment(Guid id, PutAppointmentDTO appointmentDto)
+        public async Task UpdateAppointment(PutAppointmentDTO putAppointmentDto)
         {
-            if (appointmentDto == null || id == Guid.Empty)
+            IGenericRepository<Appointment> repository = _unitOfWork.GetRepository<Appointment>();
+            Appointment? existingAppointment = await repository.GetByIdAsync(putAppointmentDto.Id);
+            if (existingAppointment == null)
             {
-                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Invalid appointment data or id!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Appointment not found!");
             }
+            // Update properties
+            _mapper.Map(putAppointmentDto, existingAppointment);
 
-            
-            Appointment appointment = await _unitOfWork.GetRepository<Appointment>().GetByIdAsync(id);
 
-            if (appointment == null)
-            {
-                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Appointment not found!");
-            }
-
-            // Map the updated fields to the category entity
-            _mapper.Map(appointmentDto, appointment);
-
-            // Update the category in the database
-            _unitOfWork.GetRepository<Appointment>().Update(appointment);
+            repository.Update(existingAppointment);
             await _unitOfWork.SaveAsync();
-
-            // Return the updated category
-            return _mapper.Map<PutAppointmentDTO>(appointment);
         }
 
-        public async Task<bool> DeleteAppointment(Guid id)
+        public async Task DeleteAppointment(Guid id)
         {
-            if (id == Guid.Empty)
+            IGenericRepository<Appointment> repository = _unitOfWork.GetRepository<Appointment>();
+            Appointment? existingAppointment = await repository.GetByIdAsync(id);
+            if (existingAppointment == null)
             {
-                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Invalid appointment ID!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Appointment not found!");
             }
 
-            // Find the category by id
-            Appointment appointment = await _unitOfWork.GetRepository<Appointment>().GetByIdAsync(id);
+            existingAppointment.DeletedBy = "system"; // Will use token
+            existingAppointment.DeletedTime = DateTime.Now;
 
-            if (appointment == null)
-            {
-                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Appointment not found!");
-            }
-
-            // Remove the category from the database
-            await _unitOfWork.GetRepository<Appointment>().DeleteAsync(appointment);
+            repository.Update(existingAppointment);
             await _unitOfWork.SaveAsync();
-
-            return true;
         }
 
         
