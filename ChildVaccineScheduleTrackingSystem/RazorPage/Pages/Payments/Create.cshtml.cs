@@ -1,22 +1,20 @@
-using BusinessLogic.DTOs.AppointmentDTO;
+using BusinessLogic.DTOs.PaymentDTO;
 using BusinessLogic.Interfaces;
+using BusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Text.Json;
 
-namespace RazorPage.Pages.Appointments
+namespace RazorPage.Pages.Payments
 {
     public class CreateModel : PageModel
     {
-        private readonly IAppointmentService _appointmentService;
-
-
+        private readonly IPaymentService _paymentService;
         [BindProperty]
-        public PostAppointmentDTO Appointment { get; set; }
+        public PostPaymentDTO Payment { get; set; }
 
-        public CreateModel(IAppointmentService appointmentService)
+        public CreateModel(IPaymentService paymentService)
         {
-            _appointmentService = appointmentService;
+            _paymentService = paymentService;
         }
 
         // GET: Create Appointment
@@ -34,8 +32,8 @@ namespace RazorPage.Pages.Appointments
                 return Page();
             }
 
-            await _appointmentService.CreateAppointment(Appointment);
-            return RedirectToPage("./Index");  // Redirects to the Index page
+            await _paymentService.CreatePayment(Payment);
+            return RedirectToPage("/Index");
         }
     }
 }

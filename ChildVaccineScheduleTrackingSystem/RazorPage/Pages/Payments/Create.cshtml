@@ -1,0 +1,38 @@
+﻿@page
+@model RazorPage.Pages.Payments.CreateModel
+@{
+    ViewData["Title"] = "Create";
+}
+<form method="post" id="createPaymentForm">
+    <div class="form-group">
+        <label asp-for="Payment.AppointmentId">Payment Name</label>
+        <input asp-for="Payment.AppointmentId" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Payment.Amount">Amount</label>
+        <input asp-for="Payment.Amount" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label asp-for="Payment.PaymentMethod">Payment method</label>
+        <input asp-for="Payment.PaymentMethod" class="form-control"></input>
+    </div>
+    <div class="form-group">
+        <label asp-for="Payment.Name">Name</label>
+        <input asp-for="Payment.Name" class="form-control"></input>
+    </div>
+    <div class="form-group">
+        <label asp-for="Payment.Status">Status</label>
+        <input asp-for="Payment.Status" class="form-control" />
+    </div>
+    <div class="mt-2">
+        <button type="submit" class="btn btn-success">Create</button>
+        <a class="btn btn-secondary" asp-page="./Index">Back to List</a>
+    </div>
+</form>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

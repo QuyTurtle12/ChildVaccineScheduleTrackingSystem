@@ -122,6 +122,10 @@ namespace BusinessLogic.Services
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Apppointment data is required!");
             }
+            appointmentDto.CreatedBy = "system"; // Will use token
+            appointmentDto.CreatedTime = DateTime.Now;
+            appointmentDto.LastUpdatedBy = "system"; // Will use token
+            appointmentDto.LastUpdatedTime = DateTime.Now;
 
             Appointment appointment = _mapper.Map<Appointment>(appointmentDto);
 
