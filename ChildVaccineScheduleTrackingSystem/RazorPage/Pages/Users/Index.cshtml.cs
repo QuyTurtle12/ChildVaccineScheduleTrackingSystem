@@ -1,30 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using BusinessLogic.Interfaces;
+using Data.PaggingItem;
+using BusinessLogic.DTOs.UserDTO;
+using Data.Enum;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Data.Base;
-using Data.Entities;
 
 namespace RazorPage.Pages.Users
 {
     public class IndexModel : PageModel
     {
-        private readonly Data.Base.ChildVaccineScheduleDbContext _context;
+        private readonly IUserService _userService;
 
-        public IndexModel(Data.Base.ChildVaccineScheduleDbContext context)
+        public IndexModel(IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
 
-        public IList<User> User { get;set; } = default!;
+        public PaginatedList<GetUserDTO> User { get;set; } = default!;
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int index = 1, int pageSize = 10, string? idSearch = null, string? nameSearch = null, string? emailSearch = null, EnumRole? role = null)
         {
-            User = await _context.Users
-                .Include(u => u.Role).ToListAsync();
+            User = await _userService.GetUserAccounts(index, pageSize, idSearch, nameSearch, emailSearch, role);
+
+            return Page();
         }
     }
 }
