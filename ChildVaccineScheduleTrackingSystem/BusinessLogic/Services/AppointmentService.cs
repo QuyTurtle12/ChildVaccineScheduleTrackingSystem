@@ -57,22 +57,25 @@ namespace BusinessLogic.Services
 
             IQueryable<Appointment> query = _unitOfWork.GetRepository<Appointment>().Entities;
 
-            // Search by category id
+            // Only show records where DeletedBy is null
+            query = query.Where(u => u.DeletedBy == null);
+
+            // Search by Appointment id
             if (idSearch.HasValue)
             {
                 query = query.Where(u => u.Id == idSearch);
             }
 
-            // Search by user
+            // Search by user name
             if (!string.IsNullOrWhiteSpace(userSearch))
             {
-                query = query.Where(u => u.User!.Name.Contains(userSearch));
+                query = query.Where(u => u.User!.Name.Contains(userSearch.Trim()));
             }
 
             // Search by name
             if (!string.IsNullOrWhiteSpace(nameSearch))
             {
-                query = query.Where(u => u.Name!.Contains(nameSearch));
+                query = query.Where(u => u.Name!.Contains(nameSearch.Trim()));
             }
 
 
@@ -81,8 +84,19 @@ namespace BusinessLogic.Services
                 query = query.Where(u => u.Status == statusSearch);
             }
 
-            // Sort by Id
-            query = query.OrderBy(u => u.Id);
+            // Filter by Date Range (From - To)
+            if (fromDateSearch.HasValue)
+            {
+                query = query.Where(a => a.AppointmentDate >= fromDateSearch);
+            }
+
+            if (toDateSearch.HasValue)
+            {
+                query = query.Where(a => a.AppointmentDate <= toDateSearch);
+            }
+
+            // Sort by Appointment Date (Newest First)
+            query = query.OrderByDescending(a => a.AppointmentDate);
 
             PaginatedList<Appointment> resultQuery = await _unitOfWork.GetRepository<Appointment>().GetPagging(query.Include(u => u.User), index, pageSize);
 
@@ -93,6 +107,7 @@ namespace BusinessLogic.Services
                 GetAppointmentDTO responseItem = new GetAppointmentDTO();
                 responseItem.Id = item.Id;
                 responseItem.UserId = item.User != null ? item.User.Id : Guid.Empty;
+                responseItem.UserName = item.User != null ? item.User.Name : "Unknown";
                 responseItem.AppointmentDate = item.AppointmentDate;
                 responseItem.Name = item.Name;
                 responseItem.Status = item.Status;
@@ -122,6 +137,8 @@ namespace BusinessLogic.Services
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Apppointment data is required!");
             }
+            appointmentDto.Status = 0;
+
             appointmentDto.CreatedBy = "system"; // Will use token
             appointmentDto.CreatedTime = DateTime.Now;
             appointmentDto.LastUpdatedBy = "system"; // Will use token
@@ -143,8 +160,10 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Appointment not found!");
             }
             // Update properties
-            _mapper.Map(putAppointmentDto, existingAppointment);
+            putAppointmentDto.LastUpdatedBy = "System update";
+            putAppointmentDto.LastUpdatedTime = DateTimeOffset.Now;
 
+            _mapper.Map(putAppointmentDto, existingAppointment);
 
             repository.Update(existingAppointment);
             await _unitOfWork.SaveAsync();
@@ -159,7 +178,7 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Appointment not found!");
             }
 
-            existingAppointment.DeletedBy = "system"; // Will use token
+            existingAppointment.DeletedBy = "system delete"; // Will use token
             existingAppointment.DeletedTime = DateTime.Now;
 
             repository.Update(existingAppointment);

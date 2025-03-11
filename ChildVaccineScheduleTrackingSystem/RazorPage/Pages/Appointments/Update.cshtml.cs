@@ -4,6 +4,7 @@ using Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 
 namespace RazorPage.Pages.Appointments
 {
@@ -29,13 +30,25 @@ namespace RazorPage.Pages.Appointments
                 return NotFound("Appointment not found!");
             }
 
+            // Get UserId from Token
+            //var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            //if (userIdClaim == null)
+            //{
+            //    return Unauthorized("User ID not found in token.");
+            //}
+
             UpdatedAppointment = new PutAppointmentDTO
             {
                 Id = appointment.Id,
                 UserId = appointment.UserId, // Ensure this is correctly mapped
+               // UserId = Guid.Parse(userIdClaim.Value), Use when have token
                 AppointmentDate = appointment.AppointmentDate,
                 Name = appointment.Name,
-                Status = appointment.Status
+                Status = appointment.Status,
+                CreatedBy = appointment.CreatedBy,
+                CreatedTime = appointment.CreatedTime,
+                LastUpdatedBy = appointment.LastUpdatedBy,
+                LastUpdatedTime = appointment.LastUpdatedTime,
             };
 
             return Page();

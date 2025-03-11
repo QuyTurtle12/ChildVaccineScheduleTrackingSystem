@@ -14,6 +14,23 @@ namespace RazorPage.Pages.Payments
         private readonly IMapper _mapper;
         private readonly IJwtTokenService _jwtTokenService;
 
+        // Search Filters
+        [BindProperty(SupportsGet = true)]
+        public string? NameSearch { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? PaymentMethodSearch { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public decimal? FromAmountSearch { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public decimal? ToAmountSearch { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int? StatusSearch { get; set; }
+
+
         public PaginatedList<GetPaymentDTO> Payments { get; set; }
         public IndexModel(IPaymentService paymentService, IMapper mapper, IJwtTokenService jwtTokenService)
         {

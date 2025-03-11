@@ -33,7 +33,7 @@ namespace RazorPage.Pages.Payments
             }
 
             await _paymentService.CreatePayment(Payment);
-            return RedirectToPage("/Index");
+            return RedirectToPage("./Index");
         }
     }
 }

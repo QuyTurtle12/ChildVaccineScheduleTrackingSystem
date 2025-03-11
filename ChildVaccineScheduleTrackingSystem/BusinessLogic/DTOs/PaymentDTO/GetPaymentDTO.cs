@@ -8,5 +8,6 @@ namespace BusinessLogic.DTOs.PaymentDTO
 {
     public class GetPaymentDTO : BasePaymentDTO
     {
+        public string AppointmentName { get; set; } = string.Empty;
     }
 }

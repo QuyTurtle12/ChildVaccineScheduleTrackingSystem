@@ -20,6 +20,21 @@ namespace RazorPage.Pages.Appointments
             _mapper = mapper;
             _jwtTokenService = jwtTokenService;
         }
+        // Search Filters
+        [BindProperty(SupportsGet = true)]
+        public string? UserSearch { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? NameSearch { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public DateTimeOffset? FromDateSearch { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public DateTimeOffset? ToDateSearch { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int? StatusSearch { get; set; }
 
 
         // GET: Get and Search Categories

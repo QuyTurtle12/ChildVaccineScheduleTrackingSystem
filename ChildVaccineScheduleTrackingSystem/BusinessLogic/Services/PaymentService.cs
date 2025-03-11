@@ -55,22 +55,35 @@ namespace BusinessLogic.Services
 
             IQueryable<Payment> query = _unitOfWork.GetRepository<Payment>().Entities;
 
-            // Search by category id
+            // Only show records where DeletedBy is null
+            query = query.Where(u => u.DeletedBy == null);
+
+            // Search by id
             if (idSearch.HasValue)
             {
                 query = query.Where(u => u.Id == idSearch);
             }
 
-            // Search by user
+            // Search by payment method
             if (!string.IsNullOrWhiteSpace(paymentMethodSearch))
             {
-                query = query.Where(u => u.PaymentMethod!.Contains(paymentMethodSearch));
+                query = query.Where(u => u.PaymentMethod!.Contains(paymentMethodSearch.Trim()));
+            }
+
+            // Search by amount range
+            if (fromAmountSearch.HasValue)
+            {
+                query = query.Where(u => u.Amount >= fromAmountSearch.Value);
+            }
+            if (toAmountSearch.HasValue)
+            {
+                query = query.Where(u => u.Amount <= toAmountSearch.Value);
             }
 
             // Search by name
             if (!string.IsNullOrWhiteSpace(nameSearch))
             {
-                query = query.Where(u => u.Name!.Contains(nameSearch));
+                query = query.Where(u => u.Name!.Contains(nameSearch.Trim()));
             }
 
 
@@ -91,6 +104,7 @@ namespace BusinessLogic.Services
                 GetPaymentDTO responseItem = new GetPaymentDTO();
                 responseItem.Id = item.Id;
                 responseItem.AppointmentId = item.Appointment != null ? item.Appointment.Id : Guid.Empty;
+                responseItem.AppointmentName = item.Appointment != null ? item.Appointment.Name : "Empty";
                 responseItem.Amount = item.Amount;
                 responseItem.PaymentMethod = item.PaymentMethod;
                 responseItem.Name = item.Name;
@@ -121,6 +135,7 @@ namespace BusinessLogic.Services
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Payment data is required!");
             }
+            paymentDto.Status = 0;
             paymentDto.CreatedBy = "system"; // Will use token
             paymentDto.CreatedTime = DateTime.Now;
             paymentDto.LastUpdatedBy = "system"; // Will use token
@@ -141,15 +156,12 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Payment not found!");
             }
 
-            // Preserve CreatedBy and CreatedTime
-            putPaymentDto.CreatedBy = existingPayment.CreatedBy;
-            putPaymentDto.CreatedTime = existingPayment.CreatedTime;
-            existingPayment.LastUpdatedBy = "system"; // Will use token
-            existingPayment.LastUpdatedTime = DateTime.Now;
 
             // Update properties
-            _mapper.Map(putPaymentDto, existingPayment);
+            putPaymentDto.LastUpdatedBy = "System update";
+            putPaymentDto.LastUpdatedTime = DateTimeOffset.Now;
 
+            _mapper.Map(putPaymentDto, existingPayment);
 
             repository.Update(existingPayment);
             await _unitOfWork.SaveAsync();
@@ -163,13 +175,8 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Payment not found!");
             }
 
-            // Preserve existing values
-            existingPayment.CreatedBy = existingPayment.CreatedBy;
-            existingPayment.CreatedTime = existingPayment.CreatedTime;
-            existingPayment.LastUpdatedBy = existingPayment.LastUpdatedBy;
-            existingPayment.LastUpdatedTime = existingPayment.LastUpdatedTime;
 
-            existingPayment.DeletedBy = "system"; // Will use token
+            existingPayment.DeletedBy = "system delete"; // Will use token
             existingPayment.DeletedTime = DateTime.Now;
 
             repository.Update(existingPayment);

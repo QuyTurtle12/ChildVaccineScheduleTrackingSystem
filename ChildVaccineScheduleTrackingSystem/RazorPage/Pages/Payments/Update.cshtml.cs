@@ -1,5 +1,6 @@
 using BusinessLogic.DTOs.PaymentDTO;
 using BusinessLogic.Interfaces;
+using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -35,7 +36,11 @@ namespace RazorPage.Pages.Payments
                 Amount = payment.Amount,
                 PaymentMethod = payment.PaymentMethod,
                 Name = payment.Name,
-                Status = payment.Status
+                Status = payment.Status,
+                CreatedBy = payment.CreatedBy,
+                CreatedTime = payment.CreatedTime,
+                LastUpdatedBy = payment.LastUpdatedBy,
+                LastUpdatedTime = payment.LastUpdatedTime,
             };
 
             return Page();

@@ -8,6 +8,6 @@ namespace BusinessLogic.DTOs.AppointmentDTO
 {
     public class GetAppointmentDTO : BaseAppointmentDTO
     {
-
+        public string UserName { get; set; } = string.Empty;
     }
 }
