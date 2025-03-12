@@ -5,7 +5,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Children List</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -14,83 +14,65 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Child[0].AppointmentDate)
+                Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Child[0].Age)
+                Age
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Child[0].User)
+                Parent Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Child[0].Name)
+                Parent Email
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Child[0].Status)
+                Status
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Child[0].CreatedBy)
+                Action
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Child[0].LastUpdatedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Child[0].DeletedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Child[0].CreatedTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Child[0].LastUpdatedTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Child[0].DeletedTime)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Child) {
+@foreach (var item in Model.ChildrenList.Items) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.AppointmentDate)
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Age)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.User.Name)
+                @Html.DisplayFor(modelItem => item.ParentName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.ParentEmail)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastUpdatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastUpdatedTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedTime)
-            </td>
-            <td>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<div>
+    @if (Model.ChildrenList != null)
+    {
+        @if (Model.ChildrenList.HasPreviousPage)
+        {
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.ChildrenList.PageNumber - 1)" class="btn btn-primary">Previous</a>
+        }
+
+        <span>Page @Model.ChildrenList.PageNumber of @Model.ChildrenList.TotalPages</span>
+
+        @if (Model.ChildrenList.HasNextPage)
+        {
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.ChildrenList.PageNumber + 1)" class="btn btn-primary">Next</a>
+        }
+    }
+</div>

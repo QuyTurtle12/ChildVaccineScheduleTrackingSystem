@@ -1,32 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Data.Base;
-using Data.Entities;
+using BusinessLogic.Interfaces;
+using BusinessLogic.DTOs.ChildrenDTO;
 
 namespace RazorPage.Pages.Children
 {
     public class CreateModel : PageModel
     {
-        private readonly Data.Base.ChildVaccineScheduleDbContext _context;
+        private readonly IChildrenService _childrenService;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public CreateModel(Data.Base.ChildVaccineScheduleDbContext context)
+        public CreateModel(IChildrenService childrenService, IJwtTokenService jwtTokenService)
         {
-            _context = context;
+            _childrenService = childrenService;
+            _jwtTokenService = jwtTokenService;
         }
 
         public IActionResult OnGet()
         {
-        ViewData["UserId"] = new SelectList(_context.Users, "Id", "Name");
             return Page();
         }
 
         [BindProperty]
-        public Child Child { get; set; } = default!;
+        public PostChildrenDTO NewChild { get; set; } = default!;
 
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
@@ -36,8 +32,7 @@ namespace RazorPage.Pages.Children
                 return Page();
             }
 
-            _context.Children.Add(Child);
-            await _context.SaveChangesAsync();
+            await _childrenService.CreateChildrenAccount(NewChild);
 
             return RedirectToPage("./Index");
         }

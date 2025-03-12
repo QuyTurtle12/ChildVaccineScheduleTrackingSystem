@@ -1,63 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Data.Base;
 using Data.Entities;
+using BusinessLogic.Interfaces;
+using BusinessLogic.DTOs.ChildrenDTO;
+using BusinessLogic.Services;
 
 namespace RazorPage.Pages.Children
 {
     public class DeleteModel : PageModel
     {
-        private readonly Data.Base.ChildVaccineScheduleDbContext _context;
+        private readonly IChildrenService _childrenService;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public DeleteModel(Data.Base.ChildVaccineScheduleDbContext context)
+        public DeleteModel(IChildrenService childrenService, IJwtTokenService jwtTokenService)
         {
-            _context = context;
+            _childrenService = childrenService;
+            _jwtTokenService = jwtTokenService;
         }
 
         [BindProperty]
-        public Child Child { get; set; } = default!;
+        public GetChildrenDTO ChildDTO { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(Guid? id)
+        public async Task<IActionResult> OnGetAsync(string? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var child = await _context.Children.FirstOrDefaultAsync(m => m.Id == id);
-
+            GetChildrenDTO child = await _childrenService.GetChildrenAccount(id);
             if (child == null)
             {
                 return NotFound();
             }
             else
             {
-                Child = child;
+                ChildDTO = child;
             }
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(Guid? id)
+        public async Task<IActionResult> OnPostAsync(string? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var child = await _context.Children.FindAsync(id);
-            if (child != null)
+            try
             {
-                Child = child;
-                _context.Children.Remove(Child);
-                await _context.SaveChangesAsync();
+                await _childrenService.DeleteChildrenAccountById(id);
+                TempData["SuccessMessage"] = "Child deleted successfully!";
+                return RedirectToPage("./Index");
             }
-
-            return RedirectToPage("./Index");
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error" + ex.Message;
+                throw;
+            }
         }
     }
 }

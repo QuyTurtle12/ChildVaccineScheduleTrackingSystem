@@ -8,7 +8,7 @@ namespace BusinessLogic.Interfaces
     {
         Task<PaginatedList<GetUserDTO>> GetUserAccounts(int index, int pageSize, string? idSearch, string? nameSearch, string? emailSearch, EnumRole? role);
 
-        Task<GetUserDTO> GetUserAccount();
+        Task<GetUserDTO> GetUserProfile(string id);
 
         Task CreateUserAccount(PostUserDTO postUserAccount);
 

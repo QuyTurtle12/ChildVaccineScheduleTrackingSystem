@@ -8,71 +8,64 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Data.Base;
 using Data.Entities;
+using BusinessLogic.Interfaces;
+using BusinessLogic.DTOs.ChildrenDTO;
+using AutoMapper;
+using BusinessLogic.Services;
 
 namespace RazorPage.Pages.Children
 {
     public class EditModel : PageModel
     {
-        private readonly Data.Base.ChildVaccineScheduleDbContext _context;
+        private readonly IChildrenService _childrenService;
+        private readonly IJwtTokenService _jwtTokenService;
+        private readonly IMapper _mapper;
 
-        public EditModel(Data.Base.ChildVaccineScheduleDbContext context)
+        public EditModel(IChildrenService childrenService, IJwtTokenService jwtTokenService, IMapper mapper)
         {
-            _context = context;
+            _childrenService = childrenService;
+            _jwtTokenService = jwtTokenService;
+            _mapper = mapper;
         }
 
         [BindProperty]
-        public Child Child { get; set; } = default!;
+        public PutChildrenDTO EditChild { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(Guid? id)
+        public async Task<IActionResult> OnGetAsync(string? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var child =  await _context.Children.FirstOrDefaultAsync(m => m.Id == id);
-            if (child == null)
+            GetChildrenDTO ChildDTO = await _childrenService.GetChildrenAccount(id);
+            if (ChildDTO == null)
             {
                 return NotFound();
             }
-            Child = child;
-           ViewData["UserId"] = new SelectList(_context.Users, "Id", "Name");
+            EditChild = _mapper.Map<PutChildrenDTO>(ChildDTO);
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(PutChildrenDTO editedChild)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(Child).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _childrenService.UpdateChildrenAccount(editedChild);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!ChildExists(Child.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return new JsonResult(new { success = false, error = ex.Message });
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool ChildExists(Guid id)
-        {
-            return _context.Children.Any(e => e.Id == id);
         }
     }
 }

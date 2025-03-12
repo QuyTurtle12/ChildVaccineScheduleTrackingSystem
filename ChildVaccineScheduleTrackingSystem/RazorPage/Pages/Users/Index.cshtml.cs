@@ -10,17 +10,30 @@ namespace RazorPage.Pages.Users
     public class IndexModel : PageModel
     {
         private readonly IUserService _userService;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public IndexModel(IUserService userService)
+        private const string ADMIN = "Admin";
+
+        public IndexModel(IUserService userService, IJwtTokenService jwtTokenService)
         {
             _userService = userService;
+            _jwtTokenService = jwtTokenService;
         }
 
-        public PaginatedList<GetUserDTO> User { get;set; } = default!;
+        public PaginatedList<GetUserDTO> UserDTOList { get;set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int index = 1, int pageSize = 10, string? idSearch = null, string? nameSearch = null, string? emailSearch = null, EnumRole? role = null)
         {
-            User = await _userService.GetUserAccounts(index, pageSize, idSearch, nameSearch, emailSearch, role);
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            var userRole = _jwtTokenService.GetRole(jwtToken!);
+
+            //// Role Authorization
+            //if (userRole == null || userRole != ADMIN)
+            //{
+            //    return Forbid();
+            //}
+
+            UserDTOList = await _userService.GetUserAccounts(index, pageSize, idSearch, nameSearch, emailSearch, role);
 
             return Page();
         }

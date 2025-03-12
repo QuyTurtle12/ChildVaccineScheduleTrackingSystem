@@ -2,7 +2,6 @@
 {
     public class BaseChildrenDTO
     {
-        public DateTimeOffset AppointmentDate { get; set; }
         public int Age { get; set; }
         public string Name { get; set; } = string.Empty;
     }

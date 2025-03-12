@@ -40,7 +40,10 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Please input index or page size correctly!");
             }
 
-            IQueryable<User> query = _unitOfWork.GetRepository<User>().Entities.Include(u => u.Role);
+            IQueryable<User> query = _unitOfWork.GetRepository<User>()
+                                                .Entities
+                                                .Where(u => !u.DeletedTime.HasValue)
+                                                .Include(u => u.Role);
 
             // Search by user id
             if (!string.IsNullOrWhiteSpace(idSearch))
@@ -76,6 +79,9 @@ namespace BusinessLogic.Services
                     break;
             }
 
+            // Exclude Admin
+            query = query.Where(u => !u.Role!.Name.Equals("Admin"));
+
             // Sort by Id
             query = query.OrderBy(u => u.Id);
 
@@ -102,17 +108,15 @@ namespace BusinessLogic.Services
         }
 
         // Get 1 user account by id
-        public async Task<GetUserDTO> GetUserAccount()
+        public async Task<GetUserDTO> GetUserProfile(string id)
         {
-            // Get current logged in user id
-            string id = _tokenService.GetCurrentUserId();
 
             IQueryable<User> query = _unitOfWork.GetRepository<User>().Entities.Include(u => u.Role);
 
             User? user = await query.Where(u => u.Id == Guid.Parse(id)).FirstOrDefaultAsync();
 
             // Validate user
-            if (user == null)
+            if (user == null || user.DeletedTime.HasValue)
             {
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "User not found!");
             }
@@ -128,12 +132,10 @@ namespace BusinessLogic.Services
         // Update User Info
         public async Task UpdateUserAccount(PutUserDTO updatedUserAccount)
         {
-            // Get current logged in user id
-            string id = _tokenService.GetCurrentUserId();
 
             IQueryable<User> query = _unitOfWork.GetRepository<User>().Entities;
 
-            User? user = await query.Where(u => u.Id == Guid.Parse(id)).FirstOrDefaultAsync();
+            User? user = await query.Where(u => u.Id == Guid.Parse(updatedUserAccount.Id)).FirstOrDefaultAsync();
 
             // Validate user
             if (user == null)
@@ -203,11 +205,13 @@ namespace BusinessLogic.Services
 
             // Get role Id by role name
             Guid roleId = await _unitOfWork.GetRepository<Role>().Entities
-                            .Where(r => r.Name.Equals(postUserAccount.RoleName))
+                            .Where(r => r.Name.Equals(postUserAccount.RoleName.ToString()))
                             .Select(r => r.Id)
                             .FirstOrDefaultAsync();
 
             newUser.RoleId = roleId;
+
+            newUser.Password = BCrypt.Net.BCrypt.HashPassword(postUserAccount.Password);
 
             await _unitOfWork.GetRepository<User>().InsertAsync(newUser);
             await _unitOfWork.SaveAsync();

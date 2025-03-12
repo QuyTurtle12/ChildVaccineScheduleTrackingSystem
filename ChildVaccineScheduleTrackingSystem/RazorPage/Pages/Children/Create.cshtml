@@ -14,58 +14,14 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Child.UserId" class="control-label"></label>
-                <select asp-for="Child.UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+                <label asp-for="NewChild.Name" class="control-label"></label>
+                <input asp-for="NewChild.Name" class="form-control" />
+                <span asp-validation-for="NewChild.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Child.AppointmentDate" class="control-label"></label>
-                <input asp-for="Child.AppointmentDate" class="form-control" />
-                <span asp-validation-for="Child.AppointmentDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Child.Age" class="control-label"></label>
-                <input asp-for="Child.Age" class="form-control" />
-                <span asp-validation-for="Child.Age" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Child.Name" class="control-label"></label>
-                <input asp-for="Child.Name" class="form-control" />
-                <span asp-validation-for="Child.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Child.Status" class="control-label"></label>
-                <input asp-for="Child.Status" class="form-control" />
-                <span asp-validation-for="Child.Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Child.CreatedBy" class="control-label"></label>
-                <input asp-for="Child.CreatedBy" class="form-control" />
-                <span asp-validation-for="Child.CreatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Child.LastUpdatedBy" class="control-label"></label>
-                <input asp-for="Child.LastUpdatedBy" class="form-control" />
-                <span asp-validation-for="Child.LastUpdatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Child.DeletedBy" class="control-label"></label>
-                <input asp-for="Child.DeletedBy" class="form-control" />
-                <span asp-validation-for="Child.DeletedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Child.CreatedTime" class="control-label"></label>
-                <input asp-for="Child.CreatedTime" class="form-control" />
-                <span asp-validation-for="Child.CreatedTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Child.LastUpdatedTime" class="control-label"></label>
-                <input asp-for="Child.LastUpdatedTime" class="form-control" />
-                <span asp-validation-for="Child.LastUpdatedTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Child.DeletedTime" class="control-label"></label>
-                <input asp-for="Child.DeletedTime" class="form-control" />
-                <span asp-validation-for="Child.DeletedTime" class="text-danger"></span>
+                <label asp-for="NewChild.Age" class="control-label"></label>
+                <input asp-for="NewChild.Age" class="form-control" />
+                <span asp-validation-for="NewChild.Age" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

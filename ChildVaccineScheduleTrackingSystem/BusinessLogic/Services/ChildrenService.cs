@@ -35,6 +35,13 @@ namespace BusinessLogic.Services
             // Mapping user dto to entities
             Child newChild = _mapper.Map<Child>(postChildrenAccount);
 
+            // Get parent id
+            string? parentId = _tokenService.GetCurrentUserId();
+
+            // Add Audit Fields
+            newChild.CreatedBy = parentId;
+            newChild.LastUpdatedBy = newChild.CreatedBy;
+
             await _unitOfWork.GetRepository<Child>().InsertAsync(newChild);
             await _unitOfWork.SaveAsync();
         }
@@ -51,10 +58,14 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Child not found!");
             }
 
+            // Get edited user id
+            string? updatedPersonId = _tokenService.GetCurrentUserId();
+
             // Update audit fields
             child.Status = 0;
             child.LastUpdatedTime = DateTimeOffset.Now;
             child.DeletedTime = child.LastUpdatedTime;
+            child.LastUpdatedBy = updatedPersonId;
 
             await _unitOfWork.GetRepository<Child>().UpdateAsync(child);
             await _unitOfWork.SaveAsync();
@@ -74,8 +85,12 @@ namespace BusinessLogic.Services
 
             _mapper.Map(updatedChildrenAccount, child);
 
+            // Get edited user id
+            string? updatedPersonId = _tokenService.GetCurrentUserId();
+
             // Update audit fields
             child.LastUpdatedTime = DateTimeOffset.Now;
+            child.LastUpdatedBy = updatedPersonId;
 
             await _unitOfWork.GetRepository<Child>().UpdateAsync(child);
             await _unitOfWork.SaveAsync();
@@ -98,6 +113,9 @@ namespace BusinessLogic.Services
 
             // Mapping child entities to dto
             GetChildrenDTO responseItem = _mapper.Map<GetChildrenDTO>(child);
+
+            responseItem.ParentEmail = child.User!.Email!;
+            responseItem.ParentName = child.User.Name;
 
             return responseItem;
         }
@@ -141,6 +159,9 @@ namespace BusinessLogic.Services
             IReadOnlyCollection<GetChildrenDTO> responseItems = resultQuery.Items.Select(item =>
             {
                 GetChildrenDTO responseItem = _mapper.Map<GetChildrenDTO>(item);
+
+                responseItem.ParentName = item.User!.Name;
+                responseItem.ParentEmail = item.User.Email!;
 
                 return responseItem;
             }).ToList();

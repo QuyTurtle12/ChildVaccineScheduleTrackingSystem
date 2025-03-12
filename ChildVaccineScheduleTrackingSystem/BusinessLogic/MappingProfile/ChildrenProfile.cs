@@ -11,6 +11,7 @@ namespace BusinessLogic.MappingProfile
             CreateMap<GetChildrenDTO, Child>().ReverseMap();
             CreateMap<PostChildrenDTO, Child>().ReverseMap();
             CreateMap<PutChildrenDTO, Child>().ReverseMap();
+            CreateMap<PutChildrenDTO, GetChildrenDTO>().ReverseMap();
         }
     }
 }

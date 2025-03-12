@@ -11,6 +11,7 @@ namespace BusinessLogic.MappingProfile
             CreateMap<GetUserDTO, User>().ReverseMap();
             CreateMap<PostUserDTO, User>().ReverseMap();
             CreateMap<PutUserDTO, User>().ReverseMap();
+            CreateMap<PutUserDTO, GetUserDTO>().ReverseMap();
         }
     }
 }

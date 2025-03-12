@@ -12,74 +12,38 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Child.AppointmentDate)
+            @Html.DisplayNameFor(model => model.ChildDTO.Name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Child.AppointmentDate)
+            @Html.DisplayFor(model => model.ChildDTO.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Child.Age)
+            @Html.DisplayNameFor(model => model.ChildDTO.Age)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Child.Age)
+            @Html.DisplayFor(model => model.ChildDTO.Age)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Child.User)
+            Parent Name
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Child.User.Name)
+            @Html.DisplayFor(model => model.ChildDTO.ParentName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Child.Name)
+            Parent Email
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Child.Name)
+            @Html.DisplayFor(model => model.ChildDTO.ParentEmail)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Child.Status)
+            @Html.DisplayNameFor(model => model.ChildDTO.Status)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Child.Status)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Child.CreatedBy)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Child.CreatedBy)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Child.LastUpdatedBy)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Child.LastUpdatedBy)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Child.DeletedBy)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Child.DeletedBy)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Child.CreatedTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Child.CreatedTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Child.LastUpdatedTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Child.LastUpdatedTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Child.DeletedTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Child.DeletedTime)
+            @Html.DisplayFor(model => model.ChildDTO.Status)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.Child.Id">Edit</a> |
+    <a asp-page="./Edit" asp-route-id="@Model.ChildDTO.Id">Edit</a> |
     <a asp-page="./Index">Back to List</a>
 </div>
