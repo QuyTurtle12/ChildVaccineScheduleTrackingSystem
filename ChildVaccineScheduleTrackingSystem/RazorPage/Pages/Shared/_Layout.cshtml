@@ -93,6 +93,12 @@
                         } *@
 
                         <li class="list-group-item">
+                            <a asp-area="" asp-page="/Appointments/Index">Appointment</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a asp-area="" asp-page="/Payments/Index">Payment</a>
+                        </li>
+                        <li class="list-group-item">
                             @if (jwtToken == null)
                             {
                                 <a asp-area="" asp-page="/Login">Login</a>

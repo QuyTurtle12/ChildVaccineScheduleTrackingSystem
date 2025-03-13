@@ -68,5 +68,8 @@ public static class DependencyInjection
             };
         });
         services.AddAuthorization();
+
+        services.AddScoped<IAppointmentService, AppointmentService>();
+        services.AddScoped<IPaymentService, PaymentService>();
     }
 }
