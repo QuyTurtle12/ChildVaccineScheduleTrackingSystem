@@ -1,18 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using BusinessLogic.Interfaces;
-using BusinessLogic.DTOs.UserDTO;
+using BusinessLogic.DTOs.ChildrenDTO;
 
-namespace RazorPage.Pages.Users
+namespace RazorPage.Pages.Children
 {
     public class CreateModel : PageModel
     {
-        private readonly IUserService _userService;
+        private readonly IChildrenService _childrenService;
         private readonly IJwtTokenService _jwtTokenService;
 
-        public CreateModel(IUserService userService, IJwtTokenService jwtTokenService)
+        public CreateModel(IChildrenService childrenService, IJwtTokenService jwtTokenService)
         {
-            _userService = userService;
+            _childrenService = childrenService;
             _jwtTokenService = jwtTokenService;
         }
 
@@ -22,7 +22,7 @@ namespace RazorPage.Pages.Users
         }
 
         [BindProperty]
-        public PostUserDTO NewUser { get; set; } = default!;
+        public PostChildrenDTO NewChild { get; set; } = default!;
 
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
@@ -32,7 +32,7 @@ namespace RazorPage.Pages.Users
                 return Page();
             }
 
-            await _userService.CreateUserAccount(NewUser);
+            await _childrenService.CreateChildrenAccount(NewChild);
 
             return RedirectToPage("./Index");
         }

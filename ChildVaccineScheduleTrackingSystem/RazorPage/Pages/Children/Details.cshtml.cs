@@ -1,22 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using BusinessLogic.DTOs.UserDTO;
+using Microsoft.EntityFrameworkCore;
+using Data.Entities;
 using BusinessLogic.Interfaces;
+using BusinessLogic.DTOs.ChildrenDTO;
 
-namespace RazorPage.Pages.Users
+namespace RazorPage.Pages.Children
 {
     public class DetailsModel : PageModel
     {
-        private readonly IUserService _userService;
+        private readonly IChildrenService _childrenService;
         private readonly IJwtTokenService _jwtTokenService;
 
-        public DetailsModel(IUserService userService, IJwtTokenService jwtTokenService)
+        public DetailsModel(IChildrenService childrenService, IJwtTokenService jwtTokenService)
         {
-            _userService = userService;
+            _childrenService = childrenService;
             _jwtTokenService = jwtTokenService;
         }
 
-        public GetUserDTO UserDTO { get; set; } = default!;
+        public GetChildrenDTO ChildDTO { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string? id)
         {
@@ -25,14 +27,14 @@ namespace RazorPage.Pages.Users
                 return NotFound();
             }
 
-            GetUserDTO user = await _userService.GetUserProfile(id);
-            if (user == null)
+            GetChildrenDTO child = await _childrenService.GetChildrenAccount(id);
+            if (child == null)
             {
                 return NotFound();
             }
             else
             {
-                UserDTO = user;
+                ChildDTO = child;
             }
             return Page();
         }

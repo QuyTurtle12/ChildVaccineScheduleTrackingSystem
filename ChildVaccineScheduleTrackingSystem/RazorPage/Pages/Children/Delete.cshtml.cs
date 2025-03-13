@@ -1,23 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using Data.Entities;
 using BusinessLogic.Interfaces;
-using BusinessLogic.DTOs.UserDTO;
+using BusinessLogic.DTOs.ChildrenDTO;
+using BusinessLogic.Services;
 
-namespace RazorPage.Pages.Users
+namespace RazorPage.Pages.Children
 {
     public class DeleteModel : PageModel
     {
-        private readonly IUserService _userService;
+        private readonly IChildrenService _childrenService;
         private readonly IJwtTokenService _jwtTokenService;
 
-        public DeleteModel(IUserService userService, IJwtTokenService jwtTokenService)
+        public DeleteModel(IChildrenService childrenService, IJwtTokenService jwtTokenService)
         {
-            _userService = userService;
+            _childrenService = childrenService;
             _jwtTokenService = jwtTokenService;
         }
 
         [BindProperty]
-        public GetUserDTO UserDTO { get; set; } = default!;
+        public GetChildrenDTO ChildDTO { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string? id)
         {
@@ -26,15 +29,14 @@ namespace RazorPage.Pages.Users
                 return NotFound();
             }
 
-            GetUserDTO user = await _userService.GetUserProfile(id);
-
-            if (user == null)
+            GetChildrenDTO child = await _childrenService.GetChildrenAccount(id);
+            if (child == null)
             {
                 return NotFound();
             }
             else
             {
-                UserDTO = user;
+                ChildDTO = child;
             }
             return Page();
         }
@@ -48,8 +50,8 @@ namespace RazorPage.Pages.Users
 
             try
             {
-                await _userService.DeleteUserAccountById(id);
-                TempData["SuccessMessage"] = "User deleted successfully!";
+                await _childrenService.DeleteChildrenAccountById(id);
+                TempData["SuccessMessage"] = "Child deleted successfully!";
                 return RedirectToPage("./Index");
             }
             catch (Exception ex)

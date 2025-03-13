@@ -1,26 +1,35 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Data.Base;
+using Data.Entities;
 using BusinessLogic.Interfaces;
-using BusinessLogic.DTOs.UserDTO;
+using BusinessLogic.DTOs.ChildrenDTO;
 using AutoMapper;
+using BusinessLogic.Services;
 
-namespace RazorPage.Pages.Users
+namespace RazorPage.Pages.Children
 {
     public class EditModel : PageModel
     {
-        private readonly IUserService _userService;
-        private readonly IMapper _mapper;
+        private readonly IChildrenService _childrenService;
         private readonly IJwtTokenService _jwtTokenService;
+        private readonly IMapper _mapper;
 
-        public EditModel(IUserService userService, IJwtTokenService jwtTokenService, IMapper mapper)
+        public EditModel(IChildrenService childrenService, IJwtTokenService jwtTokenService, IMapper mapper)
         {
-            _userService = userService;
+            _childrenService = childrenService;
             _jwtTokenService = jwtTokenService;
             _mapper = mapper;
         }
 
         [BindProperty]
-        public PutUserDTO EditedUser { get; set; } = default!;
+        public PutChildrenDTO EditChild { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string? id)
         {
@@ -29,18 +38,18 @@ namespace RazorPage.Pages.Users
                 return NotFound();
             }
 
-            GetUserDTO user =  await _userService.GetUserProfile(id);
-            if (user == null)
+            GetChildrenDTO ChildDTO = await _childrenService.GetChildrenAccount(id);
+            if (ChildDTO == null)
             {
                 return NotFound();
             }
-            EditedUser = _mapper.Map<PutUserDTO>(user);
+            EditChild = _mapper.Map<PutChildrenDTO>(ChildDTO);
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync(PutUserDTO editedUser)
+        public async Task<IActionResult> OnPostAsync(PutChildrenDTO editedChild)
         {
             if (!ModelState.IsValid)
             {
@@ -49,7 +58,7 @@ namespace RazorPage.Pages.Users
 
             try
             {
-                await _userService.UpdateUserAccount(editedUser);
+                await _childrenService.UpdateChildrenAccount(editedChild);
             }
             catch (Exception ex)
             {
