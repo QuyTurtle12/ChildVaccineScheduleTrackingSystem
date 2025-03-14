@@ -1,0 +1,42 @@
+﻿@page
+@model RazorPage.Pages.Feedback.UpdateModel
+
+@{
+    ViewData["Title"] = "Update Feedback";
+}
+
+<h1>Update Feedback</h1>
+
+<h4>Feedback</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="UpdateFeedback.Id" />
+            <div class="form-group">
+                <label asp-for="UpdateFeedback.Rating" class="control-label"></label>
+                <input asp-for="UpdateFeedback.Rating" class="form-control" type="number" min="1" max="5" />
+                <span asp-validation-for="UpdateFeedback.Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UpdateFeedback.Comment" class="control-label"></label>
+                <textarea asp-for="UpdateFeedback.Comment" class="form-control"></textarea>
+                <span asp-validation-for="UpdateFeedback.Comment" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

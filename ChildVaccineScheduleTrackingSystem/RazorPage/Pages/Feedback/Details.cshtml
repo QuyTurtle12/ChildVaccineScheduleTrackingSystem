@@ -1,0 +1,43 @@
+﻿@page
+@model RazorPage.Pages.Feedback.DetailsModel
+
+@{
+    ViewData["Title"] = "Feedback Details";
+}
+
+<h1>Feedback Details</h1>
+
+<div>
+    <h4>Feedback</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FeedbackDTO.Rating)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FeedbackDTO.Rating)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FeedbackDTO.Comment)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FeedbackDTO.Comment)
+        </dd>
+        <dt class="col-sm-2">
+            User Name
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FeedbackDTO.UserName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FeedbackDTO.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FeedbackDTO.Status)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Update" asp-route-id="@Model.FeedbackDTO.Id">Update</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

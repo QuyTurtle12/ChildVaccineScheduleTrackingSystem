@@ -1,0 +1,46 @@
+﻿@page
+@model RazorPage.Pages.Feedback.CreateModel
+
+@{
+    ViewData["Title"] = "Create Feedback";
+}
+
+<h1>Create Feedback</h1>
+
+<h4>Feedback</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NewFeedback.Rating" class="control-label"></label>
+                <input asp-for="NewFeedback.Rating" class="form-control" type="number" min="1" max="5" />
+                <span asp-validation-for="NewFeedback.Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewFeedback.Comment" class="control-label"></label>
+                <textarea asp-for="NewFeedback.Comment" class="form-control"></textarea>
+                <span asp-validation-for="NewFeedback.Comment" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewFeedback.UserId" class="control-label"></label>
+                <input asp-for="NewFeedback.UserId" class="form-control" />
+                <span asp-validation-for="NewFeedback.UserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
