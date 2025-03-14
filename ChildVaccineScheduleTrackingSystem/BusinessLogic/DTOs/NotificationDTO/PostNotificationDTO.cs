@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.DTOs.NotificationDTO
 {
-    internal class PostNotificationDTO
+    public class PostNotificationDTO
     {
+        public string UserId { get; set; }
+        public string? Message { get; set; }
+        public int Status { get; set; } = 1; // Default active
     }
 }

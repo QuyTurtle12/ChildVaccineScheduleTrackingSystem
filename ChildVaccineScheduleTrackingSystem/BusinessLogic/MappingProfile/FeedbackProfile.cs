@@ -6,9 +6,9 @@ using BusinessLogic.DTOs.PaymentDTO;
 
 namespace BusinessLogic.Mapping;
 
-public class MappingProfile : Profile
+public class FeedbackProfile : Profile
 {
-    public MappingProfile()
+    public FeedbackProfile()
     {
         /*
          * // User mappings
@@ -37,9 +37,9 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.UserId, opt => opt.Ignore()); */
 
 
-        CreateMap<Payment, GetFeedbackDTO>().ReverseMap();
-        CreateMap<Payment, PostFeedbackDTO>().ReverseMap();
-        CreateMap<Payment, PutFeedbackDTO>().ReverseMap();
+        CreateMap<GetFeedbackDTO, Feedback>().ReverseMap();
+        CreateMap<PostFeedbackDTO, Feedback>().ReverseMap();
+        CreateMap<PutFeedbackDTO, Feedback>().ReverseMap();
 
 
 

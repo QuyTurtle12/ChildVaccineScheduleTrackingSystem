@@ -9,7 +9,7 @@ namespace BusinessLogic.DTOs.FeedbackDTO
     public class PutFeedbackDTO
     {
         public string Id { get; set; } = string.Empty;
-        public int Rating { get; set; }
+        public int? Rating { get; set; }
         public string? Comment { get; set; }
     }
 }
