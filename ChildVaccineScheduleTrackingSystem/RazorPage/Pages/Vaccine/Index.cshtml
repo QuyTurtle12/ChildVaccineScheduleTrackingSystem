@@ -1,0 +1,90 @@
+﻿@page
+@model RazorPage.Pages.Vaccine.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Manufacturer
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Created By
+            </th>
+            <th>
+                Last Updated By
+            </th>
+            <th>
+                Deleted By
+            </th>
+            <th>
+                Created Time
+            </th>
+            <th>
+                Last Updated Time
+            </th>
+            <th>
+                Deleted Time
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Vaccine) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Manufacturer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <div class="text-@(item.Status == 1 ? "success" : "danger")">
+                    @(item.Status == 1 ? "Active" : "Inactive")
+                </div>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeletedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdatedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeletedTime)
+            </td>
+            <td>
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

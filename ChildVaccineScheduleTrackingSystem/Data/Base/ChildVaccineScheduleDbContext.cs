@@ -111,7 +111,7 @@ namespace Data.Base
             modelBuilder.Entity<VaccineRecord>()
                 .HasOne (vr => vr.Child)
                 .WithMany(c => c.VaccineRecords)
-                .HasForeignKey(vr => vr.childId)
+                .HasForeignKey(vr => vr.ChildId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

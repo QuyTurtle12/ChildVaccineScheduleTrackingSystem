@@ -6,7 +6,7 @@ namespace Data.Entities
     {
         public string? Description { get; set; }
         public decimal Price { get; set; }
-        public string type { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
         public Guid AppointmentId { get; set; }
 
         // Navigation Property

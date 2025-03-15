@@ -4,7 +4,7 @@ namespace Data.Entities
 {
     public class VaccineRecord : BaseEntity
     {
-        public Guid childId { get; set; }
+        public Guid ChildId { get; set; }
         public Guid VaccineId { get; set; }
         public DateTimeOffset DateAdministered { get; set; }
         public DateTimeOffset NextDoseDue { get; set; }
