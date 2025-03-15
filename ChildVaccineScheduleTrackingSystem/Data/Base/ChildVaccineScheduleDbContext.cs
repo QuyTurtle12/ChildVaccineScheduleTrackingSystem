@@ -87,7 +87,6 @@ namespace Data.Base
             modelBuilder.Entity<Package>()
                 .HasOne(pa => pa.Appointment)
                 .WithMany(ap => ap.Packages)
-                .HasForeignKey(pa => pa.AppointmentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Package>()

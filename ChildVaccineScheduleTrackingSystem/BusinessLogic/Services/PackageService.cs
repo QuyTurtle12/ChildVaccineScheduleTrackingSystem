@@ -20,10 +20,7 @@ namespace BusinessLogic.Services
         {
             IEnumerable<Package> packages = await _unitOfWork.GetRepository<Package>().GetAllAsync();
             IEnumerable<PackageGetDTO> result = _mapper.Map<IEnumerable<PackageGetDTO>>(packages);
-            foreach (var item in result)
-            {
-                await AssignAppointmentNameToDto(item);
-            }
+            
             return result;
         }
 
@@ -32,7 +29,6 @@ namespace BusinessLogic.Services
             Package? package = await _unitOfWork.GetRepository<Package>().GetByIdAsync(id);
 
             PackageGetDTO result = _mapper.Map<PackageGetDTO>(package);
-            await AssignAppointmentNameToDto(result);
             return result;
         }
 
@@ -46,7 +42,6 @@ namespace BusinessLogic.Services
             await _unitOfWork.GetRepository<Package>().SaveAsync();
 
             PackageGetDTO result = _mapper.Map<PackageGetDTO>(package);
-            await AssignAppointmentNameToDto(result);
             return result;
         }
 
@@ -82,13 +77,6 @@ namespace BusinessLogic.Services
             await _unitOfWork.GetRepository<Package>().SaveAsync();
             return true;
         }
-        private async Task AssignAppointmentNameToDto(PackageGetDTO dto)
-        {
-            dto.AppointmentName = _unitOfWork.GetRepository<Appointment>()
-                .Entities
-                .Where(a => a.Id == dto.AppointmentId)
-                .Select(a => a.Name)
-                .ToString();
-        }
+        
     }
 }

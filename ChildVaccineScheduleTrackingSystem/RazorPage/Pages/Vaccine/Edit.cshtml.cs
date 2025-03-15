@@ -18,8 +18,8 @@ namespace RazorPage.Pages.Vaccine
 
         [BindProperty]
         public VaccinePutDto UpdatedVaccine { get; set; } = default!;
+        [BindProperty]
         public VaccineGetDto Vaccine { get; set; } = default!;
-
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
 

@@ -23,9 +23,6 @@
                 Name
             </th>
             <th>
-                Status
-            </th>
-            <th>
                 Created By
             </th>
             <th>
@@ -57,11 +54,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <div class="text-@(item.Status == 1 ? "success" : "danger")">
-                    @(item.Status == 1 ? "Active" : "Inactive")
-                </div>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CreatedBy)

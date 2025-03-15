@@ -42,7 +42,7 @@ namespace RazorPage.Pages.Vaccine
             Vaccine.DeletedTime = DateTime.Now;
             Vaccine.DeletedBy = userName;*/
 
-            if (await _vaccineService.SoftDeleteAsync(id))
+            if (await _vaccineService.DeleteAsync(id))
             {
                 return RedirectToPage("./Index");
             }

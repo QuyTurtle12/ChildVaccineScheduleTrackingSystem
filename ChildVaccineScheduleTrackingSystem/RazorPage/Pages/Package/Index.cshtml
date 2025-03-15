@@ -14,6 +14,9 @@
     <thead>
         <tr>
             <th>
+                Name
+            </th>
+            <th>
                 Description
             </th>
             <th>
@@ -22,18 +25,15 @@
             <th>
                 Type
             </th>
-            <th>
-                Appointment
-            </th>
-            <th>
-                Name
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model.Package) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
@@ -44,15 +44,7 @@
                 @Html.DisplayFor(modelItem => item.Type)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AppointmentName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
             </td>
         </tr>
 }

@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
+using Data.Enum;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,14 +16,14 @@ namespace RazorPage.Pages.Package
         {
             _packageService = packageService;
         }
+        [BindProperty]
         public PackageGetDTO PackageGetDto { get; set; } = default!;
 
         [BindProperty]
         public PackagePutDTO Package { get; set; } = default!;
-
+        public List<string> Types { get; set; } = new List<string> { PackageType.Single.ToString(), PackageType.LongTerm.ToString() };
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            
             var package =  await _packageService.GetByIdAsync(id);
             if (package == null)
             {

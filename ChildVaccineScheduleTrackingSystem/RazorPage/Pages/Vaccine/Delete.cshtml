@@ -31,14 +31,6 @@
             @Html.DisplayFor(model => model.Vaccine.Name)
         </dd>
         <dt class="col-sm-2">
-            Status
-        </dt>
-        <dd class="col-sm-10">
-            <div class="text-@(Model.Vaccine.Status == 1 ? "success" : "danger")">
-                @(Model.Vaccine.Status == 1 ? "Active" : "Inactive")
-            </div>
-        </dd>
-        <dt class="col-sm-2">
             Created By
         </dt>
         <dd class="col-sm-10">
