@@ -7,20 +7,20 @@
 <h1>Notifications</h1>
 
 <!-- Search Form -->
-<form method="get" asp-page="./Index" class="mb-4">
-    <div class="row">
-        <div class="col-md-4">
-            <input type="text" name="UserIdSearch" class="form-control" placeholder="Search by User ID" value="@Model.UserIdSearch" />
-        </div>
-        <div class="col-md-4">
-            <input type="text" name="MessageSearch" class="form-control" placeholder="Search by Message" value="@Model.MessageSearch" />
-        </div>
-        <div class="col-md-4">
-            <button type="submit" class="btn btn-primary">Search</button>
-            <a asp-page="./Index" class="btn btn-secondary">Clear</a>
-        </div>
-    </div>
-</form>
+@* <form method="get" asp-page="./Index" class="mb-4"> *@
+@*     <div class="row"> *@
+@*         <div class="col-md-4"> *@
+@*             <input type="text" name="UserIdSearch" class="form-control" placeholder="Search by User ID" value="@Model.UserIdSearch" /> *@
+@*         </div> *@
+@*         <div class="col-md-4"> *@
+@*             <input type="text" name="MessageSearch" class="form-control" placeholder="Search by Message" value="@Model.MessageSearch" /> *@
+@*         </div> *@
+@*         <div class="col-md-4"> *@
+@*             <button type="submit" class="btn btn-primary">Search</button> *@
+@*             <a asp-page="./Index" class="btn btn-secondary">Clear</a> *@
+@*         </div> *@
+@*     </div> *@
+@* </form> *@
 
 <!-- Create New Notification Link -->
 <p>
@@ -33,7 +33,6 @@
         <tr>
             <th>User ID</th>
             <th>Message</th>
-            <th>Status</th>
             <th>Created Time</th>
             <th>Actions</th>
         </tr>
@@ -44,7 +43,6 @@
             <tr>
                 <td>@notification.UserId</td>
                 <td>@notification.Message</td>
-                <td>@(notification.Status == 1 ? "Active" : "Deleted")</td>
                 <td>@notification.CreatedTime</td>
                 <td>
                     <a asp-page="./Edit" asp-route-id="@notification.Id" class="btn btn-primary btn-sm">Edit</a>
