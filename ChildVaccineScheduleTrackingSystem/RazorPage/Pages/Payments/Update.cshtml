@@ -9,11 +9,11 @@
     <form method="post">
         @*         @Html.AntiForgeryToken() *@
         <!-- Hidden field for the Appointment ID -->
-        <input asp-for="UpdatedPayment.Id" />
+        <input asp-for="UpdatedPayment.Id" type="hidden" />
 
-        <div class="form-group mb-5">
+        <div class="form-group mb-5" style="display: none">
             <label asp-for="UpdatedPayment.AppointmentId" class="form-label fw-semibold text-dark opacity-75 mb-2">
-                <i class="bi bi-tag me-2"></i> User name
+                <i class="bi bi-tag me-2"></i> Appointment Id
             </label>
             <input asp-for="UpdatedPayment.AppointmentId" class="form-control form-control-lg border-dark-subtle shadow-sm" id="AppointmentDate" placeholder="Enter user" />
             <span asp-validation-for="UpdatedPayment.AppointmentId" class="text-danger small mt-1"></span>
@@ -21,7 +21,7 @@
 
         <div class="form-group mb-5">
             <label asp-for="UpdatedPayment.Amount" class="form-label fw-semibold text-dark opacity-75 mb-2">
-                <i class="bi bi-tag me-2"></i> Name
+                <i class="bi bi-tag me-2"></i> Amount
             </label>
             <input asp-for="UpdatedPayment.Amount" class="form-control form-control-lg border-dark-subtle shadow-sm" id="AppointmentDate" placeholder="Enter appointment date" />
             <span asp-validation-for="UpdatedPayment.Amount" class="text-danger small mt-1"></span>
@@ -29,7 +29,7 @@
 
         <div class="form-group mb-5">
             <label asp-for="UpdatedPayment.PaymentMethod" class="form-label fw-semibold text-dark opacity-75 mb-2">
-                <i class="bi bi-tag me-2"></i> Name
+                <i class="bi bi-tag me-2"></i> Payment Method
             </label>
             <input asp-for="UpdatedPayment.PaymentMethod" class="form-control form-control-lg border-dark-subtle shadow-sm" id="AppointmentDate" placeholder="Enter appointment date" />
             <span asp-validation-for="UpdatedPayment.PaymentMethod" class="text-danger small mt-1"></span>
@@ -37,7 +37,7 @@
 
         <div class="form-group mb-5">
             <label asp-for="UpdatedPayment.Name" class="form-label fw-semibold text-dark opacity-75 mb-2">
-                <i class="bi bi-tag me-2"></i> Name
+                <i class="bi bi-tag me-2"></i> Payment Name
             </label>
             <input asp-for="UpdatedPayment.Name" class="form-control form-control-lg border-dark-subtle shadow-sm" id="Name" placeholder="Enter appointment name" />
             <span asp-validation-for="UpdatedPayment.Name" class="text-danger small mt-1"></span>
@@ -47,7 +47,7 @@
             <label asp-for="UpdatedPayment.Status" class="form-label fw-semibold text-dark opacity-75 mb-2">
                 <i class="bi bi-tag me-2"></i> Status
             </label>
-            <input asp-for="UpdatedPayment.Status" class="form-control form-control-lg border-dark-subtle shadow-sm" id="Status" placeholder="Enter status" />
+            <select asp-for="UpdatedPayment.Status" asp-items="Model.StatusList" class="form-select form-control-lg border-dark-subtle shadow-sm" id="Status"></select>
             <span asp-validation-for="UpdatedPayment.Status" class="text-danger small mt-1"></span>
         </div>
 
@@ -63,9 +63,9 @@
             <button type="submit" class="btn btn-success fw-semibold px-5 py-3 rounded-pill shadow-md transition-all duration-300 hover:scale-105">
                 <i class="bi bi-save me-2"></i> Save Changes
             </button>
-            <button type="button" class="btn btn-secondary fw-semibold px-5 py-3 rounded-pill shadow-md transition-all duration-300 hover:scale-105" data-bs-dismiss="modal">
+            <a asp-page="./Index" type="button" class="btn btn-secondary fw-semibold px-5 py-3 rounded-pill shadow-md transition-all duration-300 hover:scale-105">
                 <i class="bi bi-x-lg me-2"></i> Cancel
-            </button>
+            </a>
         </div>
     </form>
 </div>
