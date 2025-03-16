@@ -63,7 +63,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("Data.Entities.AppointmentPackage", b =>
@@ -131,7 +131,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Children");
+                    b.ToTable("Children", (string)null);
                 });
 
             modelBuilder.Entity("Data.Entities.Feedback", b =>
@@ -183,7 +183,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Feedbacks");
+                    b.ToTable("Feedbacks", (string)null);
                 });
 
             modelBuilder.Entity("Data.Entities.Notification", b =>
@@ -232,7 +232,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("Data.Entities.Package", b =>
@@ -284,7 +284,7 @@ namespace Data.Migrations
 
                     b.HasIndex("AppointmentId");
 
-                    b.ToTable("Packages");
+                    b.ToTable("Packages", (string)null);
                 });
 
             modelBuilder.Entity("Data.Entities.PackageVaccine", b =>
@@ -305,7 +305,7 @@ namespace Data.Migrations
 
                     b.HasIndex("VaccineId");
 
-                    b.ToTable("PackageVaccines");
+                    b.ToTable("PackageVaccines", (string)null);
                 });
 
             modelBuilder.Entity("Data.Entities.Payment", b =>
@@ -353,7 +353,7 @@ namespace Data.Migrations
 
                     b.HasIndex("AppointmentId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("Data.Entities.Role", b =>
@@ -389,7 +389,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Data.Entities.User", b =>
@@ -443,7 +443,7 @@ namespace Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Data.Entities.Vaccine", b =>
@@ -485,7 +485,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Vaccines");
+                    b.ToTable("Vaccines", (string)null);
                 });
 
             modelBuilder.Entity("Data.Entities.VaccineRecord", b =>
@@ -537,7 +537,7 @@ namespace Data.Migrations
 
                     b.HasIndex("VaccineId");
 
-                    b.ToTable("VaccineRecords");
+                    b.ToTable("VaccineRecords", (string)null);
                 });
 
             modelBuilder.Entity("Data.Entities.Appointment", b =>

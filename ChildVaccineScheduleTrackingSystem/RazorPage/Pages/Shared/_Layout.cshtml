@@ -1,5 +1,6 @@
 ﻿@{
     var jwtToken = ViewContext.HttpContext.Session.GetString("jwt_token");
+    string adminRole = "Admin";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -86,10 +87,24 @@
                         <li class="list-group-item"><a asp-area="" asp-page="/Users/Index">User Management</a></li>
                         <li class="list-group-item"><a asp-area="" asp-page="/Vaccine/Index">Vaccine</a></li>
                         <li class="list-group-item"><a asp-area="" asp-page="/Package/Index">Package</a></li>
+                        <li class="list-group-item"><a asp-area="" asp-page="/Children/Index">View Children</a></li>
+
+                        @* @if (User.IsInRole("Admin"))
+                        {
+                            <li class="list-group-item"><a asp-area="" asp-page="/Users/Index">User Management</a></li>
+                        } *@
+
+                        <li class="list-group-item">
+                            <a asp-area="" asp-page="/Appointments/Index">Appointment</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a asp-area="" asp-page="/Payments/Index">Payment</a>
+                        </li>
                         <li class="list-group-item">
                             @if (jwtToken == null)
                             {
                                 <a asp-area="" asp-page="/Login">Login</a>
+                                <a asp-area="" asp-page="/Register">Register</a>
                             }
                             else
                             {

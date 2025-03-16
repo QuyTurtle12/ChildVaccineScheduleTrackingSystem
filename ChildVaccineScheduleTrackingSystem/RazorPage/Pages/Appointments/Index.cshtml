@@ -1,0 +1,135 @@
+﻿@page
+@model RazorPage.Pages.Appointments.IndexModel
+@{
+    ViewData["Title"] = "Index";
+    var jwtToken = ViewData["JwtToken"] as string;
+    var userRole = ViewData["UserRole"] as string;
+}
+
+<form asp-page="" method="get" class="mb-5 p-4 bg-light rounded shadow">
+    <div class="row g-3 align-items-center">
+        <!-- User Name Search -->
+        <div class="col-md-3">
+            <label for="userSearch" class="form-label fw-bold text-secondary">User Name</label>
+            <input type="text" id="userSearch" name="userSearch" class="form-control" placeholder="Enter username..."
+                   value="@Model.UserSearch">
+        </div>
+
+        <!-- Appointment Name Search -->
+        <div class="col-md-3">
+            <label for="nameSearch" class="form-label fw-bold text-secondary">Appointment Name</label>
+            <input type="text" id="nameSearch" name="nameSearch" class="form-control" placeholder="Enter name..."
+                   value="@Model.NameSearch">
+        </div>
+
+        <!-- Date Range -->
+        <div class="col-md-3">
+            <label class="form-label fw-bold text-secondary">Date Range</label>
+            <div class="input-group">
+                <input type="date" id="fromDateSearch" name="fromDateSearch" class="form-control"
+                       value="@(Model.FromDateSearch?.ToString("yyyy-MM-dd"))">
+                <span class="input-group-text">-</span>
+                <input type="date" id="toDateSearch" name="toDateSearch" class="form-control"
+                       value="@(Model.ToDateSearch?.ToString("yyyy-MM-dd"))">
+            </div>
+        </div>
+
+        <!-- Status Search -->
+        <div class="col-md-2">
+            <label for="statusSearch" class="form-label fw-bold text-secondary">Status</label>
+            <select id="statusSearch" name="statusSearch" class="form-select">
+                <option value="">All</option>
+                <option value="0" selected="@(Model.StatusSearch == 0)">Pending</option>
+                <option value="1" selected="@(Model.StatusSearch == 1)">Confirmed</option>
+                <option value="2" selected="@(Model.StatusSearch == 2)">Cancelled</option>
+            </select>
+        </div>
+
+        <!-- Search Button -->
+        <div class="col-md-1 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100 shadow-sm">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+    </div>
+
+    <!-- Hidden Inputs -->
+    <input type="hidden" id="pageNumber" name="pageNumber" value="1">
+</form>
+
+
+<a asp-area="" asp-page="./Create" >Create Appointment</a>
+
+<h1>Appointment</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                User name
+            </th>
+            <th>
+                Appointment Date
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Status
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Appointments.Items)
+        {
+            <tr>
+                <td>
+                    @* @Html.DisplayFor(modelItem => item.UserId) *@
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    <a class="btn btn-primary" asp-page="./Update" asp-route-id="@item.Id">Edit</a>
+                    <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    @if (Model.Appointments.HasPreviousPage)
+    {
+        <a asp-page="/Appointments/Index"
+           asp-route-pageNumber="@(Model.Appointments.PageNumber - 1)"
+           asp-route-userSearch="@Model.UserSearch"
+           asp-route-nameSearch="@Model.NameSearch"
+           asp-route-fromDateSearch="@Model.FromDateSearch?.ToString("yyyy-MM-dd")"
+           asp-route-toDateSearch="@Model.ToDateSearch?.ToString("yyyy-MM-dd")"
+           asp-route-statusSearch="@Model.StatusSearch"
+           class="btn btn-primary">Previous</a>
+    }
+
+    <span>Page @Model.Appointments.PageNumber of @Model.Appointments.TotalPages</span>
+
+    @if (Model.Appointments.HasNextPage)
+    {
+        <a asp-page="/Appointments/Index"
+           asp-route-pageNumber="@(Model.Appointments.PageNumber + 1)"
+           asp-route-userSearch="@Model.UserSearch"
+           asp-route-nameSearch="@Model.NameSearch"
+           asp-route-fromDateSearch="@Model.FromDateSearch?.ToString("yyyy-MM-dd")"
+           asp-route-toDateSearch="@Model.ToDateSearch?.ToString("yyyy-MM-dd")"
+           asp-route-statusSearch="@Model.StatusSearch"
+           class="btn btn-primary">Next</a>
+    }
+</div>
+

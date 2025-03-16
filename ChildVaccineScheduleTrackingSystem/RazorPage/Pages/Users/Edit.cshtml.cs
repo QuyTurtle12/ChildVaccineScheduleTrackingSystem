@@ -1,78 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Data.Base;
-using Data.Entities;
+using BusinessLogic.Interfaces;
+using BusinessLogic.DTOs.UserDTO;
+using AutoMapper;
 
 namespace RazorPage.Pages.Users
 {
     public class EditModel : PageModel
     {
-        private readonly Data.Base.ChildVaccineScheduleDbContext _context;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public EditModel(Data.Base.ChildVaccineScheduleDbContext context)
+        public EditModel(IUserService userService, IJwtTokenService jwtTokenService, IMapper mapper)
         {
-            _context = context;
+            _userService = userService;
+            _jwtTokenService = jwtTokenService;
+            _mapper = mapper;
         }
 
         [BindProperty]
-        public User User { get; set; } = default!;
+        public PutUserDTO EditedUser { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(Guid? id)
+        public async Task<IActionResult> OnGetAsync(string? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var user =  await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
+            GetUserDTO user =  await _userService.GetUserProfile(id);
             if (user == null)
             {
                 return NotFound();
             }
-            User = user;
-           ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name");
+            EditedUser = _mapper.Map<PutUserDTO>(user);
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(PutUserDTO editedUser)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(User).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _userService.UpdateUserAccount(editedUser);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!UserExists(User.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return new JsonResult(new { success = false, error = ex.Message });
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool UserExists(Guid id)
-        {
-            return _context.Users.Any(e => e.Id == id);
         }
     }
 }

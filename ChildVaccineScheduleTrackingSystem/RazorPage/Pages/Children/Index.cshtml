@@ -1,0 +1,78 @@
+﻿@page
+@model RazorPage.Pages.Children.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Children List</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Age
+            </th>
+            <th>
+                Parent Name
+            </th>
+            <th>
+                Parent Email
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.ChildrenList.Items) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Age)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParentName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParentEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<div>
+    @if (Model.ChildrenList != null)
+    {
+        @if (Model.ChildrenList.HasPreviousPage)
+        {
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.ChildrenList.PageNumber - 1)" class="btn btn-primary">Previous</a>
+        }
+
+        <span>Page @Model.ChildrenList.PageNumber of @Model.ChildrenList.TotalPages</span>
+
+        @if (Model.ChildrenList.HasNextPage)
+        {
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.ChildrenList.PageNumber + 1)" class="btn btn-primary">Next</a>
+        }
+    }
+</div>

@@ -1,0 +1,49 @@
+﻿@page
+@model RazorPage.Pages.Children.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Child</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ChildDTO.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ChildDTO.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ChildDTO.Age)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ChildDTO.Age)
+        </dd>
+        <dt class="col-sm-2">
+            Parent Name
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ChildDTO.ParentName)
+        </dd>
+        <dt class="col-sm-2">
+            Parent Email
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ChildDTO.ParentEmail)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ChildDTO.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ChildDTO.Status)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.ChildDTO.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
