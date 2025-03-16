@@ -4,6 +4,7 @@ using Data.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ChildVaccineScheduleDbContext))]
-    partial class ChildVaccineScheduleDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250315034744_AddNewEntity")]
+    partial class AddNewEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,7 +66,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("Data.Entities.AppointmentPackage", b =>
@@ -131,7 +134,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Children", (string)null);
+                    b.ToTable("Children");
                 });
 
             modelBuilder.Entity("Data.Entities.Feedback", b =>
@@ -183,7 +186,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Feedbacks", (string)null);
+                    b.ToTable("Feedbacks");
                 });
 
             modelBuilder.Entity("Data.Entities.Notification", b =>
@@ -232,7 +235,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Data.Entities.Package", b =>
@@ -284,7 +287,7 @@ namespace Data.Migrations
 
                     b.HasIndex("AppointmentId");
 
-                    b.ToTable("Packages", (string)null);
+                    b.ToTable("Packages");
                 });
 
             modelBuilder.Entity("Data.Entities.PackageVaccine", b =>
@@ -305,7 +308,7 @@ namespace Data.Migrations
 
                     b.HasIndex("VaccineId");
 
-                    b.ToTable("PackageVaccines", (string)null);
+                    b.ToTable("PackageVaccines");
                 });
 
             modelBuilder.Entity("Data.Entities.Payment", b =>
@@ -353,7 +356,7 @@ namespace Data.Migrations
 
                     b.HasIndex("AppointmentId");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Data.Entities.Role", b =>
@@ -389,7 +392,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Data.Entities.User", b =>
@@ -443,7 +446,7 @@ namespace Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Data.Entities.Vaccine", b =>
@@ -485,7 +488,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Vaccines", (string)null);
+                    b.ToTable("Vaccines");
                 });
 
             modelBuilder.Entity("Data.Entities.VaccineRecord", b =>
@@ -537,7 +540,7 @@ namespace Data.Migrations
 
                     b.HasIndex("VaccineId");
 
-                    b.ToTable("VaccineRecords", (string)null);
+                    b.ToTable("VaccineRecords");
                 });
 
             modelBuilder.Entity("Data.Entities.Appointment", b =>

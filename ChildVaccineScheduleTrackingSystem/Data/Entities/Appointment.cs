@@ -13,5 +13,6 @@ namespace Data.Entities
         public virtual ICollection<Payment>? Payments { get; set; }
         public virtual ICollection<Feedback>? Feedbacks { get; set; }
         public virtual ICollection<Package>? Packages { get; set; }
+        public virtual ICollection<AppointmentPackage>? AppointmentPackages { get; set; }
     }
 }

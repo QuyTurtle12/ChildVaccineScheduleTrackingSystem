@@ -28,7 +28,7 @@ public static class DependencyInjection
         services
             .AddScoped<IUOW, UOW>();
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
+        
     }
 
     private static void AddAutoMapper(this IServiceCollection services)
@@ -71,5 +71,8 @@ public static class DependencyInjection
 
         services.AddScoped<IAppointmentService, AppointmentService>();
         services.AddScoped<IPaymentService, PaymentService>();
+        services.AddScoped<IPackageService, PackageService>();
+        services.AddScoped<IVaccineRecordService, VaccineRecordService>();
+        services.AddScoped<IVaccineService, VaccineService>();
     }
 }

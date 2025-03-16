@@ -87,7 +87,6 @@ namespace Data.Base
             modelBuilder.Entity<Package>()
                 .HasOne(pa => pa.Appointment)
                 .WithMany(ap => ap.Packages)
-                .HasForeignKey(pa => pa.AppointmentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Package>()
@@ -111,7 +110,7 @@ namespace Data.Base
             modelBuilder.Entity<VaccineRecord>()
                 .HasOne (vr => vr.Child)
                 .WithMany(c => c.VaccineRecords)
-                .HasForeignKey(vr => vr.childId)
+                .HasForeignKey(vr => vr.ChildId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
