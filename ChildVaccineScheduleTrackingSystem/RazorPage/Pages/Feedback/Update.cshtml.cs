@@ -38,7 +38,7 @@ namespace RazorPage.Pages.Feedback
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(PutFeedbackDTO updatedFeedback)
         {
             if (!ModelState.IsValid)
             {
@@ -47,7 +47,7 @@ namespace RazorPage.Pages.Feedback
 
             try
             {
-                await _feedbackService.UpdateFeedback(UpdateFeedback);
+                await _feedbackService.UpdateFeedback(updatedFeedback);
             }
             catch (Exception ex)
             {

@@ -31,9 +31,8 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Email</th>
+            <th>User ID</th>
             <th>Message</th>
-            <th>Appointment Date</th>
             <th>Created Time</th>
             <th>Actions</th>
         </tr>
@@ -42,9 +41,8 @@
         @foreach (var notification in Model.Notifications.Items)
         {
             <tr>
-                <td>@notification.Email</td>
+                <td>@notification.UserId</td>
                 <td>@notification.Message</td>
-                <td>@notification.AppointmentDate</td>
                 <td>@notification.CreatedTime</td>
                 <td>
                     <a asp-page="./Edit" asp-route-id="@notification.Id" class="btn btn-primary btn-sm">Edit</a>

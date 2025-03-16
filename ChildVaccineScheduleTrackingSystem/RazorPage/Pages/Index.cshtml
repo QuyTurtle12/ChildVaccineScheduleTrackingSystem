@@ -4,244 +4,35 @@
     ViewData["Title"] = "Home page";
 }
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <title>Trang Chủ - Dự Án Nhỏ</title>
-    <!-- Bootstrap CSS từ VNVC -->
-    <link rel="stylesheet" href="https://vnvc.vn/wp-content/themes/wg/css/bootstrap.min.css?ver=1.0.1" />
-    <!-- Font Awesome từ VNVC -->
-    <link rel="stylesheet" href="https://vnvc.vn/wp-content/themes/wg/css/font-awesome.min.css?ver=1.0.1" />
-    <!-- Custom CSS dựa trên VNVC -->
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f5f5f5;
+<div class="container text-center mt-5">
+    <h1 class="display-4">Welcome</h1>
+    <p class="lead">Learn about <a href="https://learn.microsoft.com/aspnet/core" class="text-primary">building Web apps with ASP.NET Core</a>.</p>
+    <hr class="my-4">
+    <p class="text-muted">Explore the documentation to get started with building modern web applications.</p>
+</div>
+
+<script>
+    const jwtToken = "@ViewData["JwtToken"]";
+    if (jwtToken) {
+        console.log("JWT Token: " + jwtToken);
+
+        // Function to decode JWT token payload
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
         }
-        .header {
-            background: #007bff;
-            color: white;
-            padding: 15px 0;
-        }
-        .navbar {
-            padding: 0;
-        }
-        .navbar-brand {
-            font-size: 24px;
-            font-weight: bold;
-            padding-left: 15px;
-        }
-        .navbar-nav {
-            width: 100%;
-            justify-content: space-around; /* Phân bổ đều các mục */
-        }
-        .navbar-nav .nav-item {
-            position: relative;
-        }
-        .navbar-nav .nav-link {
-            color: white !important;
-            font-size: 16px;
-            padding: 15px 20px;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-        }
-        /* Hiệu ứng hover giống VNVC */
-        .navbar-nav .nav-link:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-        }
-        /* Responsive: Khi màn hình nhỏ, menu xếp dọc */
-        media (max-width: 991px) {
-            .navbar-nav {
-                justify-content: flex-start;
-                padding: 10px 0;
-            }
-            .navbar-nav .nav-link {
-                padding: 10px 15px;
+
+        // Decode the token and log each claim with its value
+        const claims = parseJwt(jwtToken);
+        console.log("JWT Claims:", claims);
+        for (const key in claims) {
+            if (claims.hasOwnProperty(key)) {
+                console.log(`${key}: ${claims[key]}`);
             }
         }
-        .content {
-            padding: 40px 0;
-            text-align: center;
-        }
-        .footer {
-            background: #343a40;
-            color: white;
-            padding: 20px 0;
-            font-size: 14px;
-        }
-        .footer a {
-            color: #fff;
-            text-decoration: none;
-        }
-        .footer a:hover {
-            text-decoration: underline;
-        }
-        /* Loader giống VNVC */
-        .loader {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            z-index: 99999999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .loader.hidden {
-            display: none;
-        }
-        .google-loader span {
-            display: inline-block;
-            margin-top: 10px;
-            height: 20px;
-            width: 20px;
-            border-radius: 50%;
-            animation: move 1s ease-in-out infinite alternate;
-        }
-        keyframes move {
-            from { transform: translateY(-10px); }
-            to { transform: translateY(5px); }
-        }
-        /* Back to Top giống VNVC */
-        .back-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #007bff;
-            color: white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            text-align: center;
-            line-height: 40px;
-            cursor: pointer;
-            display: none;
-            z-index: 1000;
-        }
-        .back-to-top.active {
-            display: block;
-        }
-        /* Chat Button giống VNVC */
-        .chat-button {
-            position: fixed;
-            bottom: 20px;
-            right: 70px;
-            background: #28a745;
-            color: white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            text-align: center;
-            line-height: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            z-index: 1000;
-        }
-        .chat-button:hover {
-            background: #218838;
-        }
-    </style>
-</head>
-<body>
-    <!-- Loader giống VNVC -->
-    <div class="loader" id="loader">
-        <img src="https://vnvc.vn/img/vnvc-logo-h.png" alt="Logo Dự Án" width="200" />
-        <div class="google-loader">
-            <span style="background: #4285F4; animation-delay: -0.25s;"></span>
-            <span style="background: #DB4437; animation-delay: -0.5s; margin-left: 10px;"></span>
-            <span style="background: #F4B400; animation-delay: -0.75s; margin-left: 10px;"></span>
-            <span style="background: #0F9D58; animation-delay: -1s; margin-left: 10px;"></span>
-        </div>
-    </div>
-
-    <!-- Header với Menu điều hướng giống VNVC -->
-    <header class="header">
-        <nav class="navbar navbar-expand-lg navbar-dark container">
-            <a class="navbar-brand" href="#">Dự Án Nhỏ</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link active" href="#">Trang Chủ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Giới Thiệu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Dịch Vụ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Tin Tức</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Liên Hệ</a></li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Nội dung chính -->
-    <section class="content container">
-        <h1 class="display-4">Chào Mừng Đến Với Dự Án Nhỏ</h1>
-        <p class="lead">Chúng tôi cung cấp các dịch vụ và giải pháp tối ưu cho nhu cầu của bạn.</p>
-        <hr class="my-4" />
-        <p class="text-muted">Khám phá thêm về dự án của chúng tôi và liên hệ ngay hôm nay để được hỗ trợ!</p>
-        <a href="#" class="btn btn-primary btn-lg">Tìm Hiểu Thêm</a>
-    </section>
-
-    <!-- Footer giống VNVC -->
-    <footer class="footer text-center">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-                    <p>CÔNG TY DỰ ÁN NHỎ<br />
-                    Địa chỉ: 123 Đường Ví Dụ, Quận 1, TP. HCM<br />
-                    Email: info@duan.com | Hotline: 0123 456 789<br />
-                    © 2025 Dự Án Nhỏ. Mọi quyền được bảo lưu.</p>
-                </div>
-                <div class="col-md-4">
-                    <p><strong>Kết Nối Với Chúng Tôi</strong></p>
-                    <a href="https://facebook.com" target="_blank" rel="nofollow"><img src="https://vnvc.vn/wp-content/uploads/2025/02/logo-facebook.png" alt="Facebook" width="40" /></a>
-                    <a href="https://youtube.com" target="_blank" rel="nofollow"><img src="https://vnvc.vn/wp-content/uploads/2025/02/logo-youtube.png" alt="YouTube" width="40" /></a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Nút Back to Top giống VNVC -->
-    <div class="back-to-top" onclick="scrollToTop()">↑</div>
-
-    <!-- Nút Chat giống VNVC -->
-    <div class="chat-button" onclick="openChat()">💬</div>
-
-    <!-- Scripts -->
-    <script src="https://vnvc.vn/wp-includes/js/jquery/jquery.min.js?ver=3.7.1"></script>
-    <script src="https://vnvc.vn/wp-content/themes/wg/js/bootstrap.min.js?v=1"></script>
-    <script>
-        // Loader logic
-        document.onreadystatechange = function () {
-            if (document.readyState === "complete") {
-                jQuery('#loader').addClass('hidden');
-            }
-        };
-
-        // Back to Top logic
-        jQuery(window).scroll(function () {
-            if (jQuery(this).scrollTop() > 300) {
-                jQuery('.back-to-top').addClass('active');
-            } else {
-                jQuery('.back-to-top').removeClass('active');
-            }
-        });
-        function scrollToTop() {
-            jQuery('html, body').animate({ scrollTop: 0 }, 1000);
-        }
-
-        // Chat logic
-        function openChat() {
-            alert('Chào bạn! Đây là chức năng chat của Dự Án Nhỏ. Hãy liên hệ để được hỗ trợ!');
-        }
-    </script>
-</body>
-</html>
+    }
+</script>
