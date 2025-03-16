@@ -8,21 +8,14 @@ namespace RazorPage.Pages.Feedback
     public class CreateModel : PageModel
     {
         private readonly IFeedbackService _feedbackService;
-        private readonly IJwtTokenService _jwtTokenService;
 
-        public CreateModel(IFeedbackService feedbackService, IJwtTokenService jwtTokenService)
+        public CreateModel(IFeedbackService feedbackService)
         {
             _feedbackService = feedbackService;
-            _jwtTokenService = jwtTokenService;
-        }
-
-        public IActionResult OnGet()
-        {
-            return Page();
         }
 
         [BindProperty]
-        public PostFeedbackDTO NewFeedback { get; set; } = default!;
+        public PostFeedbackDTO Feedback { get; set; } = new PostFeedbackDTO();
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -31,9 +24,21 @@ namespace RazorPage.Pages.Feedback
                 return Page();
             }
 
-            await _feedbackService.CreateFeedback(NewFeedback);
-
-            return RedirectToPage("./Index");
+            try
+            {
+                await _feedbackService.CreateFeedback(Feedback);
+                return RedirectToPage("/Feedback/Index");
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "An error occurred while creating the feedback.");
+                return Page();
+            }
         }
     }
 }

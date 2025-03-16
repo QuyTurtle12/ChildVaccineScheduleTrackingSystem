@@ -8,7 +8,9 @@ namespace BusinessLogic.DTOs.NotificationDTO
 {
     public class PostNotificationDTO
     {
-        public string UserId { get; set; }
+        public string email { get; set; }
+
+        public Guid AppointmentId { get; set; }
         public string? Message { get; set; }
         public int Status { get; set; } = 1; // Default active
     }

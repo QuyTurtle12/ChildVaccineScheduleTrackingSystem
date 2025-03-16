@@ -26,21 +26,30 @@ namespace BusinessLogic.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<PaginatedList<GetNotificationDTO>> GetNotifications(int index, int pageSize, string? userIdSearch, string? messageSearch)
+        public async Task<PaginatedList<GetNotificationDTO>> GetNotifications(int index, int pageSize, string? emailSearch, string? messageSearch)
         {
             if (index <= 0 || pageSize <= 0)
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, "BAD_REQUEST", "Please enter a valid index or pageSize!");
             }
+            
 
             IQueryable<Notification> query = _unitOfWork.GetRepository<Notification>()
                 .Entities
+                .Include(n => n.User)
+                .Include(n => n.Appointment)
                 .Where(n => !n.DeletedTime.HasValue);
 
             // Search by UserId
-            if (!string.IsNullOrWhiteSpace(userIdSearch))
+            if (!string.IsNullOrWhiteSpace(emailSearch))
             {
-                query = query.Where(n => n.UserId == Guid.Parse(userIdSearch));
+                IQueryable<User> uquery = _unitOfWork.GetRepository<User>().Entities;
+
+                User? user = await uquery.Where(u => u.Email == emailSearch).FirstOrDefaultAsync();
+                if (user != null) {
+                    query = query.Where(n => n.UserId == user.Id); 
+                }
+                
             }
 
             // Search by Message
@@ -83,16 +92,16 @@ namespace BusinessLogic.Services
 
         public async Task CreateNotification(PostNotificationDTO postNotification)
         {
-            // Validate UserId
-            if (string.IsNullOrWhiteSpace(postNotification.UserId))
+            // Validate email
+            if (string.IsNullOrWhiteSpace(postNotification.email))
             {
-                throw new ErrorException(StatusCodes.Status400BadRequest, "BAD_REQUEST", "UserId must not be left blank!");
+                throw new ErrorException(StatusCodes.Status400BadRequest, "BAD_REQUEST", "Email must not be left blank!");
             }
 
             // Check if user exists (assuming User entity is available)
             var user = await _unitOfWork.GetRepository<User>()
                 .Entities
-                .Where(u => u.Id == Guid.Parse(postNotification.UserId) && !u.DeletedTime.HasValue)
+                .Where(u => u.Email == postNotification.email && !u.DeletedTime.HasValue)
                 .FirstOrDefaultAsync();
 
             if (user == null)
@@ -100,12 +109,18 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, "NOT_FOUND", "User not found!");
             }
 
+
             // Map DTO to entity
-            Notification newNotification = _mapper.Map<Notification>(postNotification);
+            Notification newNotification = new Notification(
+                user.Id,
+                postNotification.AppointmentId,
+                postNotification.Message
+                );
 
             // Set audit fields
             newNotification.Status = postNotification.Status;
-
+            newNotification.CreatedTime = DateTime.Now;
+       
             await _unitOfWork.GetRepository<Notification>().InsertAsync(newNotification);
             await _unitOfWork.SaveAsync();
         }

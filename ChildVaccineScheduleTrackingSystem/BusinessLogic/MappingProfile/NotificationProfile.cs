@@ -20,7 +20,9 @@ namespace BusinessLogic.Mapping
              CreateMap<PutNotificationDTO, Notification>()
                  .ForMember(dest => dest.Id, opt => opt.Ignore());*/
 
-            CreateMap<GetNotificationDTO, Notification>().ReverseMap();
+            CreateMap<GetNotificationDTO, Notification>().ReverseMap()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.Appointment.AppointmentDate));
             CreateMap<PostNotificationDTO, Notification>().ReverseMap();
             CreateMap<PutNotificationDTO, Notification>().ReverseMap();
 
