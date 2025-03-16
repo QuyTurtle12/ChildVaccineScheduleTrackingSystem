@@ -5,17 +5,37 @@
 }
 
 <form method="post" id="createAppointmentForm">
-    <div class="form-group">
-        <label asp-for="Appointment.UserId">User Name</label>
-        <input asp-for="Appointment.UserId" class="form-control" />
-    </div>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        </div>
+    }
+
+
+    <input type="hidden" asp-for="Appointment.UserId" />
+
+    @if (Model.UserRole == "Staff")
+    {
+        <div class="mb-3">
+            <label for="customerPhone" class="form-label">Customer Phone Number</label>
+            <input type="text" id="customerPhone" asp-for="Appointment.CustomerPhoneNumber" class="form-control" placeholder="Enter customer's phone number" />
+            <span asp-validation-for="Appointment.CustomerPhoneNumber" class="text-danger"></span>
+        </div>
+    }
+
     <div class="form-group">
         <label asp-for="Appointment.AppointmentDate">Appointment Date</label>
-        <input asp-for="Appointment.AppointmentDate" class="form-control" type="datetime"/>
+        <input asp-for="Appointment.AppointmentDate" class="form-control" type="datetime-local" />
+
     </div>
     <div class="form-group">
         <label asp-for="Appointment.Name">Name</label>
         <input asp-for="Appointment.Name" class="form-control"></input>
+
     </div>
     <div class="form-group" style="display: none">
         <label asp-for="Appointment.Status">Status</label>
@@ -32,4 +52,29 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("createAppointmentForm");
+            const customerPhoneInput = document.getElementById("customerPhone");
+            const errorMessagesDiv = document.getElementById("errorMessages");
+
+            form.addEventListener("submit", function (event) {
+                let errors = [];
+
+                // Check if Staff role and phone number is empty
+                if (customerPhoneInput && customerPhoneInput.value.trim() === "") {
+                    errors.push("Customer phone number is required for booking.");
+                }
+
+                // If errors exist, prevent form submission and display errors
+                if (errors.length > 0) {
+                    event.preventDefault();
+                    errorMessagesDiv.innerHTML = errors.join("<br>");
+                    errorMessagesDiv.classList.remove("d-none");
+                }
+            });
+        });
+
+    </script>
 }
+

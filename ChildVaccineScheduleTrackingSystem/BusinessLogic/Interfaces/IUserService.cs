@@ -15,5 +15,7 @@ namespace BusinessLogic.Interfaces
         Task UpdateUserAccount(PutUserDTO updatedUserAccount);
 
         Task DeleteUserAccountById(string id);
+
+        Task<GetUserDTO> GetUserByPhoneNumber(string phoneNumber);
     }
 }

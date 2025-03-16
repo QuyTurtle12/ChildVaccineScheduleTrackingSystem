@@ -216,5 +216,29 @@ namespace BusinessLogic.Services
             await _unitOfWork.GetRepository<User>().InsertAsync(newUser);
             await _unitOfWork.SaveAsync();
         }
+
+
+        // Get 1 user account by phone number
+        public async Task<GetUserDTO> GetUserByPhoneNumber(string phoneNumber)
+        {
+            IQueryable<User> query = _unitOfWork.GetRepository<User>().Entities.Include(u => u.Role);
+
+            User? user = await query.Where(u => u.PhoneNumber == phoneNumber).FirstOrDefaultAsync();
+
+            // Validate user
+            if (user == null || user.DeletedTime.HasValue)
+            {
+                //throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "User not found!");
+                return null;
+            }
+
+            // Mapping user entities to DTO
+            GetUserDTO responseItem = _mapper.Map<GetUserDTO>(user);
+
+            responseItem.RoleName = user.Role!.Name == EnumRole.Staff.ToString() ? "Staff" : "Customer";
+
+            return responseItem;
+        }
+
     }
 }

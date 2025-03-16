@@ -1,9 +1,11 @@
 using BusinessLogic.DTOs.AppointmentDTO;
 using BusinessLogic.Interfaces;
 using Data.Entities;
+using Data.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 
 namespace RazorPage.Pages.Appointments
@@ -21,7 +23,8 @@ namespace RazorPage.Pages.Appointments
         public GetAppointmentDTO Appointment { get; set; } = default!;
         [BindProperty]
         public PutAppointmentDTO UpdatedAppointment { get; set; } = default!;
-        
+        public List<SelectListItem> StatusList { get; set; }
+
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
             var appointment = await _appointmentService.GetAppointmentById(id);
@@ -30,12 +33,14 @@ namespace RazorPage.Pages.Appointments
                 return NotFound("Appointment not found!");
             }
 
-            // Get UserId from Token
-            //var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            //if (userIdClaim == null)
-            //{
-            //    return Unauthorized("User ID not found in token.");
-            //}
+            // Populate status dropdown list
+            StatusList = Enum.GetValues(typeof(EnumAppointment))
+                .Cast<EnumAppointment>()
+                .Select(e => new SelectListItem
+                {
+                    Value = ((int)e).ToString(),
+                    Text = e.ToString()
+                }).ToList();
 
             UpdatedAppointment = new PutAppointmentDTO
             {

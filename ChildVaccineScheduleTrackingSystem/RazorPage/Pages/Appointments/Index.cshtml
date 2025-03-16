@@ -6,6 +6,10 @@
     var userRole = ViewData["UserRole"] as string;
 }
 
+<p>JWT Token: @jwtToken</p>
+<p>User Role: @userRole</p>
+
+
 <form asp-page="" method="get" class="mb-5 p-4 bg-light rounded shadow">
     <div class="row g-3 align-items-center">
         <!-- User Name Search -->
@@ -41,7 +45,8 @@
                 <option value="">All</option>
                 <option value="0" selected="@(Model.StatusSearch == 0)">Pending</option>
                 <option value="1" selected="@(Model.StatusSearch == 1)">Confirmed</option>
-                <option value="2" selected="@(Model.StatusSearch == 2)">Cancelled</option>
+                <option value="2" selected="@(Model.StatusSearch == 2)">Canceled</option>
+                <option value="3" selected="@(Model.StatusSearch == 3)">Completed</option>
             </select>
         </div>
 

@@ -4,6 +4,7 @@ using BusinessLogic.DTOs.AppointmentDTO;
 using BusinessLogic.Interfaces;
 using Data.Constants;
 using Data.Entities;
+using Data.Enum;
 using Data.ExceptionCustom;
 using Data.Interface;
 using Data.PaggingItem;
@@ -22,11 +23,18 @@ namespace BusinessLogic.Services
 
         private readonly IMapper _mapper;
         private readonly IUOW _unitOfWork;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AppointmentService(IMapper mapper, IUOW unitOfWork)
+
+        public AppointmentService(IMapper mapper, IUOW unitOfWork, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _httpContextAccessor = httpContextAccessor;
+        }
+        private string GetCurrentUserName()
+        {
+            return _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Unknown";
         }
 
         public async Task<IEnumerable<GetAppointmentDTO>> GetAllAppointments()
@@ -110,7 +118,7 @@ namespace BusinessLogic.Services
                 responseItem.UserName = item.User != null ? item.User.Name : "Unknown";
                 responseItem.AppointmentDate = item.AppointmentDate;
                 responseItem.Name = item.Name;
-                responseItem.Status = item.Status;
+                responseItem.Status = item.Status.HasValue ? (EnumAppointment)item.Status.Value : EnumAppointment.Pending;
                 responseItem.CreatedBy = item.CreatedBy;
                 responseItem.LastUpdatedBy = item.LastUpdatedBy;
                 responseItem.DeletedBy = item.DeletedBy;
@@ -137,15 +145,21 @@ namespace BusinessLogic.Services
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Apppointment data is required!");
             }
-            appointmentDto.Status = 0;
 
-            appointmentDto.CreatedBy = "system"; // Will use token
-            appointmentDto.CreatedTime = DateTime.Now;
-            appointmentDto.LastUpdatedBy = "system"; // Will use token
-            appointmentDto.LastUpdatedTime = DateTime.Now;
+            string currentUser = GetCurrentUserName();
+
+            if(appointmentDto.AppointmentDate <= DateTimeOffset.Now)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Apppointment date can not be a day in the past or today!");
+            }
+
+            appointmentDto.Status = 0;
+            appointmentDto.CreatedBy = currentUser;
+            appointmentDto.CreatedTime = DateTimeOffset.UtcNow;
+            appointmentDto.LastUpdatedBy = currentUser;
+            appointmentDto.LastUpdatedTime = DateTimeOffset.UtcNow;
 
             Appointment appointment = _mapper.Map<Appointment>(appointmentDto);
-
             await _unitOfWork.GetRepository<Appointment>().InsertAsync(appointment);
             await _unitOfWork.SaveAsync();
 
@@ -160,7 +174,9 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Appointment not found!");
             }
             // Update properties
-            putAppointmentDto.LastUpdatedBy = "System update";
+            string currentUser = GetCurrentUserName();
+
+            putAppointmentDto.LastUpdatedBy = currentUser;
             putAppointmentDto.LastUpdatedTime = DateTimeOffset.Now;
 
             _mapper.Map(putAppointmentDto, existingAppointment);
@@ -178,7 +194,9 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Appointment not found!");
             }
 
-            existingAppointment.DeletedBy = "system delete"; // Will use token
+            string currentUser = GetCurrentUserName();
+
+            existingAppointment.DeletedBy = currentUser;
             existingAppointment.DeletedTime = DateTime.Now;
 
             repository.Update(existingAppointment);
