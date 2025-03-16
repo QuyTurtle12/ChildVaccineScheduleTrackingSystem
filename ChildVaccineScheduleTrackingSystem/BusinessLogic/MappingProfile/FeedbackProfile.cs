@@ -40,6 +40,7 @@ public class FeedbackProfile : Profile
         CreateMap<GetFeedbackDTO, Feedback>().ReverseMap();
         CreateMap<PostFeedbackDTO, Feedback>().ReverseMap();
         CreateMap<PutFeedbackDTO, Feedback>().ReverseMap();
+        CreateMap<PutFeedbackDTO, GetFeedbackDTO>().ReverseMap();
 
 
 
