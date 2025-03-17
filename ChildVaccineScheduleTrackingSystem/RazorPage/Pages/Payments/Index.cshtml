@@ -1,5 +1,7 @@
 ﻿@page
 @model RazorPage.Pages.Payments.IndexModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
 @{
     ViewData["Title"] = "Index";
     var jwtToken = ViewData["JwtToken"] as string;
@@ -39,10 +41,9 @@
             <label for="statusSearch" class="form-label fw-bold text-secondary">Status</label>
             <select id="statusSearch" name="statusSearch" class="form-select">
                 <option value="">All</option>
-                <option value="0" selected="@(Model.StatusSearch == 0)">Not Paid</option>
-                <option value="1" selected="@(Model.StatusSearch == 1)">Paid</option>
-                <option value="2" selected="@(Model.StatusSearch == 2)">Pending</option>
-                <option value="3" selected="@(Model.StatusSearch == 3)">Failed</option>
+                <option value="0" selected="@(Model.StatusSearch == 0)">Pending</option>
+                <option value="1" selected="@(Model.StatusSearch == 1)">Completed</option>
+                <option value="2" selected="@(Model.StatusSearch == 2)">Failed</option>
             </select>
         </div>
 
@@ -103,10 +104,13 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
-                <td>
-                    <a class="btn btn-primary" asp-page="./Update" asp-route-id="@item.Id">Edit</a>
-                    <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                @if (HttpContextAccessor.HttpContext.User.IsInRole("Staff"))
+                {
+                    <td>
+                        <a class="btn btn-primary" asp-page="./Update" asp-route-id="@item.Id">Edit</a>
+                        <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                }
             </tr>
         }
     </tbody>
