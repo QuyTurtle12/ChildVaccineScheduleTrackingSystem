@@ -7,9 +7,22 @@
 
 <h1>User Management</h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
+<!-- Search Form -->
+<form method="get" asp-page="./Index">
+    <div class="form-group">
+        <label for="phoneSearch">Search by Phone:</label>
+        <input type="text" id="phoneSearch" name="phoneSearch" class="form-control" value="@Model.PhoneSearch" style="display:inline; width:auto;" />
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a asp-page="./Index" class="btn btn-secondary">Clear</a>
+    </div>
+</form>
+
+@if(Model.loggedInUserRole == "Admin"){
+    <p>
+        <a asp-page="Create">Create New</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -59,9 +72,17 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    @if (Model.loggedInUserRole == "Admin")
+                    {
+                        <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-page = "./Details" asp-route-id = "@item.Id" > Details </a>
+                        <a asp-page = "./Delete" asp-route-id = "@item.Id" > Delete </a>
+                    }
+
+                    @if (Model.loggedInUserRole == "Staff")
+                    {
+                        <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
+                    }
             </td>
         </tr>
 }
@@ -73,14 +94,14 @@
     {
         @if (Model.UserDTOList.HasPreviousPage)
         {
-            <a asp-page="./Index" asp-route-pageNumber="@(Model.UserDTOList.PageNumber - 1)" class="btn btn-primary">Previous</a>
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.UserDTOList.PageNumber - 1)" asp-route-phoneSearch="@Model.PhoneSearch" class="btn btn-primary">Previous</a>
         }
 
         <span>Page @Model.UserDTOList.PageNumber of @Model.UserDTOList.TotalPages</span>
 
         @if (Model.UserDTOList.HasNextPage)
         {
-            <a asp-page="./Index" asp-route-pageNumber="@(Model.UserDTOList.PageNumber + 1)" class="btn btn-primary">Next</a>
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.UserDTOList.PageNumber + 1)" asp-route-phoneSearch="@Model.PhoneSearch" class="btn btn-primary">Next</a>
         }
     }
 </div>

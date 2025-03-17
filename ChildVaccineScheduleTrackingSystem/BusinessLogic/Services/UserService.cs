@@ -32,7 +32,7 @@ namespace BusinessLogic.Services
         }
 
         // Get list of system user
-        public async Task<PaginatedList<GetUserDTO>> GetUserAccounts(int index, int pageSize, string? idSearch, string? nameSearch, string? emailSearch, EnumRole? role)
+        public async Task<PaginatedList<GetUserDTO>> GetUserAccounts(int index, int pageSize, string? idSearch, string? nameSearch, string? emailSearch, string? phoneSearch, EnumRole? role)
         {
             // Validate index & page size
             if (index <= 0 || pageSize <= 0)
@@ -56,7 +56,7 @@ namespace BusinessLogic.Services
             if (!string.IsNullOrWhiteSpace(nameSearch))
             {
                 query = query.Where(u => u.Name!.Contains(nameSearch));
-            }
+            }     
 
             // Search by email
             if (!string.IsNullOrWhiteSpace(emailSearch))
@@ -64,6 +64,12 @@ namespace BusinessLogic.Services
                 // query = query.Where(u => u.AccountEmail!.Equals(emailSearch));
                 emailSearch = emailSearch.Trim();
                 query = query.Where(u => u.Email!.Trim().ToLower().Contains(emailSearch.ToLower()));
+            }
+
+            // Search by phone number
+            if (!string.IsNullOrWhiteSpace(phoneSearch))
+            {
+                query = query.Where(u => u.PhoneNumber!.Equals(phoneSearch));
             }
 
             // Search by role

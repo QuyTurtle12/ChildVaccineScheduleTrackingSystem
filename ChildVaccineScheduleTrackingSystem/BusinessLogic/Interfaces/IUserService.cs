@@ -6,7 +6,7 @@ namespace BusinessLogic.Interfaces
 {
     public interface IUserService
     {
-        Task<PaginatedList<GetUserDTO>> GetUserAccounts(int index, int pageSize, string? idSearch, string? nameSearch, string? emailSearch, EnumRole? role);
+        Task<PaginatedList<GetUserDTO>> GetUserAccounts(int index, int pageSize, string? idSearch, string? nameSearch, string? emailSearch, string? phoneSearch, EnumRole? role);
 
         Task<GetUserDTO> GetUserProfile(string id);
 
