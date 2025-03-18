@@ -55,7 +55,7 @@ namespace RazorPage.Pages.Dashboard
             var appointments = await _appointmentService.GetAllAppointments();
             var paymentPage = await _paymentService.GetPayments(1, int.MaxValue, null, null, null, null, null, 1);
             var payments = paymentPage.Items;
-            var feedbackPage = await _feedbackService.GetFeedbacks(1, int.MaxValue, null, null, null);
+            var feedbackPage = await _feedbackService.GetFeedbacks(1, int.MaxValue, null, null, null, null);
             var feedbacks = feedbackPage.Items;
             var vaccines = await _vaccineService.GetAllAsync();
             var vaccineRecords = await _vaccineRecordService.GetAllAsync();

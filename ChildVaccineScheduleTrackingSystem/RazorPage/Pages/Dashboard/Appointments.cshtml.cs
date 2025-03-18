@@ -35,6 +35,7 @@ namespace RazorPage.Pages.Dashboard
                 pageSize,
                 idSearch: null,
                 userSearch: null,
+                userIdSearch: null,
                 nameSearch: nameSearch,
                 fromDateSearch: fromDateSearch,
                 toDateSearch: toDateSearch,
