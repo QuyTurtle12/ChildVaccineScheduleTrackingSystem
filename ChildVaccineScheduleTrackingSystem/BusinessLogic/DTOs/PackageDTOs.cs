@@ -25,5 +25,7 @@
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public string Type { get; set; } = string.Empty;
+        //Fields to add/remove package's vaccine
+        public List<Guid> SelectedVaccineIds { get; set; } = new();
     }
 }

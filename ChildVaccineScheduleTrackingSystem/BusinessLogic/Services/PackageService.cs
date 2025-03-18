@@ -3,6 +3,8 @@ using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
 using Data.Entities;
 using Data.Interface;
+using Microsoft.EntityFrameworkCore;
+
 namespace BusinessLogic.Services
 {
     public class PackageService : IPackageService
@@ -77,6 +79,49 @@ namespace BusinessLogic.Services
             await _unitOfWork.GetRepository<Package>().SaveAsync();
             return true;
         }
-        
+
+        public async Task UpdatePackageVaccines(Guid packageId, List<Guid> newVaccineIds)
+        {
+            if (packageId == Guid.Empty)
+            {
+                throw new Exception("Invalid package id");
+            }
+
+            var repo = _unitOfWork.GetRepository<PackageVaccine>();
+
+            // Get current vaccine IDs in the package
+            var existingVaccineIds = await repo.Entities
+                .Where(pv => pv.PackageId == packageId)
+                .Select(pv => pv.VaccineId)
+                .ToListAsync();
+
+            // Find vaccines to add (new ones that don't exist in current)
+            var toAdd = newVaccineIds.Except(existingVaccineIds)
+                .Select(vaccineId => new PackageVaccine { PackageId = packageId, VaccineId = vaccineId })
+                .ToList();
+
+            // Find vaccines to remove (existing ones that are not in new list)
+            var toRemove = existingVaccineIds.Except(newVaccineIds)
+                .ToList();
+
+            // Insert new vaccines
+            if (toAdd.Any())
+            {
+                await repo.InsertRangeAsync(toAdd);
+            }
+
+            // Delete removed vaccines
+            if (toRemove.Any())
+            {
+                var deleteEntities = await repo.Entities
+                    .Where(pv => pv.PackageId == packageId && toRemove.Contains(pv.VaccineId))
+                    .ToListAsync();
+
+                await repo.DeleteRangeAsync(deleteEntities);
+            }
+
+            // Save changes once
+            await _unitOfWork.SaveAsync();
+        }
     }
 }

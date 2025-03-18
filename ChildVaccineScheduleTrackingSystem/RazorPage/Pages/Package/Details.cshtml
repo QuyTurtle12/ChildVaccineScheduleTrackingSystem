@@ -41,6 +41,21 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Package.CreatedTime)
         </dd>
+        <dt class="col-sm-2">
+            Vaccines in package
+        </dt>
+        <dd class="col-sm-10">
+            <div>
+                <h4>Vaccines</h4>
+                <hr />
+                <ul>
+                    @foreach (var vaccine in Model.Vaccines)
+                    {
+                        <li>@vaccine.Name</li>
+                    }
+                </ul>
+            </div>
+        </dd>
     </dl>
 </div>
 <div>

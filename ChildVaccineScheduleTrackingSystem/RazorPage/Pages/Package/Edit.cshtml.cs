@@ -3,27 +3,30 @@ using BusinessLogic.Interfaces;
 using Data.Enum;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace RazorPage.Pages.Package
 {
     public class EditModel : PageModel
     {
         private readonly IPackageService _packageService;
+        private readonly IVaccineService _vaccineService;
 
-        public EditModel(IPackageService packageService)
+        public EditModel(IPackageService packageService, IVaccineService vaccineService)
         {
             _packageService = packageService;
+            _vaccineService = vaccineService;
         }
+        
+        public IEnumerable<VaccineGetDto> VaccinesInPackage { get; set; } = default!;
+        public IEnumerable<VaccineGetDto> AllVaccines { get; set; } = default!;
         [BindProperty]
         public PackageGetDTO PackageGetDto { get; set; } = default!;
-
         [BindProperty]
         public PackagePutDTO Package { get; set; } = default!;
         public List<string> Types { get; set; } = new List<string> { PackageType.Single.ToString(), PackageType.LongTerm.ToString() };
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
+               
             var package =  await _packageService.GetByIdAsync(id);
             if (package == null)
             {
@@ -32,6 +35,8 @@ namespace RazorPage.Pages.Package
             else
             {
                 PackageGetDto = package;
+                VaccinesInPackage = await _vaccineService.GetVaccineByPackageId(id);
+                AllVaccines = await _vaccineService.GetAllAsync();
                 return Page();
             }
         }
@@ -46,6 +51,7 @@ namespace RazorPage.Pages.Package
             }
 
             await _packageService.UpdateAsync(PackageGetDto.Id, Package);
+            await _packageService.UpdatePackageVaccines(PackageGetDto.Id, Package.SelectedVaccineIds);
 
             return RedirectToPage("./Index");
         }
