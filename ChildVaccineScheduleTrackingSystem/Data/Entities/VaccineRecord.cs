@@ -8,6 +8,7 @@ namespace Data.Entities
         public Guid VaccineId { get; set; }
         public DateTimeOffset DateAdministered { get; set; }
         public DateTimeOffset NextDoseDue { get; set; }
+        public string? CustomerNote { get; set; }
 
         // Navigation Property
         public virtual Vaccine? Vaccine { get; set; }
