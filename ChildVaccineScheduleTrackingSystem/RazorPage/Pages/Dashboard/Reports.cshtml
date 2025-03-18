@@ -195,18 +195,18 @@
             }
         });
 
-        // Feedback Count by Rating Chart (Pie Chart)
+        // Feedback Count by Rating Chart (Bar Chart)
         var feedbackData = @Html.Raw(Model.FeedbackCountByRatingJson);
         var feedbackLabels = feedbackData.map(item => item.Rating);
         var feedbackCounts = feedbackData.map(item => item.Count);
 
         var ctxFeedback = document.getElementById('feedbackRatingChart').getContext('2d');
         var feedbackChart = new Chart(ctxFeedback, {
-            type: 'pie',
+            type: 'bar',
             data: {
                 labels: feedbackLabels,
                 datasets: [{
-                    label: 'Feedback Count',
+                    label: 'Feedback Count by Rating',
                     data: feedbackCounts,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.6)',
@@ -227,8 +227,18 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Rating' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Count' }
+                    }
+                }
             }
         });
+
     </script>
 }
