@@ -7,12 +7,22 @@
 
 <h1>Feedback List</h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
+<!-- Search Form -->
+<form method="get" asp-page="./Index">
+    <div class="form-group">
+        <label for="customerNameSearch">Search by Customer Name:</label>
+        <input type="text" id="customerNameSearch" name="customerNameSearch" class="form-control" value="@Model.CustomerNameSearch" style="display:inline; width:auto;" />
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a asp-page="./Index" class="btn btn-secondary">Clear</a>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
+            <th>
+                Customer Name
+            </th>
             <th>
                 Rating
             </th>
@@ -20,10 +30,7 @@
                 Comment
             </th>
             <th>
-                User Name
-            </th>
-            <th>
-                Action
+                Feedback Time
             </th>
         </tr>
     </thead>
@@ -32,18 +39,16 @@
         {
             <tr>
                 <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Rating)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Comment)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UserName)
-                </td>
-                <td>
-                    <a asp-page="./Update" asp-route-id="@item.Id">Update</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    @Html.DisplayFor(modelItem => item.CreatedTime)
                 </td>
             </tr>
         }
@@ -55,14 +60,14 @@
     {
         @if (Model.FeedbackList.HasPreviousPage)
         {
-            <a asp-page="./Index" asp-route-pageNumber="@(Model.FeedbackList.PageNumber - 1)" class="btn btn-primary">Previous</a>
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.FeedbackList.PageNumber - 1)" asp-route-customerNameSearch="@Model.CustomerNameSearch" class="btn btn-primary">Previous</a>
         }
 
         <span>Page @Model.FeedbackList.PageNumber of @Model.FeedbackList.TotalPages</span>
 
         @if (Model.FeedbackList.HasNextPage)
         {
-            <a asp-page="./Index" asp-route-pageNumber="@(Model.FeedbackList.PageNumber + 1)" class="btn btn-primary">Next</a>
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.FeedbackList.PageNumber + 1)" asp-route-customerNameSearch="@Model.CustomerNameSearch" class="btn btn-primary">Next</a>
         }
     }
 </div>

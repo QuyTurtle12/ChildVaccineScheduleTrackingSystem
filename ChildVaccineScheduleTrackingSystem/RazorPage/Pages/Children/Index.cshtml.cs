@@ -15,6 +15,7 @@ namespace RazorPage.Pages.Children
         private readonly IJwtTokenService _jwtTokenService;
 
         private const string CUSTOMER_ROLE = "Customer";
+
         public IndexModel(IChildrenService childrenService, IJwtTokenService jwtTokenService, ITokenService tokenService, IUserService userService)
         {
             _childrenService = childrenService;
@@ -27,16 +28,22 @@ namespace RazorPage.Pages.Children
 
         public async Task<IActionResult> OnGetAsync(int index = 1, int pageSize = 10, string? idSearch = null, string? nameSearch = null, string? parentEmailSearch = null)
         {
-            ChildrenList = await _childrenService.GetChildrenList(index, pageSize, idSearch, nameSearch, parentEmailSearch);
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
 
-            //string? currentLoggedInUserId = _tokenService.GetCurrentUserId();
-            //GetUserDTO? currentUser = await _userService.GetUserProfile(currentLoggedInUserId);
-            //if (currentUser != null && currentUser.RoleName == CUSTOMER_ROLE) 
-            //{
-            //    // Get a list of children of logged in user
-            //    parentEmailSearch = currentUser.Email;
-            //    ChildrenList = await _childrenService.GetChildrenList(index, pageSize, idSearch, nameSearch, parentEmailSearch);
-            //}
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole != CUSTOMER_ROLE)
+            {
+                return Forbid();
+            }
+
+            string? currentLoggedInUserId = _tokenService.GetCurrentUserId();
+            GetUserDTO? currentUser = await _userService.GetUserProfile(currentLoggedInUserId);
+
+            // Get a list of children of Customer
+            parentEmailSearch = currentUser.Email;
+            ChildrenList = await _childrenService.GetChildrenList(index, pageSize, idSearch, nameSearch, parentEmailSearch);
 
             return Page();
         }

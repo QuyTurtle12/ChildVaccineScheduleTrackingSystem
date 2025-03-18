@@ -23,33 +23,48 @@
 @* </form> *@
 
 <!-- Create New Notification Link -->
-<p>
-    <a asp-page="./Create" class="btn btn-success">Create New Notification</a>
-</p>
+@if (Model.LoggedInUserRole.Equals("Staff")){
+    <p>
+        <a asp-page="./Create" class="btn btn-success">Create New Notification</a>
+    </p>
+}
+
 
 <!-- Notifications Table -->
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Email</th>
+            @if (Model.LoggedInUserRole.Equals("Staff")){
+                <th>Email</th>
+            }
             <th>Message</th>
             <th>Appointment Date</th>
             <th>Created Time</th>
-            <th>Actions</th>
+
+            @if (Model.LoggedInUserRole.Equals("Staff"))
+            {
+                <th>Actions</th>
+            }
         </tr>
     </thead>
     <tbody>
         @foreach (var notification in Model.Notifications.Items)
         {
             <tr>
-                <td>@notification.Email</td>
+                @if (Model.LoggedInUserRole.Equals("Staff"))
+                {
+                    <td>@notification.Email</td>
+                }
                 <td>@notification.Message</td>
                 <td>@notification.AppointmentDate</td>
                 <td>@notification.CreatedTime</td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@notification.Id" class="btn btn-primary btn-sm">Edit</a>
-                    <a asp-page="./Delete" asp-route-id="@notification.Id" class="btn btn-danger btn-sm">Delete</a>
-                </td>
+                @if (Model.LoggedInUserRole.Equals("Staff"))
+                {
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@notification.Id" class="btn btn-primary btn-sm">Edit</a>
+                        <a asp-page="./Delete" asp-route-id="@notification.Id" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                }
             </tr>
         }
     </tbody>
@@ -57,26 +72,18 @@
 
 <!-- Pagination -->
 <div>
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
-            @if (Model.Notifications.PageNumber > 1)
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-page="./Index" asp-route-index="@(Model.Notifications.PageNumber - 1)" asp-route-pageSize="@Model.Notifications.PageSize" asp-route-userIdSearch="@Model.UserIdSearch" asp-route-messageSearch="@Model.MessageSearch">Previous</a>
-                </li>
-            }
-            @for (int i = 1; i <= Model.Notifications.TotalPages; i++)
-            {
-                <li class="page-item @(i == Model.Notifications.PageNumber ? "active" : "")">
-                    <a class="page-link" asp-page="./Index" asp-route-index="@i" asp-route-pageSize="@Model.Notifications.PageSize" asp-route-userIdSearch="@Model.UserIdSearch" asp-route-messageSearch="@Model.MessageSearch">@i</a>
-                </li>
-            }
-            @if (Model.Notifications.PageNumber < Model.Notifications.TotalPages)
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-page="./Index" asp-route-index="@(Model.Notifications.PageNumber + 1)" asp-route-pageSize="@Model.Notifications.PageSize" asp-route-userIdSearch="@Model.UserIdSearch" asp-route-messageSearch="@Model.MessageSearch">Next</a>
-                </li>
-            }
-        </ul>
-    </nav>
+    @if (Model.Notifications != null)
+    {
+        @if (Model.Notifications.HasPreviousPage)
+        {
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.Notifications.PageNumber - 1)" class="btn btn-primary">Previous</a>
+        }
+
+        <span>Page @Model.Notifications.PageNumber of @Model.Notifications.TotalPages</span>
+
+        @if (Model.Notifications.HasNextPage)
+        {
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.Notifications.PageNumber + 1)" class="btn btn-primary">Next</a>
+        }
+    }
 </div>

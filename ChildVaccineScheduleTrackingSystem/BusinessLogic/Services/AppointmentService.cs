@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure;
 using BusinessLogic.DTOs.AppointmentDTO;
 using BusinessLogic.Interfaces;
 using Data.Constants;
@@ -10,11 +9,6 @@ using Data.Interface;
 using Data.PaggingItem;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
 {
@@ -40,6 +34,7 @@ namespace BusinessLogic.Services
         public async Task<IEnumerable<GetAppointmentDTO>> GetAllAppointments()
         {
             IQueryable<Appointment> query = _unitOfWork.GetRepository<Appointment>().Entities;
+            query = query.Where(a => !a.DeletedTime.HasValue); // Exclude deleted appointments
             query = query.OrderBy(c => c.Name);
             IEnumerable<Appointment> appointments = await query.ToListAsync();
             return _mapper.Map<IEnumerable<GetAppointmentDTO>>(appointments);
@@ -56,14 +51,14 @@ namespace BusinessLogic.Services
             return responseItem;
         }
 
-        public async Task<PaginatedList<GetAppointmentDTO>> GetAppointments(int index, int pageSize, Guid? idSearch, string? userSearch, string? nameSearch, DateTimeOffset? fromDateSearch, DateTimeOffset? toDateSearch, int? statusSearch)
+        public async Task<PaginatedList<GetAppointmentDTO>> GetAppointments(int index, int pageSize, Guid? idSearch, string? userSearch, string? userIdSearch, string? nameSearch, DateTimeOffset? fromDateSearch, DateTimeOffset? toDateSearch, int? statusSearch)
         {
             if (index <= 0 || pageSize <= 0)
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Please input index or page size correctly!");
             }
 
-            IQueryable<Appointment> query = _unitOfWork.GetRepository<Appointment>().Entities;
+            IQueryable<Appointment> query = _unitOfWork.GetRepository<Appointment>().Entities.Include(a => a.User);
 
             // Only show records where DeletedBy is null
             query = query.Where(u => u.DeletedBy == null);
@@ -78,6 +73,12 @@ namespace BusinessLogic.Services
             if (!string.IsNullOrWhiteSpace(userSearch))
             {
                 query = query.Where(u => u.User!.Name.Contains(userSearch.Trim()));
+            }
+
+            // Search by user id
+            if (!string.IsNullOrWhiteSpace(userIdSearch))
+            {
+                query = query.Where(u => u.UserId.Equals(Guid.Parse(userIdSearch)));
             }
 
             // Search by name

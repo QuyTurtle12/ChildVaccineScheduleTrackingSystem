@@ -100,6 +100,7 @@
                 <td>
                     <a class="btn btn-primary" asp-page="./Update" asp-route-id="@item.Id">Edit</a>
                     <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    <a class="btn btn-secondary" asp-page="/Feedback/Create" asp-route-id="@item.Id">Feedback</a>
                 </td>
             </tr>
         }

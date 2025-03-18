@@ -11,6 +11,8 @@ namespace RazorPage.Pages.Feedback
         private readonly IFeedbackService _feedbackService;
         private readonly IJwtTokenService _jwtTokenService;
 
+        private const string STAFF_ROLE = "Staff";
+
         public IndexModel(IFeedbackService feedbackService, IJwtTokenService jwtTokenService)
         {
             _feedbackService = feedbackService;
@@ -18,10 +20,25 @@ namespace RazorPage.Pages.Feedback
         }
 
         public PaginatedList<GetFeedbackDTO> FeedbackList { get; set; } = default!;
+        public string? CustomerNameSearch { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int index = 1, int pageSize = 10, string? idSearch = null, string? userIdSearch = null, int? ratingSearch = null)
+        public async Task<IActionResult> OnGetAsync(int index = 1, int pageSize = 10, string? idSearch = null, string? userIdSearch = null, string? customerNameSearch = null, int? ratingSearch = null)
         {
-            FeedbackList = await _feedbackService.GetFeedbacks(index, pageSize, idSearch, userIdSearch, ratingSearch);
+            // Role Authorization
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole != STAFF_ROLE)
+            {
+                return Forbid();
+            }
+
+            CustomerNameSearch = customerNameSearch;
+
+            // Get all feedbacks
+            FeedbackList = await _feedbackService.GetFeedbacks(index, pageSize, idSearch, userIdSearch, customerNameSearch, ratingSearch);
             return Page();
         }
     }

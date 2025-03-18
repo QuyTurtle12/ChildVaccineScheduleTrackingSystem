@@ -13,6 +13,9 @@ namespace RazorPage.Pages.Appointments
         private readonly IMapper _mapper;
         private readonly IJwtTokenService _jwtTokenService;
 
+        private const string STAFF_ROLE = "Staff";
+        private const string CUSTOMER_ROLE = "Customer";
+
         public PaginatedList<GetAppointmentDTO> Appointments { get; set; }
         public IndexModel(IAppointmentService appointmentService, IMapper mapper, IJwtTokenService jwtTokenService)
         {
@@ -38,15 +41,46 @@ namespace RazorPage.Pages.Appointments
 
 
         // GET: Get and Search Categories
-        public async Task OnGetAsync(int pageNumber = 1, int pageSize = 3, string? userSearch = null, string? nameSearch = null, DateTimeOffset? fromDateSearch = null, DateTimeOffset? toDateSearch = null, int? statusSearch = null)
+        //public async Task OnGetAsync(int pageNumber = 1, int pageSize = 3, string? userSearch = null, string? nameSearch = null, DateTimeOffset? fromDateSearch = null, DateTimeOffset? toDateSearch = null, int? statusSearch = null)
+        //{
+        //    var jwtToken = HttpContext.Session.GetString("jwt_token");
+        //    var userRole = _jwtTokenService.GetRole(jwtToken);
+        //    ViewData["JwtToken"] = jwtToken;
+        //    ViewData["UserRole"] = userRole;
+        //    Console.WriteLine($"JWT Token: {jwtToken}");
+        //    // Fetch paginated search categories
+        //    Appointments = await _appointmentService.GetAppointments(pageNumber, pageSize, null, userSearch, nameSearch, fromDateSearch, toDateSearch, statusSearch);
+        //}
+
+        // GET: Get and Search Categories
+        public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 3, string? userSearch = null, string? userIdSearch = null, string? nameSearch = null, DateTimeOffset? fromDateSearch = null, DateTimeOffset? toDateSearch = null, int? statusSearch = null)
         {
             var jwtToken = HttpContext.Session.GetString("jwt_token");
             var userRole = _jwtTokenService.GetRole(jwtToken);
+
+            if (userRole == null) return Unauthorized();
+
+            if (userRole != STAFF_ROLE && userRole != CUSTOMER_ROLE)
+            {
+                return Forbid();
+            }
+
             ViewData["JwtToken"] = jwtToken;
             ViewData["UserRole"] = userRole;
             Console.WriteLine($"JWT Token: {jwtToken}");
             // Fetch paginated search categories
-            Appointments = await _appointmentService.GetAppointments(pageNumber, pageSize, null, userSearch, nameSearch, fromDateSearch, toDateSearch, statusSearch);
+
+            if (userRole == CUSTOMER_ROLE) // Customer function
+            {
+                userIdSearch = _jwtTokenService.GetId(jwtToken);
+                Appointments = await _appointmentService.GetAppointments(pageNumber, pageSize, null, userSearch, userIdSearch, nameSearch, fromDateSearch, toDateSearch, statusSearch);
+            }
+            else if (userRole == STAFF_ROLE) // Staff function
+            {
+                Appointments = await _appointmentService.GetAppointments(pageNumber, pageSize, null, userSearch, userIdSearch, nameSearch, fromDateSearch, toDateSearch, statusSearch);
+            }
+            
+            return Page();
         }
     }
 }

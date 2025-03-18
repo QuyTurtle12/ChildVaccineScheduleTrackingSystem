@@ -12,6 +12,8 @@ namespace RazorPage.Pages.Feedback
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IMapper _mapper;
 
+        private const string STAFF_ROLE = "Staff";
+
         public UpdateModel(IFeedbackService feedbackService, IJwtTokenService jwtTokenService, IMapper mapper)
         {
             _feedbackService = feedbackService;
@@ -24,6 +26,16 @@ namespace RazorPage.Pages.Feedback
 
         public async Task<IActionResult> OnGetAsync(string? id)
         {
+            // Role Authorization
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole != STAFF_ROLE)
+            {
+                return Forbid();
+            }
             if (id == null)
             {
                 return NotFound();
@@ -40,6 +52,17 @@ namespace RazorPage.Pages.Feedback
 
         public async Task<IActionResult> OnPostAsync()
         {
+            // Role Authorization
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole != STAFF_ROLE)
+            {
+                return Forbid();
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
