@@ -37,12 +37,12 @@
     <tbody>
         @foreach (var appointment in Model.AppointmentPage.Items)
         {
-            <tr>
-                <td>@appointment.Name</td>
-                <td>@appointment.UserName</td>
-                <td>@appointment.AppointmentDate.ToString("g")</td>
-                <td>@appointment.Status</td>
-            </tr>
+                <tr>
+                    <td>@appointment.Name</td>
+                    <td>@appointment.UserName</td>
+                    <td>@appointment.AppointmentDate.ToString("g")</td>
+                    <td>@appointment.Status</td>
+                </tr>
         }
     </tbody>
 </table>
@@ -52,18 +52,18 @@
     <ul class="pagination">
         @if (Model.AppointmentPage.PageNumber > 1)
         {
-            <li class="page-item">
-                <a class="page-link" href="?index=@(Model.AppointmentPage.PageNumber - 1)&pageSize=@Model.AppointmentPage.PageSize&nameSearch=@Model.NameSearch&fromDateSearch=@(Model.FromDate?.ToString("yyyy-MM-dd"))&toDateSearch=@(Model.ToDate?.ToString("yyyy-MM-dd"))">Previous</a>
-            </li>
+                <li class="page-item">
+                    <a class="page-link" href="?index=@(Model.AppointmentPage.PageNumber - 1)&pageSize=@Model.AppointmentPage.PageSize&nameSearch=@Model.NameSearch&fromDateSearch=@(Model.FromDate?.ToString("yyyy-MM-dd"))&toDateSearch=@(Model.ToDate?.ToString("yyyy-MM-dd"))">Previous</a>
+                </li>
         }
         <li class="page-item active">
             <span class="page-link">@Model.AppointmentPage.PageNumber</span>
         </li>
         @if (Model.AppointmentPage.PageNumber * Model.AppointmentPage.PageSize < Model.AppointmentPage.TotalCount)
         {
-            <li class="page-item">
-                <a class="page-link" href="?index=@(Model.AppointmentPage.PageNumber + 1)&pageSize=@Model.AppointmentPage.PageSize&nameSearch=@Model.NameSearch&fromDateSearch=@(Model.FromDate?.ToString("yyyy-MM-dd"))&toDateSearch=@(Model.ToDate?.ToString("yyyy-MM-dd"))">Next</a>
-            </li>
+                <li class="page-item">
+                    <a class="page-link" href="?index=@(Model.AppointmentPage.PageNumber + 1)&pageSize=@Model.AppointmentPage.PageSize&nameSearch=@Model.NameSearch&fromDateSearch=@(Model.FromDate?.ToString("yyyy-MM-dd"))&toDateSearch=@(Model.ToDate?.ToString("yyyy-MM-dd"))">Next</a>
+                </li>
         }
     </ul>
 </nav>
