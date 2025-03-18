@@ -71,8 +71,8 @@ public static class DependencyInjection
         services.AddScoped<IPackageService, PackageService>();
         services.AddScoped<IVaccineRecordService, VaccineRecordService>();
         services.AddScoped<IVaccineService, VaccineService>();
-
         services.AddScoped<IAppointmentService, AppointmentService>();
         services.AddScoped<IPaymentService, PaymentService>();
+        
     }
 }

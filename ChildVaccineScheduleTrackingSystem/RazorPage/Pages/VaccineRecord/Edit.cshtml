@@ -1,0 +1,44 @@
+﻿@page
+@model RazorPage.Pages.VaccineRecord.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>VaccineRecord</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="VaccineRecord.DateAdministered" class="control-label"></label>
+                <input asp-for="VaccineRecord.DateAdministered" class="form-control" value="@Model.VaccineRecordGet.DateAdministered"/>
+                <span asp-validation-for="VaccineRecord.DateAdministered" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VaccineRecord.NextDoseDue" class="control-label"></label>
+                <input asp-for="VaccineRecord.NextDoseDue" class="form-control" value="@Model.VaccineRecordGet.NextDoseDue" />
+                <span asp-validation-for="VaccineRecord.NextDoseDue" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VaccineRecord.CustomerNote" class="control-label"></label>
+                <input asp-for="VaccineRecord.CustomerNote" class="form-control" value="@Model.VaccineRecordGet.CustomerNote" />
+                <span asp-validation-for="VaccineRecord.CustomerNote" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

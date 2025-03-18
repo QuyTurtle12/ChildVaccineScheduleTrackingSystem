@@ -20,10 +20,12 @@ namespace BusinessLogic.Services
 
         public async Task<IEnumerable<PackageGetDTO>> GetAllAsync()
         {
-            IEnumerable<Package> packages = await _unitOfWork.GetRepository<Package>().GetAllAsync();
-            IEnumerable<PackageGetDTO> result = _mapper.Map<IEnumerable<PackageGetDTO>>(packages);
+            IEnumerable<Package> packages = await _unitOfWork.GetRepository<Package>()
+                .Entities
+                .OrderByDescending(x => x.CreatedTime)
+                .ToListAsync(); 
             
-            return result;
+            return _mapper.Map<IEnumerable<PackageGetDTO>>(packages);
         }
 
         public async Task<PackageGetDTO> GetByIdAsync(Guid id)

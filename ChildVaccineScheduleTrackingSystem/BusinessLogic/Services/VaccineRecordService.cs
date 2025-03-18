@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
+using Data.Constants;
 using Data.Entities;
+using Data.ExceptionCustom;
 using Data.Interface;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Services
 {
@@ -19,22 +23,55 @@ namespace BusinessLogic.Services
 
         public async Task<IEnumerable<GetVaccineRecordDto>> GetAllAsync()
         {
-            var records = await _unitOfWork.GetRepository<VaccineRecord>().GetAllAsync();
-            return _mapper.Map<IEnumerable<GetVaccineRecordDto>>(records);
+            IEnumerable<VaccineRecord> records = await _unitOfWork.GetRepository<VaccineRecord>()
+                .Entities
+                .OrderByDescending(x => x.CreatedTime)
+                .ToListAsync();
+
+            IEnumerable<GetVaccineRecordDto> result = _mapper.Map<IEnumerable<GetVaccineRecordDto>>(records);
+            foreach(var item in result)
+            {
+                await AssignVaccineAndChildNameToGetDto(item);
+            }
+            return result;
         }
 
         public async Task<GetVaccineRecordDto?> GetByIdAsync(Guid id)
         {
-            var record = await _unitOfWork.GetRepository<VaccineRecord>().GetByIdAsync(id);
-            return record != null ? _mapper.Map<GetVaccineRecordDto>(record) : null;
+            VaccineRecord? record = await _unitOfWork.GetRepository<VaccineRecord>().GetByIdAsync(id);
+
+            if(record == null)
+            {
+                return null;
+            }
+            GetVaccineRecordDto result = _mapper.Map<GetVaccineRecordDto>(record);
+            await AssignVaccineAndChildNameToGetDto(result);
+            return result;
         }
 
         public async Task<GetVaccineRecordDto> CreateAsync(PostVaccineRecordDto dto)
         {
+            if(dto.ChildId == Guid.Empty || dto.VaccineId == Guid.Empty)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Invalid child id or vaccine id");
+            }
+
+            if (!await _unitOfWork.GetRepository<Child>()
+                .Entities
+                .AnyAsync(c => c.Id == dto.ChildId)) 
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Child does not exist");
+            if (!await _unitOfWork.GetRepository<Vaccine>()
+                .Entities
+                .AnyAsync(c => c.Id == dto.VaccineId))
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Vaccine does not exist");
+
             var record = _mapper.Map<VaccineRecord>(dto);
             await _unitOfWork.GetRepository<VaccineRecord>().InsertAsync(record);
             await _unitOfWork.GetRepository<VaccineRecord>().SaveAsync();
-            return _mapper.Map<GetVaccineRecordDto>(record);
+
+            GetVaccineRecordDto result = _mapper.Map<GetVaccineRecordDto>(record);
+            await AssignVaccineAndChildNameToGetDto(result);
+            return result;
         }
 
         public async Task<GetVaccineRecordDto?> UpdateAsync(Guid id, PutVaccineRecordDto dto)
@@ -44,7 +81,11 @@ namespace BusinessLogic.Services
 
             _mapper.Map(dto, record);
             await _unitOfWork.GetRepository<VaccineRecord>().UpdateAsync(record);
-            return _mapper.Map<GetVaccineRecordDto>(record);
+            await _unitOfWork.GetRepository<VaccineRecord>().SaveAsync();
+
+            GetVaccineRecordDto result = _mapper.Map<GetVaccineRecordDto>(record);
+            await AssignVaccineAndChildNameToGetDto(result);
+            return result;
         }
 
         public async Task<bool> DeleteAsync(Guid id)
@@ -55,6 +96,19 @@ namespace BusinessLogic.Services
             await _unitOfWork.GetRepository<VaccineRecord>().DeleteAsync(record);
             await _unitOfWork.GetRepository<VaccineRecord>().SaveAsync();
             return true;
+        }
+        private async Task AssignVaccineAndChildNameToGetDto(GetVaccineRecordDto dto)
+        {
+            dto.ChildName = await _unitOfWork.GetRepository<Child>()
+                .Entities
+                .Where(c => c.Id == dto.ChildId)
+                .Select(c => c.Name)
+                .FirstOrDefaultAsync();
+            dto.VaccineName = await _unitOfWork.GetRepository<Vaccine>()
+                .Entities
+                .Where(v => v.Id == dto.VaccineId)
+                .Select(v => v.Name)
+                .FirstOrDefaultAsync();
         }
     }
 }

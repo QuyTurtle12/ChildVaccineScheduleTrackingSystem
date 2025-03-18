@@ -20,7 +20,10 @@ namespace BusinessLogic.Services
 
         public async Task<IEnumerable<VaccineGetDto>> GetAllAsync()
         {
-            IEnumerable<Vaccine> vaccines = await _unitOfWork.GetRepository<Vaccine>().GetAllAsync();
+            IEnumerable<Vaccine> vaccines = await _unitOfWork.GetRepository<Vaccine>()
+                .Entities
+                .OrderByDescending(x => x.CreatedTime)
+                .ToListAsync();
             return _mapper.Map<IEnumerable<VaccineGetDto>>(vaccines);
         }
 
