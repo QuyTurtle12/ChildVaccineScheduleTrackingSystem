@@ -11,12 +11,12 @@
     <div class="row">
         <div class="col-md-3">
             <label for="fromDate">From Date:</label>
-            <input type="date" id="fromDate" name="FromDate" class="form-control" 
+            <input type="date" id="fromDate" name="FromDate" class="form-control"
                    value="@(Model.FromDate?.ToString("yyyy-MM-dd"))" />
         </div>
         <div class="col-md-3">
             <label for="toDate">To Date:</label>
-            <input type="date" id="toDate" name="ToDate" class="form-control" 
+            <input type="date" id="toDate" name="ToDate" class="form-control"
                    value="@(Model.ToDate?.ToString("yyyy-MM-dd"))" />
         </div>
         <div class="col-md-3 align-self-end">
@@ -27,27 +27,43 @@
 
 <!-- Summary Cards -->
 <div class="row mb-4">
-    <div class="col-md-4">
+    <div class="col-md-2">
         <div class="card text-white bg-info mb-3">
             <div class="card-body">
-                <h5 class="card-title">Total Appointments</h5>
+                <h5 class="card-title">Appointments</h5>
                 <p class="card-text display-4">@Model.TotalAppointments</p>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-2">
         <div class="card text-white bg-success mb-3">
             <div class="card-body">
-                <h5 class="card-title">Total Payments</h5>
+                <h5 class="card-title">Payments</h5>
                 <p class="card-text display-4">@Model.TotalPayments</p>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-2">
         <div class="card text-white bg-warning mb-3">
             <div class="card-body">
-                <h5 class="card-title">Total Feedbacks</h5>
+                <h5 class="card-title">Feedbacks</h5>
                 <p class="card-text display-4">@Model.TotalFeedbacks</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-secondary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Vaccines</h5>
+                <p class="card-text display-4">@Model.TotalVaccines</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-dark mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Vaccine Records</h5>
+                <p class="card-text display-4">@Model.TotalVaccineRecords</p>
             </div>
         </div>
     </div>
@@ -58,7 +74,9 @@
     <!-- Appointment Trend Chart -->
     <div class="col-md-12 mb-4">
         <h3>Appointment Trend</h3>
-        <canvas id="appointmentTrendChart" width="800" height="400"></canvas>
+        <div class="chart-container" style="position: relative; height:400px; width:100%;">
+            <canvas id="appointmentTrendChart"></canvas>
+        </div>
     </div>
 </div>
 
@@ -66,12 +84,16 @@
     <!-- Payment Count by Method Chart -->
     <div class="col-md-6 mb-4">
         <h3>Payment Count by Method</h3>
-        <canvas id="paymentCountChart" width="400" height="400"></canvas>
+        <div class="chart-container" style="position: relative; height:400px; width:100%;">
+            <canvas id="paymentCountChart"></canvas>
+        </div>
     </div>
     <!-- Payment Amount by Method Chart -->
     <div class="col-md-6 mb-4">
         <h3>Payment Amount by Method</h3>
-        <canvas id="paymentAmountChart" width="400" height="400"></canvas>
+        <div class="chart-container" style="position: relative; height:400px; width:100%;">
+            <canvas id="paymentAmountChart"></canvas>
+        </div>
     </div>
 </div>
 
@@ -79,7 +101,9 @@
     <!-- Feedback Count by Rating Chart -->
     <div class="col-md-12 mb-4">
         <h3>Feedback Count by Rating</h3>
-        <canvas id="feedbackRatingChart" width="800" height="400"></canvas>
+        <div class="chart-container" style="position: relative; height:400px; width:100%;">
+            <canvas id="feedbackRatingChart"></canvas>
+        </div>
     </div>
 </div>
 
@@ -106,6 +130,8 @@
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: { title: { display: true, text: 'Date' } },
                     y: { beginAtZero: true, title: { display: true, text: 'Count' } }
@@ -132,6 +158,8 @@
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: { title: { display: true, text: 'Payment Method' } },
                     y: { beginAtZero: true, title: { display: true, text: 'Count' } }
@@ -158,6 +186,8 @@
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: { title: { display: true, text: 'Payment Method' } },
                     y: { beginAtZero: true, title: { display: true, text: 'Amount' } }
@@ -196,7 +226,8 @@
                 }]
             },
             options: {
-                responsive: true
+                responsive: true,
+                maintainAspectRatio: false
             }
         });
     </script>

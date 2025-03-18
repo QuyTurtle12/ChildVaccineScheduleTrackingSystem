@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,21 +13,26 @@ namespace RazorPage.Pages.Dashboard
         private readonly IAppointmentService _appointmentService;
         private readonly IPaymentService _paymentService;
         private readonly IFeedbackService _feedbackService;
+        private readonly IVaccineService _vaccineService;
+        private readonly IVaccineRecordService _vaccineRecordService;
 
         public ReportsModel(
             IAppointmentService appointmentService,
             IPaymentService paymentService,
-            IFeedbackService feedbackService)
+            IFeedbackService feedbackService,
+            IVaccineService vaccineService,
+            IVaccineRecordService vaccineRecordService)
         {
             _appointmentService = appointmentService;
             _paymentService = paymentService;
             _feedbackService = feedbackService;
+            _vaccineService = vaccineService;
+            _vaccineRecordService = vaccineRecordService;
         }
 
-        // Date range filter (supports binding from query string)
+        // Date range filter (bound from query string)
         [BindProperty(SupportsGet = true)]
         public DateTimeOffset? FromDate { get; set; }
-
         [BindProperty(SupportsGet = true)]
         public DateTimeOffset? ToDate { get; set; }
 
@@ -32,8 +40,10 @@ namespace RazorPage.Pages.Dashboard
         public int TotalAppointments { get; set; }
         public int TotalPayments { get; set; }
         public int TotalFeedbacks { get; set; }
+        public int TotalVaccines { get; set; }
+        public int TotalVaccineRecords { get; set; }
 
-        // JSON strings for Chart.js charts
+        // JSON strings for charts
         public string AppointmentTrendJson { get; set; }
         public string PaymentCountByMethodJson { get; set; }
         public string PaymentAmountByMethodJson { get; set; }
@@ -41,31 +51,36 @@ namespace RazorPage.Pages.Dashboard
 
         public async Task OnGetAsync()
         {
-            // Retrieve all data from services
+            // Retrieve data from services
             var appointments = await _appointmentService.GetAllAppointments();
-            var payments = await _paymentService.GetAllPayments();
+            var paymentPage = await _paymentService.GetPayments(1, int.MaxValue, null, null, null, null, null, 1);
+            var payments = paymentPage.Items;
             var feedbackPage = await _feedbackService.GetFeedbacks(1, int.MaxValue, null, null, null);
             var feedbacks = feedbackPage.Items;
+            var vaccines = await _vaccineService.GetAllAsync();
+            var vaccineRecords = await _vaccineRecordService.GetAllAsync();
 
-            // Apply date filters (if provided) based on the entity's date properties.
-            // Adjust property names as needed.
+            // Apply date filters if specified
             if (FromDate.HasValue)
             {
                 appointments = appointments.Where(a => a.AppointmentDate.Date >= FromDate.Value.Date);
-                payments = payments.Where(p => p.CreatedTime.Date >= FromDate.Value.Date);
+                payments = payments.Where(p => p.CreatedTime.Date >= FromDate.Value.Date).ToList();
                 feedbacks = feedbacks.Where(f => f.CreatedTime.Date >= FromDate.Value.Date).ToList();
+                // If vaccines and vaccine records have date properties, you could filter similarly
             }
             if (ToDate.HasValue)
             {
                 appointments = appointments.Where(a => a.AppointmentDate.Date <= ToDate.Value.Date);
-                payments = payments.Where(p => p.CreatedTime.Date <= ToDate.Value.Date);
+                payments = payments.Where(p => p.CreatedTime.Date <= ToDate.Value.Date).ToList();
                 feedbacks = feedbacks.Where(f => f.CreatedTime.Date <= ToDate.Value.Date).ToList();
             }
 
-            // Calculate summary counts
+            // Set summary counts
             TotalAppointments = appointments.Count();
             TotalPayments = payments.Count();
             TotalFeedbacks = feedbacks.Count();
+            TotalVaccines = vaccines.Count();
+            TotalVaccineRecords = vaccineRecords.Count();
 
             // Chart 1: Appointment Trend (Appointments per day)
             var appointmentTrend = appointments
@@ -77,7 +92,7 @@ namespace RazorPage.Pages.Dashboard
                 }).ToList();
             AppointmentTrendJson = JsonConvert.SerializeObject(appointmentTrend);
 
-            // Chart 2: Payment Report – Count by Payment Method
+            // Chart 2: Payment Count by Method
             var paymentCountByMethod = payments
                 .GroupBy(p => p.PaymentMethod)
                 .Select(g => new {
@@ -86,7 +101,7 @@ namespace RazorPage.Pages.Dashboard
                 }).ToList();
             PaymentCountByMethodJson = JsonConvert.SerializeObject(paymentCountByMethod);
 
-            // Chart 3: Payment Report – Total Amount by Payment Method
+            // Chart 3: Payment Amount by Method
             var paymentAmountByMethod = payments
                 .GroupBy(p => p.PaymentMethod)
                 .Select(g => new {
@@ -95,7 +110,7 @@ namespace RazorPage.Pages.Dashboard
                 }).ToList();
             PaymentAmountByMethodJson = JsonConvert.SerializeObject(paymentAmountByMethod);
 
-            // Chart 4: Feedback Report – Count by Rating
+            // Chart 4: Feedback Count by Rating
             var feedbackCountByRating = feedbacks
                 .GroupBy(f => f.Rating)
                 .OrderBy(g => g.Key)
@@ -107,4 +122,3 @@ namespace RazorPage.Pages.Dashboard
         }
     }
 }
-
