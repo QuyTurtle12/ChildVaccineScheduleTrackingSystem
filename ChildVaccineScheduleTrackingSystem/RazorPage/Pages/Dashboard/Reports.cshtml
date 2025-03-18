@@ -1,0 +1,203 @@
+﻿@page
+@model RazorPage.Pages.Dashboard.ReportsModel
+@{
+    ViewData["Title"] = "Dashboard Reports";
+}
+
+<h1 class="mb-4">Dashboard Reports</h1>
+
+<!-- Date Range Filter -->
+<form method="get" class="mb-4">
+    <div class="row">
+        <div class="col-md-3">
+            <label for="fromDate">From Date:</label>
+            <input type="date" id="fromDate" name="FromDate" class="form-control" 
+                   value="@(Model.FromDate?.ToString("yyyy-MM-dd"))" />
+        </div>
+        <div class="col-md-3">
+            <label for="toDate">To Date:</label>
+            <input type="date" id="toDate" name="ToDate" class="form-control" 
+                   value="@(Model.ToDate?.ToString("yyyy-MM-dd"))" />
+        </div>
+        <div class="col-md-3 align-self-end">
+            <button type="submit" class="btn btn-primary">Apply Filter</button>
+        </div>
+    </div>
+</form>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Appointments</h5>
+                <p class="card-text display-4">@Model.TotalAppointments</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Payments</h5>
+                <p class="card-text display-4">@Model.TotalPayments</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Feedbacks</h5>
+                <p class="card-text display-4">@Model.TotalFeedbacks</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="row">
+    <!-- Appointment Trend Chart -->
+    <div class="col-md-12 mb-4">
+        <h3>Appointment Trend</h3>
+        <canvas id="appointmentTrendChart" width="800" height="400"></canvas>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Payment Count by Method Chart -->
+    <div class="col-md-6 mb-4">
+        <h3>Payment Count by Method</h3>
+        <canvas id="paymentCountChart" width="400" height="400"></canvas>
+    </div>
+    <!-- Payment Amount by Method Chart -->
+    <div class="col-md-6 mb-4">
+        <h3>Payment Amount by Method</h3>
+        <canvas id="paymentAmountChart" width="400" height="400"></canvas>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Feedback Count by Rating Chart -->
+    <div class="col-md-12 mb-4">
+        <h3>Feedback Count by Rating</h3>
+        <canvas id="feedbackRatingChart" width="800" height="400"></canvas>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Include Chart.js from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Appointment Trend Chart (Line Chart)
+        var appointmentTrendData = @Html.Raw(Model.AppointmentTrendJson);
+        var appointmentLabels = appointmentTrendData.map(item => item.Date);
+        var appointmentCounts = appointmentTrendData.map(item => item.Count);
+
+        var ctxTrend = document.getElementById('appointmentTrendChart').getContext('2d');
+        var appointmentTrendChart = new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+                labels: appointmentLabels,
+                datasets: [{
+                    label: 'Appointments per Day',
+                    data: appointmentCounts,
+                    fill: false,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    x: { title: { display: true, text: 'Date' } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Count' } }
+                }
+            }
+        });
+
+        // Payment Count by Method Chart (Bar Chart)
+        var paymentCountData = @Html.Raw(Model.PaymentCountByMethodJson);
+        var paymentCountLabels = paymentCountData.map(item => item.PaymentMethod);
+        var paymentCountValues = paymentCountData.map(item => item.Count);
+
+        var ctxPaymentCount = document.getElementById('paymentCountChart').getContext('2d');
+        var paymentCountChart = new Chart(ctxPaymentCount, {
+            type: 'bar',
+            data: {
+                labels: paymentCountLabels,
+                datasets: [{
+                    label: 'Payment Count',
+                    data: paymentCountValues,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: { title: { display: true, text: 'Payment Method' } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Count' } }
+                }
+            }
+        });
+
+        // Payment Amount by Method Chart (Bar Chart)
+        var paymentAmountData = @Html.Raw(Model.PaymentAmountByMethodJson);
+        var paymentAmountLabels = paymentAmountData.map(item => item.PaymentMethod);
+        var paymentAmountValues = paymentAmountData.map(item => item.TotalAmount);
+
+        var ctxPaymentAmount = document.getElementById('paymentAmountChart').getContext('2d');
+        var paymentAmountChart = new Chart(ctxPaymentAmount, {
+            type: 'bar',
+            data: {
+                labels: paymentAmountLabels,
+                datasets: [{
+                    label: 'Total Payment Amount',
+                    data: paymentAmountValues,
+                    backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: { title: { display: true, text: 'Payment Method' } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Amount' } }
+                }
+            }
+        });
+
+        // Feedback Count by Rating Chart (Pie Chart)
+        var feedbackData = @Html.Raw(Model.FeedbackCountByRatingJson);
+        var feedbackLabels = feedbackData.map(item => item.Rating);
+        var feedbackCounts = feedbackData.map(item => item.Count);
+
+        var ctxFeedback = document.getElementById('feedbackRatingChart').getContext('2d');
+        var feedbackChart = new Chart(ctxFeedback, {
+            type: 'pie',
+            data: {
+                labels: feedbackLabels,
+                datasets: [{
+                    label: 'Feedback Count',
+                    data: feedbackCounts,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    </script>
+}
