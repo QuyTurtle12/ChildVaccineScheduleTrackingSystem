@@ -36,9 +36,6 @@ namespace RazorPage.Pages.Appointments
             return Page();
         }
 
-
-
-
         //  [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync()
         {
@@ -49,7 +46,7 @@ namespace RazorPage.Pages.Appointments
             if (UserRole == "Customer")
             {
                 // Customers book for themselves
-                Appointment.CustomerPhoneNumber = null; // Ensure only their own booking
+                Appointment.CustomerPhoneNumber = string.Empty; // Ensure only their own booking
                 Appointment.UserId = Guid.Parse(userId);
             }
             else if (UserRole == "Staff")

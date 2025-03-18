@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,6 +37,17 @@ namespace BusinessLogic.Services
         {
             return _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Unknown";
         }
+        private Guid GetCurrentUserId()
+        {
+            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
+            return userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId) ? userId : Guid.Empty;
+        }
+
+        private string GetCurrentUserRole()
+        {
+            var roleClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role);
+            return roleClaim?.Value ?? "Customer"; // Default to "Customer" if role is missing
+        }
 
         public async Task<IEnumerable<GetAppointmentDTO>> GetAllAppointments()
         {
@@ -58,6 +70,9 @@ namespace BusinessLogic.Services
 
         public async Task<PaginatedList<GetAppointmentDTO>> GetAppointments(int index, int pageSize, Guid? idSearch, string? userSearch, string? nameSearch, DateTimeOffset? fromDateSearch, DateTimeOffset? toDateSearch, int? statusSearch)
         {
+            var currentUserId = GetCurrentUserId();
+            var currentUserRole = GetCurrentUserRole();
+
             if (index <= 0 || pageSize <= 0)
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Please input index or page size correctly!");
@@ -74,6 +89,12 @@ namespace BusinessLogic.Services
                 query = query.Where(u => u.Id == idSearch);
             }
 
+            // If the user is a customer, filter by their UserId
+            if (currentUserRole == "Customer")
+            {
+                query = query.Where(a => a.UserId == currentUserId);
+            }
+
             // Search by user name
             if (!string.IsNullOrWhiteSpace(userSearch))
             {
@@ -85,6 +106,7 @@ namespace BusinessLogic.Services
             {
                 query = query.Where(u => u.Name!.Contains(nameSearch.Trim()));
             }
+
 
 
             if (statusSearch.HasValue)
@@ -156,8 +178,8 @@ namespace BusinessLogic.Services
             appointmentDto.Status = 0;
             appointmentDto.CreatedBy = currentUser;
             appointmentDto.CreatedTime = DateTimeOffset.UtcNow;
-            appointmentDto.LastUpdatedBy = currentUser;
-            appointmentDto.LastUpdatedTime = DateTimeOffset.UtcNow;
+            //appointmentDto.LastUpdatedBy = currentUser;
+            //appointmentDto.LastUpdatedTime = DateTimeOffset.UtcNow;
 
             Appointment appointment = _mapper.Map<Appointment>(appointmentDto);
             await _unitOfWork.GetRepository<Appointment>().InsertAsync(appointment);
