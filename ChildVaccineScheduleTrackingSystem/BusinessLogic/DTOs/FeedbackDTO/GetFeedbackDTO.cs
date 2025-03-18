@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.DTOs.FeedbackDTO
 {
-    public class GetFeedbackDTO
+    public class GetFeedbackDTO: BaseFeedbackDTO
     {
         public string Id { get; set; } = string.Empty;
         public int? Rating { get; set; }

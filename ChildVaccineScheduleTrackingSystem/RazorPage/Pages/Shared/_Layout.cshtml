@@ -91,10 +91,19 @@
                         <li class="list-group-item"><a asp-area="" asp-page="/Feedback/Index">Feedback</a></li>
                         <li class="list-group-item"><a asp-area="" asp-page="/Notification/Index">Notification</a></li>
 
-                        @* @if (User.IsInRole("Admin"))
+
+                        @if (User.IsInRole("Admin"))
                         {
                             <li class="list-group-item"><a asp-area="" asp-page="/Users/Index">User Management</a></li>
-                        } *@
+
+                            <li class="nav-item">
+                            <a class="nav-link" href="/Dashboard/Appointments">Appointments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Dashboard/Reports">Overview</a>
+                            </li>
+
+                        } 
 
                         <li class="list-group-item">
                             <a asp-area="" asp-page="/Appointments/Index">Appointment</a>
