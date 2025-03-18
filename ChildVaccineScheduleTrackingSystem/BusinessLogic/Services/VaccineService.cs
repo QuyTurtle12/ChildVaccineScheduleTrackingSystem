@@ -72,6 +72,8 @@ namespace BusinessLogic.Services
         {
             Vaccine? vaccine = await _unitOfWork.GetRepository<Vaccine>().GetByIdAsync(id);
             if (vaccine == null) return false;
+            if (await _unitOfWork.GetRepository<PackageVaccine>().Entities.AnyAsync(pv => pv.VaccineId == id))
+                throw new Exception("Vaccine is being existed in a package! Can't delete it");
 
             await _unitOfWork.GetRepository<Vaccine>().DeleteAsync(vaccine);
             await _unitOfWork.GetRepository<Vaccine>().SaveAsync();

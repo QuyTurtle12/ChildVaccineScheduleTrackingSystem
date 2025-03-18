@@ -64,6 +64,10 @@ namespace BusinessLogic.Services
             Package? package = await _unitOfWork.GetRepository<Package>().GetByIdAsync(id);
             if (package == null) return false;
 
+            if (await _unitOfWork.GetRepository<PackageVaccine>().Entities.AnyAsync(pv => pv.PackageId == id))
+            {
+                await UpdatePackageVaccines(id, new List<Guid>());
+            }
             await _unitOfWork.GetRepository<Package>().DeleteAsync(package);
             await _unitOfWork.GetRepository<Package>().SaveAsync();
             return true;
