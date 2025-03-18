@@ -59,8 +59,10 @@
     <input type="hidden" id="pageNumber" name="pageNumber" value="1">
 </form>
 
-
-<a asp-area="" asp-page="./Create">Create Payment</a>
+@if (HttpContextAccessor.HttpContext!.User.IsInRole("Staff"))
+{
+    <a asp-area="" asp-page="./Create">Create Payment</a>
+}
 
 <h1>Payment</h1>
 <table class="table">
@@ -81,6 +83,13 @@
             <th>
                 Status
             </th>
+            @if (HttpContextAccessor.HttpContext!.User.IsInRole("Customer"))
+            {
+                <th>
+                    Payment Date
+                </th>
+            }
+
             <th></th>
         </tr>
     </thead>
@@ -93,7 +102,7 @@
                     @Html.DisplayFor(modelItem => item.AppointmentName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Amount)
+                    @Html.DisplayFor(modelItem => item.Amount) VND
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PaymentMethod)
@@ -104,15 +113,18 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
+                @if (HttpContextAccessor.HttpContext!.User.IsInRole("Customer"))
+                {
+                    <th>
+                        @* @Html.DisplayFor(modelItem => item.CreatedTime) *@
+                        @item.CreatedTime.ToString("dd-MM-yyyy")
+                    </th>
+                }
                 <td>
                     @if (HttpContextAccessor.HttpContext!.User.IsInRole("Staff"))
                     {
                         <a class="btn btn-primary" asp-page="./Update" asp-route-id="@item.Id">Edit</a>
                         <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                    }
-                    @if (HttpContextAccessor.HttpContext!.User.IsInRole("Customer"))
-                    {
-                        <a class="btn btn-danger" asp-page="./Update" asp-route-id="@item.Id">Cancel</a>
                     }
                 </td>
             </tr>

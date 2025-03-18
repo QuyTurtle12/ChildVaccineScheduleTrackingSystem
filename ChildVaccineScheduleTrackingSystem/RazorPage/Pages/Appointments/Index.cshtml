@@ -112,6 +112,9 @@
                     {
                         <a class="btn btn-primary" asp-page="./Update" asp-route-id="@item.Id">Edit</a>
                         <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                        <a class="btn btn-primary" asp-page="/Payments/Create" asp-route-appointmentId="@item.Id">
+                            Create Payment
+                        </a>
                     }
                     @if (HttpContextAccessor.HttpContext!.User.IsInRole("Customer"))
                     {

@@ -178,8 +178,6 @@ namespace BusinessLogic.Services
             appointmentDto.Status = 0;
             appointmentDto.CreatedBy = currentUser;
             appointmentDto.CreatedTime = DateTimeOffset.UtcNow;
-            //appointmentDto.LastUpdatedBy = currentUser;
-            //appointmentDto.LastUpdatedTime = DateTimeOffset.UtcNow;
 
             Appointment appointment = _mapper.Map<Appointment>(appointmentDto);
             await _unitOfWork.GetRepository<Appointment>().InsertAsync(appointment);
