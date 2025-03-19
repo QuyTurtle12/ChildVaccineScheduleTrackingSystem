@@ -1,131 +1,157 @@
 ﻿@page
 @model RazorPage.Pages.Dashboard.ReportsModel
 @{
-    ViewData["Title"] = "Dashboard Reports";
+    ViewData["Title"] = "Báo cáo - Dashboard - Trung tâm Vaccine";
 }
 
-<h1 class="mb-4">Dashboard Reports</h1>
 
-<!-- Date Range Filter -->
-<form method="get" class="mb-4">
+
+<!-- Nội dung chính -->
+<div class="container my-5">
+    <h1 class="text-center text-vibrant mb-4 animate__animated animate__bounceIn">
+        <i class="fas fa-chart-line mr-2"></i>Báo cáo Dashboard
+    </h1>
+
+    <!-- Form lọc ngày -->
+    <form method="get" class="mb-5 p-4 bg-light rounded shadow animate__animated animate__fadeIn">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="fromDate" class="form-label fw-bold text-success">Từ ngày</label>
+                <input type="date" id="fromDate" name="FromDate" class="form-control" value="@(Model.FromDate?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-3">
+                <label for="toDate" class="form-label fw-bold text-success">Đến ngày</label>
+                <input type="date" id="toDate" name="ToDate" class="form-control" value="@(Model.ToDate?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100 animate__animated animate__pulse animate__infinite">
+                    <i class="fas fa-filter mr-2"></i>Lọc
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Summary Cards -->
+    <div class="row mb-5 animate__animated animate__fadeIn">
+        <div class="col-md-2">
+            <div class="card text-white bg-info lively-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title"><i class="fas fa-calendar-alt mr-2"></i>Cuộc hẹn</h5>
+                    <p class="card-text display-4">@Model.TotalAppointments</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-success lively-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title"><i class="fas fa-money-bill mr-2"></i>Thanh toán</h5>
+                    <p class="card-text display-4">@Model.TotalPayments</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-warning lively-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title"><i class="fas fa-comment-alt mr-2"></i>Phản hồi</h5>
+                    <p class="card-text display-4">@Model.TotalFeedbacks</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-secondary lively-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title"><i class="fas fa-syringe mr-2"></i>Vaccine</h5>
+                    <p class="card-text display-4">@Model.TotalVaccines</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-dark lively-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title"><i class="fas fa-notes-medical mr-2"></i>Hồ sơ Vaccine</h5>
+                    <p class="card-text display-4">@Model.TotalVaccineRecords</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
     <div class="row">
-        <div class="col-md-3">
-            <label for="fromDate">From Date:</label>
-            <input type="date" id="fromDate" name="FromDate" class="form-control"
-                   value="@(Model.FromDate?.ToString("yyyy-MM-dd"))" />
-        </div>
-        <div class="col-md-3">
-            <label for="toDate">To Date:</label>
-            <input type="date" id="toDate" name="ToDate" class="form-control"
-                   value="@(Model.ToDate?.ToString("yyyy-MM-dd"))" />
-        </div>
-        <div class="col-md-3 align-self-end">
-            <button type="submit" class="btn btn-primary">Apply Filter</button>
-        </div>
-    </div>
-</form>
-
-<!-- Summary Cards -->
-<div class="row mb-4">
-    <div class="col-md-2">
-        <div class="card text-white bg-info mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Appointments</h5>
-                <p class="card-text display-4">@Model.TotalAppointments</p>
+        <!-- Appointment Trend Chart -->
+        <div class="col-md-12 mb-4">
+            <div class="card lively-card animate__animated animate__fadeIn">
+                <div class="card-body">
+                    <h3 class="text-center"><i class="fas fa-chart-line mr-2"></i>Xu hướng Cuộc hẹn</h3>
+                    <div class="chart-container" style="position: relative; height:400px; width:100%;">
+                        <canvas id="appointmentTrendChart"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-2">
-        <div class="card text-white bg-success mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Payments</h5>
-                <p class="card-text display-4">@Model.TotalPayments</p>
+    <div class="row">
+        <!-- Payment Count by Method Chart -->
+        <div class="col-md-6 mb-4">
+            <div class="card lively-card animate__animated animate__fadeIn">
+                <div class="card-body">
+                    <h3 class="text-center"><i class="fas fa-chart-bar mr-2"></i>Số lượng Thanh toán theo Phương thức</h3>
+                    <div class="chart-container" style="position: relative; height:400px; width:100%;">
+                        <canvas id="paymentCountChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Payment Amount by Method Chart -->
+        <div class="col-md-6 mb-4">
+            <div class="card lively-card animate__animated animate__fadeIn">
+                <div class="card-body">
+                    <h3 class="text-center"><i class="fas fa-chart-bar mr-2"></i>Số tiền Thanh toán theo Phương thức</h3>
+                    <div class="chart-container" style="position: relative; height:400px; width:100%;">
+                        <canvas id="paymentAmountChart"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-2">
-        <div class="card text-white bg-warning mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Feedbacks</h5>
-                <p class="card-text display-4">@Model.TotalFeedbacks</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="card text-white bg-secondary mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Vaccines</h5>
-                <p class="card-text display-4">@Model.TotalVaccines</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="card text-white bg-dark mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Vaccine Records</h5>
-                <p class="card-text display-4">@Model.TotalVaccineRecords</p>
+    <div class="row">
+        <!-- Feedback Count by Rating Chart -->
+        <div class="col-md-12 mb-4">
+            <div class="card lively-card animate__animated animate__fadeIn">
+                <div class="card-body">
+                    <h3 class="text-center"><i class="fas fa-star mr-2"></i>Số lượng Phản hồi theo Đánh giá</h3>
+                    <div class="chart-container" style="position: relative; height:400px; width:100%;">
+                        <canvas id="feedbackRatingChart"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Charts Section -->
-<div class="row">
-    <!-- Appointment Trend Chart -->
-    <div class="col-md-12 mb-4">
-        <h3>Appointment Trend</h3>
-        <div class="chart-container" style="position: relative; height:400px; width:100%;">
-            <canvas id="appointmentTrendChart"></canvas>
-        </div>
-    </div>
-</div>
 
-<div class="row">
-    <!-- Payment Count by Method Chart -->
-    <div class="col-md-6 mb-4">
-        <h3>Payment Count by Method</h3>
-        <div class="chart-container" style="position: relative; height:400px; width:100%;">
-            <canvas id="paymentCountChart"></canvas>
-        </div>
-    </div>
-    <!-- Payment Amount by Method Chart -->
-    <div class="col-md-6 mb-4">
-        <h3>Payment Amount by Method</h3>
-        <div class="chart-container" style="position: relative; height:400px; width:100%;">
-            <canvas id="paymentAmountChart"></canvas>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <!-- Feedback Count by Rating Chart -->
-    <div class="col-md-12 mb-4">
-        <h3>Feedback Count by Rating</h3>
-        <div class="chart-container" style="position: relative; height:400px; width:100%;">
-            <canvas id="feedbackRatingChart"></canvas>
-        </div>
-    </div>
-</div>
 
 @section Scripts {
-    <!-- Include Chart.js from a CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Appointment Trend Chart (Line Chart)
         var appointmentTrendData = @Html.Raw(Model.AppointmentTrendJson);
         var appointmentLabels = appointmentTrendData.map(item => item.Date);
         var appointmentCounts = appointmentTrendData.map(item => item.Count);
-
         var ctxTrend = document.getElementById('appointmentTrendChart').getContext('2d');
-        var appointmentTrendChart = new Chart(ctxTrend, {
+        new Chart(ctxTrend, {
             type: 'line',
             data: {
                 labels: appointmentLabels,
                 datasets: [{
-                    label: 'Appointments per Day',
+                    label: 'Số lượng cuộc hẹn mỗi ngày',
                     data: appointmentCounts,
                     fill: false,
-                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderColor: '#0078D4',
                     tension: 0.1
                 }]
             },
@@ -133,8 +159,8 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { title: { display: true, text: 'Date' } },
-                    y: { beginAtZero: true, title: { display: true, text: 'Count' } }
+                    x: { title: { display: true, text: 'Ngày' } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Số lượng' } }
                 }
             }
         });
@@ -143,17 +169,16 @@
         var paymentCountData = @Html.Raw(Model.PaymentCountByMethodJson);
         var paymentCountLabels = paymentCountData.map(item => item.PaymentMethod);
         var paymentCountValues = paymentCountData.map(item => item.Count);
-
         var ctxPaymentCount = document.getElementById('paymentCountChart').getContext('2d');
-        var paymentCountChart = new Chart(ctxPaymentCount, {
+        new Chart(ctxPaymentCount, {
             type: 'bar',
             data: {
                 labels: paymentCountLabels,
                 datasets: [{
-                    label: 'Payment Count',
+                    label: 'Số lượng thanh toán',
                     data: paymentCountValues,
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: '#28A745',
+                    borderColor: '#218838',
                     borderWidth: 1
                 }]
             },
@@ -161,8 +186,8 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { title: { display: true, text: 'Payment Method' } },
-                    y: { beginAtZero: true, title: { display: true, text: 'Count' } }
+                    x: { title: { display: true, text: 'Phương thức thanh toán' } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Số lượng' } }
                 }
             }
         });
@@ -171,17 +196,16 @@
         var paymentAmountData = @Html.Raw(Model.PaymentAmountByMethodJson);
         var paymentAmountLabels = paymentAmountData.map(item => item.PaymentMethod);
         var paymentAmountValues = paymentAmountData.map(item => item.TotalAmount);
-
         var ctxPaymentAmount = document.getElementById('paymentAmountChart').getContext('2d');
-        var paymentAmountChart = new Chart(ctxPaymentAmount, {
+        new Chart(ctxPaymentAmount, {
             type: 'bar',
             data: {
                 labels: paymentAmountLabels,
                 datasets: [{
-                    label: 'Total Payment Amount',
+                    label: 'Tổng số tiền thanh toán',
                     data: paymentAmountValues,
-                    backgroundColor: 'rgba(255, 159, 64, 0.6)',
-                    borderColor: 'rgba(255, 159, 64, 1)',
+                    backgroundColor: '#F28C38',
+                    borderColor: '#E07B30',
                     borderWidth: 1
                 }]
             },
@@ -189,8 +213,8 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { title: { display: true, text: 'Payment Method' } },
-                    y: { beginAtZero: true, title: { display: true, text: 'Amount' } }
+                    x: { title: { display: true, text: 'Phương thức thanh toán' } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Số tiền' } }
                 }
             }
         });
@@ -199,29 +223,16 @@
         var feedbackData = @Html.Raw(Model.FeedbackCountByRatingJson);
         var feedbackLabels = feedbackData.map(item => item.Rating);
         var feedbackCounts = feedbackData.map(item => item.Count);
-
         var ctxFeedback = document.getElementById('feedbackRatingChart').getContext('2d');
-        var feedbackChart = new Chart(ctxFeedback, {
+        new Chart(ctxFeedback, {
             type: 'bar',
             data: {
                 labels: feedbackLabels,
                 datasets: [{
-                    label: 'Feedback Count by Rating',
+                    label: 'Số lượng phản hồi theo đánh giá',
                     data: feedbackCounts,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.6)',
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(255, 206, 86, 0.6)',
-                        'rgba(75, 192, 192, 0.6)',
-                        'rgba(153, 102, 255, 0.6)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)'
-                    ],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                    borderColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
                     borderWidth: 1
                 }]
             },
@@ -229,16 +240,72 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: {
-                        title: { display: true, text: 'Rating' }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'Count' }
-                    }
+                    x: { title: { display: true, text: 'Đánh giá' } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Số lượng' } }
                 }
             }
         });
-
     </script>
 }
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f4f8;
+    }
+
+    .navbar {
+        background-color: #0078D4 !important;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand, .nav-link {
+        color: white !important;
+        transition: color 0.3s;
+    }
+
+        .nav-link:hover {
+            color: #F28C38 !important;
+        }
+
+    .text-vibrant {
+        color: #F28C38;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #0078D4;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-primary:hover {
+            background-color: #005BB5;
+            transform: scale(1.05);
+        }
+
+    .lively-card {
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        background-color: white;
+        border-radius: 10px;
+    }
+
+        .lively-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .footer {
+        background-color: #0078D4;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+</style>

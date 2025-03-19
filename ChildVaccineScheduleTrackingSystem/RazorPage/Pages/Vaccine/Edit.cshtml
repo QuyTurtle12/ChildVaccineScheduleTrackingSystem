@@ -1,45 +1,161 @@
 ﻿@page
 @model RazorPage.Pages.Vaccine.EditModel
-
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Sửa Vaccine - Trung tâm Vaccine";
 }
 
-<h1>Edit</h1>
 
-<h4>Vaccine</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-			<input type="hidden" asp-for="Vaccine.Id" />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UpdatedVaccine.Manufacturer" class="control-label"></label>
-                <input asp-for="UpdatedVaccine.Manufacturer" class="form-control" value="@Model.Vaccine.Manufacturer"/>
-                <span asp-validation-for="UpdatedVaccine.Manufacturer" class="text-danger"></span>
+
+<!-- Nội dung chính -->
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card lively-card animate__animated animate__fadeIn">
+                <div class="card-body">
+                    <h1 class="text-center text-vibrant mb-4 animate__animated animate__bounceIn">
+                        <i class="fas fa-edit mr-2"></i>Sửa Vaccine
+                    </h1>
+                    <form method="post">
+                        <input type="hidden" asp-for="Vaccine.Id" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger text-center mb-3 animate__animated animate__shakeX"></div>
+                        <div class="form-group">
+                            <label asp-for="UpdatedVaccine.Name" class="font-weight-bold">Tên Vaccine</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-syringe"></i></span>
+                                </div>
+                                <input asp-for="UpdatedVaccine.Name" class="form-control" value="@Model.Vaccine.Name" />
+                            </div>
+                            <span asp-validation-for="UpdatedVaccine.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UpdatedVaccine.Manufacturer" class="font-weight-bold">Nhà sản xuất</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-industry"></i></span>
+                                </div>
+                                <input asp-for="UpdatedVaccine.Manufacturer" class="form-control" value="@Model.Vaccine.Manufacturer" />
+                            </div>
+                            <span asp-validation-for="UpdatedVaccine.Manufacturer" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UpdatedVaccine.Description" class="font-weight-bold">Mô tả</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-info-circle"></i></span>
+                                </div>
+                                <input asp-for="UpdatedVaccine.Description" class="form-control" value="@Model.Vaccine.Description" />
+                            </div>
+                            <span asp-validation-for="UpdatedVaccine.Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UpdatedVaccine.Price" class="font-weight-bold">Đơn giá (VNĐ)</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-money-bill"></i></span>
+                                </div>
+                                <input asp-for="UpdatedVaccine.Price" class="form-control" type="number" step="1000" value="@Model.Vaccine.Price" />
+                            </div>
+                            <span asp-validation-for="UpdatedVaccine.Price" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UpdatedVaccine.ImageUrl" class="font-weight-bold">Đường dẫn hình ảnh</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-image"></i></span>
+                                </div>
+                                <input asp-for="UpdatedVaccine.ImageUrl" class="form-control" value="@Model.Vaccine.ImageUrl" />
+                            </div>
+                            <span asp-validation-for="UpdatedVaccine.ImageUrl" class="text-danger"></span>
+                        </div>
+                        <div class="text-center">
+                            <input type="submit" value="Lưu" class="btn btn-success btn-lg animate__animated animate__pulse animate__infinite" />
+                        </div>
+                    </form>
+                    <p class="text-center mt-3"><a asp-page="./Index" class="text-primary"><i class="fas fa-arrow-left mr-2"></i>Quay lại danh sách</a></p>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="UpdatedVaccine.Description" class="control-label"></label>
-                <input asp-for="UpdatedVaccine.Description" class="form-control" value="@Model.Vaccine.Description" />
-                <span asp-validation-for="UpdatedVaccine.Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedVaccine.Name" class="control-label"></label>
-                <input asp-for="UpdatedVaccine.Name" class="form-control" value="@Model.Vaccine.Name" />
-                <span asp-validation-for="UpdatedVaccine.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-page="./Index">Back to List</a>
-</div>
+
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f4f8;
+    }
+
+    .navbar {
+        background-color: #0078D4 !important;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand, .nav-link {
+        color: white !important;
+        transition: color 0.3s;
+    }
+
+        .nav-link:hover {
+            color: #F28C38 !important;
+        }
+
+    .lively-card {
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        background-color: white;
+        border-radius: 10px;
+    }
+
+        .lively-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .text-vibrant {
+        color: #F28C38;
+        font-weight: bold;
+    }
+
+    .btn-success {
+        background-color: #28A745;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+    .input-group-text {
+        background-color: #0078D4;
+        color: white;
+    }
+
+    .form-control:focus {
+        border-color: #28A745;
+        box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+    }
+
+    .footer {
+        background-color: #0078D4;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+</style>
