@@ -7,7 +7,6 @@
         public string? Description { get; set; }
         public decimal Price { get; set; } = 0;
         public string? Type { get; set; }
-        public DateTime? ExecuteDate { get; set; }
         //Fields just for show ui
         public DateTimeOffset? CreatedTime { get; set; }
     }
@@ -18,7 +17,6 @@
         public string? Description { get; set; }
         public decimal Price { get; set; } = 0;
         public string Type { get; set; } = string.Empty;
-        public DateTime? ExecuteDate { get; set; }
         //Fields to add package's vaccine
         public List<Guid> SelectedVaccineIds { get; set; } = new();
     }
@@ -29,7 +27,6 @@
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public string Type { get; set; } = string.Empty;
-        public DateTime? ExecuteDate { get; set; }
         //Fields to add/remove package's vaccine
         public List<Guid> SelectedVaccineIds { get; set; } = new();
     }
