@@ -23,7 +23,7 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status401Unauthorized, ResponseCodeConstants.UNAUTHORIZED, "Unauthorized User!");
             }
 
-            var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
+            var idClaim = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
 
             if (idClaim == null || string.IsNullOrEmpty(idClaim.Value))
             {

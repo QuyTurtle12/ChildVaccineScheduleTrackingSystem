@@ -7,11 +7,6 @@ using Data.Interface;
 using Data.PaggingItem;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
 {
@@ -27,7 +22,7 @@ namespace BusinessLogic.Services
         }
 
         // Get list of feedbacks
-        public async Task<PaginatedList<GetFeedbackDTO>> GetFeedbacks(int index, int pageSize, string? idSearch, string? userIdSearch, int? ratingSearch)
+        public async Task<PaginatedList<GetFeedbackDTO>> GetFeedbacks(int index, int pageSize, string? idSearch, string? userIdSearch, string? customerNameSearch, int? ratingSearch)
         {
             if (index <= 0 || pageSize <= 0)
             {
@@ -51,14 +46,20 @@ namespace BusinessLogic.Services
                 query = query.Where(f => f.UserId == Guid.Parse(userIdSearch));
             }
 
+            // Search by user name
+            if (!string.IsNullOrWhiteSpace(customerNameSearch))
+            {
+                query = query.Where(f => f.User!.Name.Contains(customerNameSearch));
+            }
+
             // Search by rating
             if (ratingSearch.HasValue)
             {
                 query = query.Where(f => f.Rating == ratingSearch.Value);
             }
 
-            // Sort by Id
-            query = query.OrderBy(f => f.Id);
+            // Sort by Created Time
+            query = query.OrderByDescending(f => f.CreatedTime);
 
             PaginatedList<Feedback> resultQuery = await _unitOfWork.GetRepository<Feedback>().GetPagging(query, index, pageSize);
 
@@ -184,7 +185,7 @@ namespace BusinessLogic.Services
             feedback.Status = 0;
             feedback.LastUpdatedTime = DateTimeOffset.Now;
             feedback.DeletedTime = feedback.LastUpdatedTime;
-            // feedback.DeletedBy = "Người xóa"; // Thêm nếu cần
+            // feedback.DeletedBy = "Người xóa";
 
             await _unitOfWork.GetRepository<Feedback>().UpdateAsync(feedback);
             await _unitOfWork.SaveAsync();

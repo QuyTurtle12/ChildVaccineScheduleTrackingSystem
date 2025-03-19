@@ -28,9 +28,9 @@
             <th>
                 Status
             </th>
-            <th>
-                Action
-            </th>
+            @* <th> *@
+            @*     Action *@
+            @* </th> *@
         </tr>
     </thead>
     <tbody>
@@ -48,9 +48,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ParentEmail)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
+            @* <td> *@
+            @*     @Html.DisplayFor(modelItem => item.Status) *@
+            @* </td> *@
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a>

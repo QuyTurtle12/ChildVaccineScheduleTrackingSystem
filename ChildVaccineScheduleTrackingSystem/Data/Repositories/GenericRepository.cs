@@ -102,5 +102,11 @@ namespace Data.Repositories
         {
             await _dbSet.AddRangeAsync(obj);
         }
+
+        public async Task DeleteRangeAsync(IEnumerable<T> entities)
+        {
+            _dbSet.RemoveRange(entities);
+            await _context.SaveChangesAsync();
+        }
     }
 }

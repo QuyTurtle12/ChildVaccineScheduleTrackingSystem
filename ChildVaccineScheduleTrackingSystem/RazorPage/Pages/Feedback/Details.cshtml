@@ -12,6 +12,12 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
+            Customer Name
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FeedbackDTO.UserName)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.FeedbackDTO.Rating)
         </dt>
         <dd class="col-sm-10">
@@ -24,16 +30,10 @@
             @Html.DisplayFor(model => model.FeedbackDTO.Comment)
         </dd>
         <dt class="col-sm-2">
-            User Name
+            Created Time
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FeedbackDTO.UserName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FeedbackDTO.Status)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FeedbackDTO.Status)
+            @Html.DisplayFor(model => model.FeedbackDTO.CreatedTime)
         </dd>
     </dl>
 </div>

@@ -9,5 +9,6 @@ namespace BusinessLogic.Interfaces
         Task<bool> UpdateAsync(Guid id, PackagePutDTO dto);
         Task<bool> DeleteAsync(Guid id);
         Task<bool> SoftDeleteAsync(Guid id);
+        Task UpdatePackageVaccines(Guid packageId, List<Guid> newVaccineIds);
     }
 }

@@ -30,7 +30,8 @@ namespace Data.Interface
         //another
         T? Find(Expression<Func<T, bool>> predicate);
         Task<PaginatedList<T>> GetPagging(IQueryable<T> query, int index, int pageSize);
-        
+
+        Task DeleteRangeAsync(IEnumerable<T> entities);
 
     }
 }

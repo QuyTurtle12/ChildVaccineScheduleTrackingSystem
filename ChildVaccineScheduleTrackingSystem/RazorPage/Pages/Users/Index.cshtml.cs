@@ -13,6 +13,7 @@ namespace RazorPage.Pages.Users
         private readonly IJwtTokenService _jwtTokenService;
 
         private const string ADMIN = "Admin";
+        private const string Staff = "Staff";
 
         public IndexModel(IUserService userService, IJwtTokenService jwtTokenService)
         {
@@ -21,19 +22,31 @@ namespace RazorPage.Pages.Users
         }
 
         public PaginatedList<GetUserDTO> UserDTOList { get;set; } = default!;
+        public string loggedInUserRole { get; set; }
+        public string? PhoneSearch { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int index = 1, int pageSize = 10, string? idSearch = null, string? nameSearch = null, string? emailSearch = null, EnumRole? role = null)
+        public async Task<IActionResult> OnGetAsync(int index = 1, int pageSize = 10, string? idSearch = null, string? nameSearch = null, string? emailSearch = null, string? phoneSearch = null, EnumRole? role = null)
         {
             var jwtToken = HttpContext.Session.GetString("jwt_token");
-            var userRole = _jwtTokenService.GetRole(jwtToken!);
+            loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
 
-            //// Role Authorization
-            //if (userRole == null || userRole != ADMIN)
-            //{
-            //    return Forbid();
-            //}
+            // Role Authorization
+            if (loggedInUserRole == null)
+            {
+                return Forbid();
+            }
 
-            UserDTOList = await _userService.GetUserAccounts(index, pageSize, idSearch, nameSearch, emailSearch, role);
+            PhoneSearch = phoneSearch;
+
+            if (loggedInUserRole == ADMIN)
+            {
+                UserDTOList = await _userService.GetUserAccounts(index, pageSize, idSearch, nameSearch, emailSearch, phoneSearch, role);
+            }
+
+            if (loggedInUserRole == Staff)
+            {
+                UserDTOList = await _userService.GetUserAccounts(index, pageSize, idSearch, nameSearch, emailSearch, phoneSearch, EnumRole.Customer);
+            }
 
             return Page();
         }

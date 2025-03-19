@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,12 +23,30 @@ namespace BusinessLogic.Services
     {
         private readonly IMapper _mapper;
         private readonly IUOW _unitOfWork;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PaymentService(IMapper mapper, IUOW unitOfWork)
+        public PaymentService(IMapper mapper, IUOW unitOfWork, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _httpContextAccessor = httpContextAccessor;
         }
+
+        private string GetCurrentUserName()
+        {
+            return _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Unknown";
+        }
+        private Guid GetCurrentUserId()
+        {
+            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
+            return userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId) ? userId : Guid.Empty;
+        }
+        private string GetCurrentUserRole()
+        {
+            var roleClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role);
+            return roleClaim?.Value ?? "Customer"; // Default to "Customer" if role is missing
+        }
+
         public async Task<IEnumerable<GetPaymentDTO>> GetAllPayments()
         {
             IQueryable<Payment> query = _unitOfWork.GetRepository<Payment>().Entities;
@@ -54,10 +73,21 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Please input index or page size correctly!");
             }
 
-            IQueryable<Payment> query = _unitOfWork.GetRepository<Payment>().Entities;
+            Guid currentUserId = GetCurrentUserId();
+            string currentUserRole = GetCurrentUserRole();
+
+            IQueryable<Payment> query = _unitOfWork.GetRepository<Payment>()
+                .Entities.Include(p => p.Appointment) 
+                .ThenInclude(a => a.User);
 
             // Only show records where DeletedBy is null
             query = query.Where(u => u.DeletedBy == null);
+
+            // **Filter: Customers should only see their own payments**
+            if (currentUserRole.Equals("Customer"))
+            {
+                query = query.Where(p => p.Appointment!.UserId == currentUserId);
+            }
 
             // Search by id
             if (idSearch.HasValue)
@@ -94,7 +124,7 @@ namespace BusinessLogic.Services
             }
 
             // Sort by Id
-            query = query.OrderBy(u => u.Id);
+            query = query.OrderByDescending(u => u.CreatedTime);
 
             PaginatedList<Payment> resultQuery = await _unitOfWork.GetRepository<Payment>().GetPagging(query.Include(u => u.Appointment), index, pageSize);
 
@@ -136,11 +166,11 @@ namespace BusinessLogic.Services
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Payment data is required!");
             }
+            string currentUser = GetCurrentUserName();
+
             paymentDto.Status = 0;
-            paymentDto.CreatedBy = "system"; // Will use token
+            paymentDto.CreatedBy = currentUser; // Will use token
             paymentDto.CreatedTime = DateTime.Now;
-            paymentDto.LastUpdatedBy = "system"; // Will use token
-            paymentDto.LastUpdatedTime = DateTime.Now;
 
             Payment payment = _mapper.Map<Payment>(paymentDto);
 
@@ -157,9 +187,10 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Payment not found!");
             }
 
+            string currentUser = GetCurrentUserName();
 
             // Update properties
-            putPaymentDto.LastUpdatedBy = "System update";
+            putPaymentDto.LastUpdatedBy = currentUser;
             putPaymentDto.LastUpdatedTime = DateTimeOffset.Now;
 
             _mapper.Map(putPaymentDto, existingPayment);
@@ -176,8 +207,9 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Payment not found!");
             }
 
+            string currentUser = GetCurrentUserName();
 
-            existingPayment.DeletedBy = "system delete"; // Will use token
+            existingPayment.DeletedBy = currentUser; // Will use token
             existingPayment.DeletedTime = DateTime.Now;
 
             repository.Update(existingPayment);

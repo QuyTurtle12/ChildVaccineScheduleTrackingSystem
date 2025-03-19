@@ -1,4 +1,5 @@
 ﻿@page
+@using Data.Enum
 @model RazorPage.Pages.Appointments.UpdateModel
 @{
     ViewData["Title"] = "Update Appointment";
@@ -38,8 +39,21 @@
             <label asp-for="UpdatedAppointment.Status" class="form-label fw-semibold text-dark opacity-75 mb-2">
                 <i class="bi bi-tag me-2"></i> Status
             </label>
-            <select asp-for="UpdatedAppointment.Status" asp-items="Model.StatusList" class="form-select form-control-lg border-dark-subtle shadow-sm" id="Status"></select>
-            <span asp-validation-for="UpdatedAppointment.Status" class="text-danger small mt-1"></span>
+            @if (User.IsInRole("Staff"))
+            {
+                <!-- Staff sees all statuses -->
+                <select asp-for="UpdatedAppointment.Status" asp-items="Model.StatusList"
+                        class="form-select form-control-lg border-dark-subtle shadow-sm" id="Status">
+                </select>
+            }
+            else if (User.IsInRole("Customer"))
+            {
+                <!-- Customers can only select "Cancelled" -->
+                <select asp-for="UpdatedAppointment.Status" class="form-select form-control-lg border-dark-subtle shadow-sm" id="Status">
+                    <option value="@((int)EnumAppointment.Canceled)">Canceled</option>
+                </select>
+                <span asp-validation-for="UpdatedAppointment.Status" class="text-danger small mt-1"></span>
+            }            
         </div>
 
         <input type="hidden" asp-for="UpdatedAppointment.CreatedBy" />
@@ -55,9 +69,9 @@
             <button type="submit" class="btn btn-success fw-semibold px-5 py-3 rounded-pill shadow-md transition-all duration-300 hover:scale-105">
                 <i class="bi bi-save me-2"></i> Save Changes
             </button>
-            <button type="button" class="btn btn-secondary fw-semibold px-5 py-3 rounded-pill shadow-md transition-all duration-300 hover:scale-105" data-bs-dismiss="modal">
+            <a asp-page="./Index" type="button" class="btn btn-secondary fw-semibold px-5 py-3 rounded-pill shadow-md transition-all duration-300 hover:scale-105">
                 <i class="bi bi-x-lg me-2"></i> Cancel
-            </button>
+            </a>
         </div>
     </form>
 </div>

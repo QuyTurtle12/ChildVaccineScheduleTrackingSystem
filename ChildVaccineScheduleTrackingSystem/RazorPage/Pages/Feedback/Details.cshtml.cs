@@ -10,6 +10,8 @@ namespace RazorPage.Pages.Feedback
         private readonly IFeedbackService _feedbackService;
         private readonly IJwtTokenService _jwtTokenService;
 
+        private const string CUSTOMER_ROLE = "Customer";
+
         public DetailsModel(IFeedbackService feedbackService, IJwtTokenService jwtTokenService)
         {
             _feedbackService = feedbackService;
@@ -20,6 +22,17 @@ namespace RazorPage.Pages.Feedback
 
         public async Task<IActionResult> OnGetAsync(string? id)
         {
+            // Role Authorization
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole != CUSTOMER_ROLE)
+            {
+                return Forbid();
+            }
+
             if (id == null)
             {
                 return NotFound();

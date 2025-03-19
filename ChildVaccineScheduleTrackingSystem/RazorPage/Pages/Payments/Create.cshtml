@@ -5,7 +5,7 @@
 }
 <form method="post" id="createPaymentForm">
     <div class="form-group">
-        <label asp-for="Payment.AppointmentId">Payment Name</label>
+        <label asp-for="Payment.AppointmentId">Appointment Id</label>
         <input asp-for="Payment.AppointmentId" class="form-control" />
     </div>
     <div class="form-group">
@@ -17,13 +17,16 @@
         <input asp-for="Payment.PaymentMethod" class="form-control"></input>
     </div>
     <div class="form-group">
-        <label asp-for="Payment.Name">Name</label>
+        <label asp-for="Payment.Name">Payment Name</label>
         <input asp-for="Payment.Name" class="form-control"></input>
     </div>
-    <div class="form-group" style="display: none">
+    <div class="form-group">
         <label asp-for="Payment.Status">Status</label>
-        <input asp-for="Payment.Status" class="form-control" />
+        <select asp-for="Payment.Status" asp-items="Model.StatusList" class="form-select form-control-lg border-dark-subtle shadow-sm" id="Status"></select>
+
     </div>
+
+
     <div class="mt-2">
         <button type="submit" class="btn btn-success">Create</button>
         <a class="btn btn-secondary" asp-page="./Index">Back to List</a>

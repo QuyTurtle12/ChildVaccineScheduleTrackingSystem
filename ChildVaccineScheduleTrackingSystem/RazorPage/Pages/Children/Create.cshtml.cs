@@ -10,6 +10,7 @@ namespace RazorPage.Pages.Children
         private readonly IChildrenService _childrenService;
         private readonly IJwtTokenService _jwtTokenService;
 
+        private const string CUSTOMER_ROLE = "Customer";
         public CreateModel(IChildrenService childrenService, IJwtTokenService jwtTokenService)
         {
             _childrenService = childrenService;
@@ -18,6 +19,16 @@ namespace RazorPage.Pages.Children
 
         public IActionResult OnGet()
         {
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole != CUSTOMER_ROLE)
+            {
+                return Forbid();
+            }
+
             return Page();
         }
 
@@ -27,6 +38,16 @@ namespace RazorPage.Pages.Children
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole != CUSTOMER_ROLE)
+            {
+                return Forbid();
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
