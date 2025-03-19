@@ -5,15 +5,19 @@
 }
 
 <form method="post" id="createAppointmentForm">
+
     @if (!ViewData.ModelState.IsValid)
     {
-        <div class="alert alert-danger">
+        <div class="alert alert-danger d-none" id="errorMessages">
             @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
             {
                 <p>@error.ErrorMessage</p>
             }
         </div>
     }
+@* 
+    <div id="errorMessages" class="alert alert-danger d-none"></div> *@
+
 
     <input type="hidden" asp-for="Appointment.UserId" />
 
@@ -32,13 +36,12 @@
         <span asp-validation-for="Appointment.AppointmentDate" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Appointment.Name">Name</label>
+        <label asp-for="Appointment.Name">Appointment Name</label>
         <input asp-for="Appointment.Name" class="form-control"></input>
-
     </div>
     <div class="form-group" style="display: none">
         <label asp-for="Appointment.Status">Status</label>
-        <input asp-for="Appointment.Status" class="form-control" />
+        <input asp-for="Appointment.Status" class="form-control" value="0" />
     </div>
     <div class="mt-2">
         <button type="submit" class="btn btn-success">Book Appointment</button>
@@ -57,11 +60,19 @@
             const customerPhoneInput = document.getElementById("customerPhone");
             const errorMessagesDiv = document.getElementById("errorMessages");
 
+            if (!errorMessagesDiv) {
+                console.error("Error: The div with id 'errorMessages' is missing.");
+                return;
+            }
+
             form.addEventListener("submit", function (event) {
+                errorMessagesDiv.innerHTML = "";
+                errorMessagesDiv.classList.add("d-none"); // Hide error messages by default
+
                 let errors = [];
 
                 // Check if Staff role and phone number is empty
-                if (customerPhoneInput && customerPhoneInput.value.trim() === "") {
+                if ('@Model.UserRole' === 'Staff' && customerPhoneInput.value.trim() === "") {
                     errors.push("Customer phone number is required for booking.");
                 }
 

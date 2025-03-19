@@ -54,23 +54,23 @@ namespace RazorPage.Pages.Appointments
 
                 if (string.IsNullOrEmpty(Appointment.CustomerPhoneNumber))
                 {
-                    ModelState.AddModelError("", "Customer phone number is for booking.");
+                    ModelState.AddModelError("Appointment.CustomerPhoneNumber", "Customer phone number is for booking.");
                     return Page();
                 }
                 // Find user by phone number
                 var customer = await _userService.GetUserByPhoneNumber(Appointment.CustomerPhoneNumber);
                 if (customer == null)
                 {
-                    ModelState.AddModelError("", "Customer not found.");
+                    ModelState.AddModelError("Appointment.CustomerPhoneNumber", "Customer not found.");
                     return Page();
                 }
 
                 Appointment.UserId = Guid.Parse(customer.Id); // Assign the customer ID
             }
 
-            if (Appointment.AppointmentDate <= DateTimeOffset.Now)
+            if (Appointment.AppointmentDate <= DateTimeOffset.Now.AddMinutes(1))
             {
-                ModelState.AddModelError("", "Date can not be a date in past or presence.");
+                ModelState.AddModelError("Appointment.AppointmentDate", "Date can not be a date in past or presence.");
                 return Page();
             }
 
