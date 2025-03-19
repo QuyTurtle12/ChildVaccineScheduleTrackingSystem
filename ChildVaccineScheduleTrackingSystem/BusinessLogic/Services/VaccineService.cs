@@ -3,6 +3,7 @@ using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
 using Data.Entities;
 using Data.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Services
 {
@@ -19,7 +20,10 @@ namespace BusinessLogic.Services
 
         public async Task<IEnumerable<VaccineGetDto>> GetAllAsync()
         {
-            IEnumerable<Vaccine> vaccines = await _unitOfWork.GetRepository<Vaccine>().GetAllAsync();
+            IEnumerable<Vaccine> vaccines = await _unitOfWork.GetRepository<Vaccine>()
+                .Entities
+                .OrderByDescending(x => x.CreatedTime)
+                .ToListAsync();
             return _mapper.Map<IEnumerable<VaccineGetDto>>(vaccines);
         }
 
@@ -71,6 +75,8 @@ namespace BusinessLogic.Services
         {
             Vaccine? vaccine = await _unitOfWork.GetRepository<Vaccine>().GetByIdAsync(id);
             if (vaccine == null) return false;
+            if (await _unitOfWork.GetRepository<PackageVaccine>().Entities.AnyAsync(pv => pv.VaccineId == id))
+                throw new Exception("Vaccine is being existed in a package! Can't delete it");
 
             await _unitOfWork.GetRepository<Vaccine>().DeleteAsync(vaccine);
             await _unitOfWork.GetRepository<Vaccine>().SaveAsync();
@@ -87,6 +93,24 @@ namespace BusinessLogic.Services
             await _unitOfWork.GetRepository<Vaccine>().UpdateAsync(vaccine);
             await _unitOfWork.GetRepository<Vaccine>().SaveAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<VaccineGetDto>> GetVaccineByPackageId(Guid packageId)
+        {
+            if (packageId == Guid.Empty) return null;
+            IEnumerable<Guid> vaccineIds = await _unitOfWork.GetRepository<PackageVaccine>()
+                .Entities
+                .Where(pv => pv.PackageId == packageId)
+                .Select(pv => pv.VaccineId)
+                .ToListAsync();
+
+            List<Vaccine> vaccines = new();
+            foreach(var vaccineId in vaccineIds)
+            {
+                vaccines.Add(await _unitOfWork.GetRepository<Vaccine>().GetByIdAsync(vaccineId));
+            }
+
+            return _mapper.Map<IEnumerable<VaccineGetDto>>(vaccines);
         }
     }
 }
