@@ -4,6 +4,7 @@ using BusinessLogic.DTOs.PaymentDTO;
 using BusinessLogic.Interfaces;
 using Data.Constants;
 using Data.Entities;
+using Data.Enum;
 using Data.ExceptionCustom;
 using Data.Interface;
 using Data.PaggingItem;
@@ -108,7 +109,7 @@ namespace BusinessLogic.Services
                 responseItem.Amount = item.Amount;
                 responseItem.PaymentMethod = item.PaymentMethod;
                 responseItem.Name = item.Name;
-                responseItem.Status = item.Status;
+                responseItem.Status = item.Status.HasValue ? (EnumPayment)item.Status.Value : EnumPayment.Pending;
                 responseItem.CreatedBy = item.CreatedBy;
                 responseItem.LastUpdatedBy = item.LastUpdatedBy;
                 responseItem.DeletedBy = item.DeletedBy;

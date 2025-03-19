@@ -70,11 +70,11 @@ public static class DependencyInjection
             };
         });
         services.AddAuthorization();
-
-        services.AddScoped<IAppointmentService, AppointmentService>();
-        services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IPackageService, PackageService>();
         services.AddScoped<IVaccineRecordService, VaccineRecordService>();
         services.AddScoped<IVaccineService, VaccineService>();
+
+        services.AddScoped<IAppointmentService, AppointmentService>();
+        services.AddScoped<IPaymentService, PaymentService>();
     }
 }
