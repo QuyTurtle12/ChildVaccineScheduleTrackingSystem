@@ -9,7 +9,6 @@ namespace Data.Entities
         public string Type { get; set; } = string.Empty;
 
         // Navigation Property
-        public virtual Appointment? Appointment { get; set; }
         public virtual ICollection<PackageVaccine>? PackageVaccines { get; set; }
         public virtual ICollection<AppointmentPackage>? AppointmentPackages { get; set; }
     }
