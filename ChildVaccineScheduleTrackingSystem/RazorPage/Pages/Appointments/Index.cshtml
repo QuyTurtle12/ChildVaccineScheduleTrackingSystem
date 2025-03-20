@@ -1,154 +1,242 @@
 ﻿@page
 @model RazorPage.Pages.Appointments.IndexModel
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-
 @{
-    ViewData["Title"] = "Index";
-    var jwtToken = ViewData["JwtToken"] as string;
+    ViewData["Title"] = "Danh sách Cuộc hẹn - Trung tâm Vaccine";
     var userRole = ViewData["UserRole"] as string;
 }
 
-<form asp-page="" method="get" class="mb-5 p-4 bg-light rounded shadow">
-    <div class="row g-3 align-items-center">
-        <!-- User Name Search -->
-        <div class="col-md-3">
-            <label for="userSearch" class="form-label fw-bold text-secondary">User Name</label>
-            <input type="text" id="userSearch" name="userSearch" class="form-control" placeholder="Enter username..."
-                   value="@Model.UserSearch">
-        </div>
 
-        <!-- Appointment Name Search -->
-        <div class="col-md-3">
-            <label for="nameSearch" class="form-label fw-bold text-secondary">Appointment Name</label>
-            <input type="text" id="nameSearch" name="nameSearch" class="form-control" placeholder="Enter name..."
-                   value="@Model.NameSearch">
-        </div>
+<!-- Nội dung chính -->
+<div class="container my-5">
+    <h1 class="text-center text-vibrant mb-4 animate__animated animate__bounceIn">
+        <i class="fas fa-calendar-alt mr-2"></i>Danh sách Cuộc hẹn
+    </h1>
 
-        <!-- Date Range -->
-        <div class="col-md-3">
-            <label class="form-label fw-bold text-secondary">Date Range</label>
-            <div class="input-group">
-                <input type="date" id="fromDateSearch" name="fromDateSearch" class="form-control"
-                       value="@(Model.FromDateSearch?.ToString("yyyy-MM-dd"))">
-                <span class="input-group-text">-</span>
-                <input type="date" id="toDateSearch" name="toDateSearch" class="form-control"
-                       value="@(Model.ToDateSearch?.ToString("yyyy-MM-dd"))">
+    <!-- Form tìm kiếm -->
+    <form asp-page="" method="get" class="mb-4 p-4 bg-light rounded shadow animate__animated animate__fadeIn">
+        <div class="row g-3 align-items-end">
+            @if (userRole == "Staff")
+            {
+                <div class="col-md-3">
+                    <label for="userSearch" class="form-label fw-bold text-success">Tên người dùng</label>
+                    <input type="text" id="userSearch" name="userSearch" class="form-control" value="@Model.UserSearch" placeholder="Nhập tên người dùng..." />
+                </div>
+            }
+            <div class="col-md-3">
+                <label for="nameSearch" class="form-label fw-bold text-success">Tên cuộc hẹn</label>
+                <input type="text" id="nameSearch" name="nameSearch" class="form-control" value="@Model.NameSearch" placeholder="Nhập tên cuộc hẹn..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold text-success">Khoảng ngày</label>
+                <div class="input-group">
+                    <input type="date" id="fromDateSearch" name="fromDateSearch" class="form-control" value="@(Model.FromDateSearch?.ToString("yyyy-MM-dd"))" />
+                    <span class="input-group-text">-</span>
+                    <input type="date" id="toDateSearch" name="toDateSearch" class="form-control" value="@(Model.ToDateSearch?.ToString("yyyy-MM-dd"))" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label for="statusSearch" class="form-label fw-bold text-success">Trạng thái</label>
+                <select id="statusSearch" name="statusSearch" class="form-control">
+                    <option value="">Tất cả</option>
+                    <option value="0" selected="@(Model.StatusSearch == 0)">Chờ xác nhận</option>
+                    <option value="1" selected="@(Model.StatusSearch == 1)">Đã xác nhận</option>
+                    <option value="2" selected="@(Model.StatusSearch == 2)">Đã hủy</option>
+                    <option value="3" selected="@(Model.StatusSearch == 3)">Hoàn thành</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search mr-2"></i>Tìm</button>
             </div>
         </div>
+        <input type="hidden" id="pageNumber" name="pageNumber" value="1" />
+    </form>
 
-        <!-- Status Search -->
-        <div class="col-md-2">
-            <label for="statusSearch" class="form-label fw-bold text-secondary">Status</label>
-            <select id="statusSearch" name="statusSearch" class="form-select">
-                <option value="">All</option>
-                <option value="0" selected="@(Model.StatusSearch == 0)">Pending</option>
-                <option value="1" selected="@(Model.StatusSearch == 1)">Confirmed</option>
-                <option value="2" selected="@(Model.StatusSearch == 2)">Canceled</option>
-                <option value="3" selected="@(Model.StatusSearch == 3)">Completed</option>
-            </select>
-        </div>
+    <!-- Nút tạo mới -->
+    <p class="text-center mb-4">
+        <a asp-page="./Create" class="btn btn-success"><i class="fas fa-plus mr-2"></i>Đặt lịch hẹn</a>
+    </p>
 
-        <!-- Search Button -->
-        <div class="col-md-1 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary w-100 shadow-sm">
-                <i class="fas fa-search"></i> Search
-            </button>
-        </div>
+    <!-- Bảng danh sách -->
+    <div class="table-responsive">
+        <table class="table table-hover animate__animated animate__fadeIn">
+            <thead class="thead-light">
+                <tr>
+                    @if (userRole == "Staff")
+                    {
+                        <th>Tên người dùng</th>
+                    }
+                    <th>Ngày hẹn</th>
+                    <th>Tên cuộc hẹn</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Appointments.Items)
+                {
+                    <tr class="lively-row">
+                        @if (userRole == "Staff")
+                        {
+                            <td>@Html.DisplayFor(modelItem => item.UserName)</td>
+                        }
+                        <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>
+                            @switch ((int)item.Status)
+                            {
+                                case 0:
+                                    <span class="badge bg-warning">Chờ xác nhận</span>
+                                    break;
+                                case 1:
+                                    <span class="badge bg-success">Đã xác nhận</span>
+                                    break;
+                                case 2:
+                                    <span class="badge bg-danger">Đã hủy</span>
+                                    break;
+                                case 3:
+                                    <span class="badge bg-primary">Hoàn thành</span>
+                                    break;
+                            }
+                        </td>
+                        <td>
+                            @if (userRole == "Staff")
+                            {
+                                <a class="btn btn-primary btn-sm mr-2" asp-page="./Update" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Sửa</a>
+                                <a class="btn btn-danger btn-sm mr-2" asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i> Xóa</a>
+                                <a class="btn btn-info btn-sm" asp-page="/Payments/Create" asp-route-appointmentId="@item.Id"><i class="fas fa-money-bill"></i> Thanh toán</a>
+                            }
+                            @if (userRole == "Customer")
+                            {
+                                <a class="btn btn-secondary btn-sm mr-2" asp-page="/Feedback/Create" asp-route-id="@item.Id"><i class="fas fa-comment"></i> Phản hồi</a>
+                                <a class="btn btn-danger btn-sm" asp-page="./Update" asp-route-id="@item.Id"><i class="fas fa-times"></i> Hủy</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 
-    <!-- Hidden Inputs -->
-    <input type="hidden" id="pageNumber" name="pageNumber" value="1">
-</form>
-
-<a asp-area="" asp-page="./Create">Book Appointment</a>
-
-<h1>Appointment</h1>
-<table class="table">
-    <thead>
-        <tr>
-            @if (HttpContextAccessor.HttpContext.User.IsInRole("Staff"))
-            {
-                <th>
-                    User name
-                </th>
-            }
-            <th>
-                Appointment Date
-            </th>
-            <th>
-                Name
-            </th>
-            <th>
-                Status
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Appointments.Items)
+    <!-- Phân trang -->
+    <div class="text-center mt-4">
+        @if (Model.Appointments.HasPreviousPage)
         {
-            <tr>
-                @if (HttpContextAccessor.HttpContext.User.IsInRole("Staff"))
-                {
-                    <td>
-                        @* @Html.DisplayFor(modelItem => item.UserId) *@
-                        @Html.DisplayFor(modelItem => item.UserName)
-                    </td>
-                }
-                <td>
-                    @Html.DisplayFor(modelItem => item.AppointmentDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td>
-                    @if (HttpContextAccessor.HttpContext!.User.IsInRole("Staff"))
-                    {
-                        <a class="btn btn-primary" asp-page="./Update" asp-route-id="@item.Id">Edit</a>
-                        <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                        <a class="btn btn-primary" asp-page="/Payments/Create" asp-route-appointmentId="@item.Id">
-                            Create Payment
-                        </a>
-                    }
-                    @if (HttpContextAccessor.HttpContext!.User.IsInRole("Customer"))
-                    {
-                        <a class="btn btn-secondary" asp-page="/Feedback/Create" asp-route-id="@item.Id">Feedback</a>
-                        <a class="btn btn-danger" asp-page="./Update" asp-route-id="@item.Id">Cancel</a>
-                    }
-                </td>
-            </tr>
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.Appointments.PageNumber - 1)" asp-route-userSearch="@Model.UserSearch" asp-route-nameSearch="@Model.NameSearch" asp-route-fromDateSearch="@Model.FromDateSearch?.ToString("yyyy-MM-dd")" asp-route-toDateSearch="@Model.ToDateSearch?.ToString("yyyy-MM-dd")" asp-route-statusSearch="@Model.StatusSearch" class="btn btn-primary mr-2"><i class="fas fa-arrow-left"></i> Trước</a>
         }
-    </tbody>
-</table>
-
-<div>
-    @if (Model.Appointments.HasPreviousPage)
-    {
-        <a asp-page="/Appointments/Index"
-           asp-route-pageNumber="@(Model.Appointments.PageNumber - 1)"
-           asp-route-userSearch="@Model.UserSearch"
-           asp-route-nameSearch="@Model.NameSearch"
-           asp-route-fromDateSearch="@Model.FromDateSearch?.ToString("yyyy-MM-dd")"
-           asp-route-toDateSearch="@Model.ToDateSearch?.ToString("yyyy-MM-dd")"
-           asp-route-statusSearch="@Model.StatusSearch"
-           class="btn btn-primary">Previous</a>
-    }
-
-    <span>Page @Model.Appointments.PageNumber of @Model.Appointments.TotalPages</span>
-
-    @if (Model.Appointments.HasNextPage)
-    {
-        <a asp-page="/Appointments/Index"
-           asp-route-pageNumber="@(Model.Appointments.PageNumber + 1)"
-           asp-route-userSearch="@Model.UserSearch"
-           asp-route-nameSearch="@Model.NameSearch"
-           asp-route-fromDateSearch="@Model.FromDateSearch?.ToString("yyyy-MM-dd")"
-           asp-route-toDateSearch="@Model.ToDateSearch?.ToString("yyyy-MM-dd")"
-           asp-route-statusSearch="@Model.StatusSearch"
-           class="btn btn-primary">Next</a>
-    }
+        <span class="text-muted">Trang @Model.Appointments.PageNumber / @Model.Appointments.TotalPages</span>
+        @if (Model.Appointments.HasNextPage)
+        {
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.Appointments.PageNumber + 1)" asp-route-userSearch="@Model.UserSearch" asp-route-nameSearch="@Model.NameSearch" asp-route-fromDateSearch="@Model.FromDateSearch?.ToString("yyyy-MM-dd")" asp-route-toDateSearch="@Model.ToDateSearch?.ToString("yyyy-MM-dd")" asp-route-statusSearch="@Model.StatusSearch" class="btn btn-primary ml-2">Tiếp <i class="fas fa-arrow-right"></i></a>
+        }
+    </div>
 </div>
 
+
+
+@section Scripts {
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f4f8;
+    }
+
+    .navbar {
+        background-color: #0078D4 !important;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand, .nav-link {
+        color: white !important;
+        transition: color 0.3s;
+    }
+
+        .nav-link:hover {
+            color: #F28C38 !important;
+        }
+
+    .text-vibrant {
+        color: #F28C38;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #0078D4;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-primary:hover {
+            background-color: #005BB5;
+            transform: scale(1.05);
+        }
+
+    .btn-success {
+        background-color: #28A745;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+    .btn-info {
+        background-color: #17A2B8;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-info:hover {
+            background-color: #138496;
+            transform: scale(1.05);
+        }
+
+    .btn-danger {
+        background-color: #DC3545;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-danger:hover {
+            background-color: #C82333;
+            transform: scale(1.05);
+        }
+
+    .btn-secondary {
+        background-color: #6C757D;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5A6268;
+            transform: scale(1.05);
+        }
+
+    .lively-row:hover {
+        background-color: #e9f7ef;
+        transition: background-color 0.3s;
+    }
+
+    .badge {
+        font-size: 1rem;
+        padding: 0.5em;
+    }
+
+    .footer {
+        background-color: #0078D4;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+</style>
