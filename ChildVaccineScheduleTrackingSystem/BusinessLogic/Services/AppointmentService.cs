@@ -209,6 +209,21 @@ namespace BusinessLogic.Services
 
             #endregion
 
+            #region PackageAppointment
+            // **Save AppointmentPackage only if a package is selected**
+            if (appointmentDto.PackageId != null)
+            {
+                AppointmentPackage appointmentPackage = new AppointmentPackage
+                {
+                    AppointmentId = appointment.Id,
+                    PackageId = (Guid)appointmentDto.PackageId,
+                };
+
+                await _unitOfWork.GetRepository<AppointmentPackage>().InsertAsync(appointmentPackage);
+                await _unitOfWork.SaveAsync();
+            }
+            #endregion
+
         }
 
         public async Task UpdateAppointment(PutAppointmentDTO putAppointmentDto)
