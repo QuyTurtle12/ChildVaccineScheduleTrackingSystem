@@ -188,25 +188,43 @@ namespace BusinessLogic.Services
 
             #region Create payment
             // Create the payment associated with this appointment
-
-             Guid packageId = (Guid)appointmentDto.PackageId!;
-             var package = await _packageService.GetByIdAsync(packageId);
-
-            PostPaymentDTO paymentDto = new PostPaymentDTO
+            if (appointmentDto.PackageId != null)
             {
-                AppointmentId = appointment.Id,
-                Name = appointmentDto.PaymentName ?? "Empty",
-                Amount = (int)package.Price, // Set price from appointment DTO
-                PaymentMethod = "Cash", // Default payment method, change as needed
-                Status = 0, // Pending payment
-                CreatedBy = currentUser,
-                CreatedTime = DateTimeOffset.Now
-            };
+                Guid packageId = appointmentDto.PackageId.Value; // Safe conversion
+                var package = await _packageService.GetByIdAsync(packageId);
 
-            Payment payment = _mapper.Map<Payment>(paymentDto);
-            await _unitOfWork.GetRepository<Payment>().InsertAsync(payment);
-            await _unitOfWork.SaveAsync();
+                PostPaymentDTO paymentDto = new PostPaymentDTO
+                {
+                    AppointmentId = appointment.Id,
+                    Name = appointmentDto.PaymentName ?? "Empty",
+                    Amount = (int)package.Price, // Set price from appointment DTO
+                    PaymentMethod = "Cash", // Default payment method, change as needed
+                    Status = 0, // Pending payment
+                    CreatedBy = currentUser,
+                    CreatedTime = DateTimeOffset.Now
+                };
 
+                Payment payment = _mapper.Map<Payment>(paymentDto);
+                await _unitOfWork.GetRepository<Payment>().InsertAsync(payment);
+                await _unitOfWork.SaveAsync();
+            }
+            else
+            {
+                PostPaymentDTO paymentDto = new PostPaymentDTO
+                {
+                    AppointmentId = appointment.Id,
+                    Name = appointmentDto.PaymentName ?? "Empty",
+                    Amount = 0, // Set price from appointment DTO
+                    PaymentMethod = "Cash", // Default payment method, change as needed
+                    Status = 0, // Pending payment
+                    CreatedBy = currentUser,
+                    CreatedTime = DateTimeOffset.Now
+                };
+
+                Payment payment = _mapper.Map<Payment>(paymentDto);
+                await _unitOfWork.GetRepository<Payment>().InsertAsync(payment);
+                await _unitOfWork.SaveAsync();
+            }
             #endregion
 
             #region PackageAppointment
