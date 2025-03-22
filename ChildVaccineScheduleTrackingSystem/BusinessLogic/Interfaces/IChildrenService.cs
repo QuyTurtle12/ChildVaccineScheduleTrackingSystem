@@ -14,5 +14,6 @@ namespace BusinessLogic.Interfaces
         Task UpdateChildrenAccount(PutChildrenDTO updatedpostChildrenAccountAccount);
 
         Task DeleteChildrenAccountById(string id);
+        Task<IEnumerable<GetChildrenDTO>> GetChildrenListByUserPhoneNumber(string phoneNumber);
     }
 }

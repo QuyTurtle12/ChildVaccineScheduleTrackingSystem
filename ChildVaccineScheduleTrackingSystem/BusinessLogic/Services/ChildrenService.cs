@@ -175,5 +175,23 @@ namespace BusinessLogic.Services
 
             return paginatedList;
         }
+        
+        public async Task<IEnumerable<GetChildrenDTO>> GetChildrenListByUserPhoneNumber(string phoneNumber)
+        {
+            User? user = await _unitOfWork.GetRepository<User>()
+                .Entities
+                .Where(u => u.PhoneNumber == phoneNumber)
+                .FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return null;
+            }
+            List<Child> children = await _unitOfWork.GetRepository<Child>()
+                .Entities
+                .Where(c => c.UserId == user.Id)
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<GetChildrenDTO>>(children);
+        }
     }
 }

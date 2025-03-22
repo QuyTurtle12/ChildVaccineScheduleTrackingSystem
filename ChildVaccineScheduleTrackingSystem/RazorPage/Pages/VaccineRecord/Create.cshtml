@@ -4,25 +4,40 @@
 @{
     ViewData["Title"] = "Create";
 }
-
 <h1>Create</h1>
 
 <h4>Vaccine Record</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <form method="get">
+            <div class="form-group">
+                <label for="phoneNumber" class="control-label">Enter Phone Number</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" class="form-control" value="@Model.PhoneNumber" />
+                <button type="submit" class="btn btn-primary mt-2">Search</button>
+            </div>
+        </form>
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <!-- Child Selection Dropdown -->
             <div class="form-group">
                 <label asp-for="VaccineRecord.ChildId" class="control-label"></label>
-                <input asp-for="VaccineRecord.ChildId" class="form-control" />
+                <select asp-for="VaccineRecord.ChildId" asp-items="@Model.ChildrenList" class="form-control">
+                    <option value="">-- Select Child --</option>
+                </select>
                 <span asp-validation-for="VaccineRecord.ChildId" class="text-danger"></span>
             </div>
+
+            <!-- Vaccine Selection Dropdown -->
             <div class="form-group">
                 <label asp-for="VaccineRecord.VaccineId" class="control-label"></label>
-                <input asp-for="VaccineRecord.VaccineId" class="form-control" />
+                <select asp-for="VaccineRecord.VaccineId" asp-items="@Model.VaccineList" class="form-control">
+                    <option value="">-- Select Vaccine --</option>
+                </select>
                 <span asp-validation-for="VaccineRecord.VaccineId" class="text-danger"></span>
             </div>
+
+            <!-- Other Vaccine Record Fields -->
             <div class="form-group">
                 <label asp-for="VaccineRecord.DateAdministered" class="control-label"></label>
                 <input asp-for="VaccineRecord.DateAdministered" class="form-control" />
@@ -33,11 +48,7 @@
                 <input asp-for="VaccineRecord.NextDoseDue" class="form-control" />
                 <span asp-validation-for="VaccineRecord.NextDoseDue" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="VaccineRecord.CustomerNote" class="control-label"></label>
-                <input asp-for="VaccineRecord.CustomerNote" class="form-control" />
-                <span asp-validation-for="VaccineRecord.CustomerNote" class="text-danger"></span>
-            </div>
+            <!-- Submit Button -->
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -48,7 +59,3 @@
 <div>
     <a asp-page="Index">Back to List</a>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
