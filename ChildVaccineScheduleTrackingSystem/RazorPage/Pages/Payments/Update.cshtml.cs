@@ -34,7 +34,7 @@ namespace RazorPage.Pages.Payments
             }
             // Populate status dropdown list
             StatusList = Enum.GetValues(typeof(EnumPayment))
-                .Cast<EnumAppointment>()
+                .Cast<EnumPayment>()
                 .Select(e => new SelectListItem
                 {
                     Value = ((int)e).ToString(),

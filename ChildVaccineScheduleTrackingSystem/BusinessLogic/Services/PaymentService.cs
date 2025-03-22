@@ -215,5 +215,22 @@ namespace BusinessLogic.Services
             repository.Update(existingPayment);
             await _unitOfWork.SaveAsync();
         }
+        public async Task DeletePaymentByAppointmentId(Guid appointmentId)
+        {
+            IGenericRepository<Payment> repository = _unitOfWork.GetRepository<Payment>();
+
+            Payment? existingPayment = await repository.Entities.Where(p => p.AppointmentId == appointmentId).FirstOrDefaultAsync();
+            if (existingPayment == null)
+            {
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Payment not found!");
+            }
+
+            string currentUser = GetCurrentUserName();
+            existingPayment.DeletedBy = currentUser;
+            existingPayment.DeletedTime = DateTime.UtcNow;
+
+            repository.Update(existingPayment);
+            await _unitOfWork.SaveAsync();
+        }
     }
 }

@@ -21,13 +21,15 @@ namespace BusinessLogic.Services
         private readonly IUOW _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IPackageService _packageService;
+        private readonly IPaymentService _paymentService;
 
-        public AppointmentService(IMapper mapper, IUOW unitOfWork, IHttpContextAccessor httpContextAccessor, IPackageService packageService)
+        public AppointmentService(IMapper mapper, IUOW unitOfWork, IHttpContextAccessor httpContextAccessor, IPackageService packageService, IPaymentService paymentService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
             _packageService = packageService;
+            _paymentService = paymentService;
         }
         private string GetCurrentUserName()
         {
@@ -289,6 +291,7 @@ namespace BusinessLogic.Services
                 //throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Cannot cancel an appointment that is already completed!");
                 return;
             }
+            
 
             // Update properties
             string currentUser = GetCurrentUserName();
@@ -300,6 +303,11 @@ namespace BusinessLogic.Services
 
             repository.Update(existingAppointment);
             await _unitOfWork.SaveAsync();
+
+            if (putAppointmentDto.Status == EnumAppointment.Canceled)
+            {
+                await _paymentService.DeletePaymentByAppointmentId(existingAppointment.Id);
+            }
         }
 
         public async Task DeleteAppointment(Guid id)

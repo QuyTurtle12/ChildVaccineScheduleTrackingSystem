@@ -17,5 +17,6 @@ namespace BusinessLogic.Interfaces
         Task CreatePayment(PostPaymentDTO paymentDto);
         Task UpdatePayment(PutPaymentDTO paymentDto);
         Task DeletePayment(Guid id);
+        Task DeletePaymentByAppointmentId(Guid appointmentId);
     }
 }
