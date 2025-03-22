@@ -1,8 +1,13 @@
 ﻿@page
 @using Data.Enum
 @model RazorPage.Pages.Appointments.UpdateModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "Update Appointment";
+}
+@{
+    var userRole = User.FindFirst("role")?.Value;
+    bool isCustomer = userRole == "Customer";
 }
 
 <div class="modal-body p-5 bg-light-subtle">
@@ -23,7 +28,19 @@
             <label asp-for="UpdatedAppointment.AppointmentDate" class="form-label fw-semibold text-dark opacity-75 mb-2">
                 <i class="bi bi-tag me-2"></i> Appointment Date
             </label>
-            <input asp-for="UpdatedAppointment.AppointmentDate" type="datetime-local" class="form-control form-control-lg border-dark-subtle shadow-sm" id="AppointmentDate" placeholder="Enter appointment date" />
+            @* <input asp-for="UpdatedAppointment.AppointmentDate" type="datetime-local" class="form-control form-control-lg border-dark-subtle shadow-sm"
+                   id="AppointmentDate" placeholder="Enter appointment date" disabled="@(isCustomer)" /> *@
+            @if (HttpContextAccessor.HttpContext.User.IsInRole("Customer"))
+            {
+                <input asp-for="UpdatedAppointment.AppointmentDate" type="datetime-local" class="form-control form-control-lg border-dark-subtle shadow-sm"
+                       id="AppointmentDate" placeholder="Enter appointment date" readonly />
+            }
+            else
+            {
+                <input asp-for="UpdatedAppointment.AppointmentDate" type="datetime-local" class="form-control form-control-lg border-dark-subtle shadow-sm"
+                       id="AppointmentDate" placeholder="Enter appointment date" />
+            }
+
             <span asp-validation-for="UpdatedAppointment.AppointmentDate" class="text-danger small mt-1"></span>
         </div>
 
@@ -31,16 +48,24 @@
             <label asp-for="UpdatedAppointment.Name" class="form-label fw-semibold text-dark opacity-75 mb-2">
                 <i class="bi bi-tag me-2"></i>Appointment Name
             </label>
-            <input asp-for="UpdatedAppointment.Name" class="form-control form-control-lg border-dark-subtle shadow-sm" id="Name" placeholder="Enter appointment name" />
+            @if (HttpContextAccessor.HttpContext.User.IsInRole("Customer"))
+            {
+                <input asp-for="UpdatedAppointment.Name" class="form-control form-control-lg border-dark-subtle shadow-sm" id="Name" placeholder="Enter appointment name" readonly/>
+            }
+            else
+            {
+                <input asp-for="UpdatedAppointment.Name" class="form-control form-control-lg border-dark-subtle shadow-sm" id="Name" placeholder="Enter appointment name" />
+            }
             <span asp-validation-for="UpdatedAppointment.Name" class="text-danger small mt-1"></span>
         </div>
 
         <div class="form-group mb-5">
-            <label asp-for="UpdatedAppointment.Status" class="form-label fw-semibold text-dark opacity-75 mb-2">
-                <i class="bi bi-tag me-2"></i> Status
-            </label>
+            
             @if (User.IsInRole("Staff"))
             {
+                <label asp-for="UpdatedAppointment.Status" class="form-label fw-semibold text-dark opacity-75 mb-2">
+                    <i class="bi bi-tag me-2"></i> Status
+                </label>
                 <!-- Staff sees all statuses -->
                 <select asp-for="UpdatedAppointment.Status" asp-items="Model.StatusList"
                         class="form-select form-control-lg border-dark-subtle shadow-sm" id="Status">
@@ -48,11 +73,13 @@
             }
             else if (User.IsInRole("Customer"))
             {
+                <div style="display: none">
                 <!-- Customers can only select "Cancelled" -->
                 <select asp-for="UpdatedAppointment.Status" class="form-select form-control-lg border-dark-subtle shadow-sm" id="Status">
                     <option value="@((int)EnumAppointment.Canceled)">Canceled</option>
                 </select>
                 <span asp-validation-for="UpdatedAppointment.Status" class="text-danger small mt-1"></span>
+                </div>
             }            
         </div>
 

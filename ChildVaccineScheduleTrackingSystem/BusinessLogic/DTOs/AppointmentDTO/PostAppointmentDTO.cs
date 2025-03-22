@@ -10,6 +10,6 @@ namespace BusinessLogic.DTOs.AppointmentDTO
     public class PostAppointmentDTO : BaseAppointmentDTO
     {
         public string? CustomerPhoneNumber { get; set; }
-
+        public string? PaymentName { get; set; }
     }
 }

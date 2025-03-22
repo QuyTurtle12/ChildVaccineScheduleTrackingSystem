@@ -36,13 +36,26 @@
                             </div>
                             <span asp-validation-for="Payment.Amount" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        @* <div class="form-group">
                             <label asp-for="Payment.PaymentMethod" class="font-weight-bold">Phương thức thanh toán</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-credit-card"></i></span>
                                 </div>
                                 <input asp-for="Payment.PaymentMethod" class="form-control" placeholder="Ví dụ: Thẻ tín dụng" />
+                            </div>
+                            <span asp-validation-for="Payment.PaymentMethod" class="text-danger"></span>
+                        </div> *@
+                        <div class="form-group">
+                            <label asp-for="Payment.PaymentMethod" class="font-weight-bold">Phương thức thanh toán</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-credit-card"></i></span>
+                                </div>
+                                <select asp-for="Payment.PaymentMethod" class="form-control">
+                                    <option value="Internet Banking">Online Banking</option>
+                                    <option value="Cash">Cash</option>
+                                </select>
                             </div>
                             <span asp-validation-for="Payment.PaymentMethod" class="text-danger"></span>
                         </div>

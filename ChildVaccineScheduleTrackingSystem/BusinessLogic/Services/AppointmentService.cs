@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
 using BusinessLogic.DTOs.AppointmentDTO;
+using BusinessLogic.DTOs.PaymentDTO;
 using BusinessLogic.Interfaces;
 using Data.Constants;
 using Data.Entities;
@@ -183,6 +184,25 @@ namespace BusinessLogic.Services
             Appointment appointment = _mapper.Map<Appointment>(appointmentDto);
             await _unitOfWork.GetRepository<Appointment>().InsertAsync(appointment);
             await _unitOfWork.SaveAsync();
+
+            #region Create payment
+            // Create the payment associated with this appointment
+            PostPaymentDTO paymentDto = new PostPaymentDTO
+            {
+                AppointmentId = appointment.Id,
+                Name = appointmentDto.PaymentName ?? "Empty",
+                Amount = 555, // Set price from appointment DTO
+                PaymentMethod = "Cash", // Default payment method, change as needed
+                Status = 0, // Pending payment
+                CreatedBy = currentUser,
+                CreatedTime = DateTimeOffset.Now
+            };
+
+            Payment payment = _mapper.Map<Payment>(paymentDto);
+            await _unitOfWork.GetRepository<Payment>().InsertAsync(payment);
+            await _unitOfWork.SaveAsync();
+
+            #endregion
 
         }
 

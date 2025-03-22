@@ -19,7 +19,17 @@
                         <input asp-for="UpdatedPayment.Id" type="hidden" />
                         <div class="form-group" style="display: none;">
                             <label asp-for="UpdatedPayment.AppointmentId" class="font-weight-bold">ID Cuộc hẹn</label>
-                            <input asp-for="UpdatedPayment.AppointmentId" class="form-control" />
+                            <input asp-for="UpdatedPayment.AppointmentId" class="form-control" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UpdatedPayment.Name" class="font-weight-bold">Tên thanh toán</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                </div>
+                                <input asp-for="UpdatedPayment.Name" class="form-control" readonly />
+                            </div>
+                            <span asp-validation-for="UpdatedPayment.Name" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="UpdatedPayment.Amount" class="font-weight-bold">Số tiền (VNĐ)</label>
@@ -27,11 +37,11 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-money-bill"></i></span>
                                 </div>
-                                <input asp-for="UpdatedPayment.Amount" class="form-control" type="number" step="1000" />
+                                <input asp-for="UpdatedPayment.Amount" class="form-control" type="number" step="1000" readonly/>
                             </div>
                             <span asp-validation-for="UpdatedPayment.Amount" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        @* <div class="form-group">
                             <label asp-for="UpdatedPayment.PaymentMethod" class="font-weight-bold">Phương thức thanh toán</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -40,16 +50,19 @@
                                 <input asp-for="UpdatedPayment.PaymentMethod" class="form-control" />
                             </div>
                             <span asp-validation-for="UpdatedPayment.PaymentMethod" class="text-danger"></span>
-                        </div>
+                        </div> *@
                         <div class="form-group">
-                            <label asp-for="UpdatedPayment.Name" class="font-weight-bold">Tên thanh toán</label>
+                            <label asp-for="UpdatedPayment.PaymentMethod" class="font-weight-bold">Phương thức thanh toán</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                    <span class="input-group-text"><i class="fas fa-credit-card"></i></span>
                                 </div>
-                                <input asp-for="UpdatedPayment.Name" class="form-control" />
+                                <select asp-for="UpdatedPayment.PaymentMethod" class="form-control">
+                                    <option value="Online Banking">Online Banking</option>
+                                    <option value="Cash">Cash</option>
+                                </select>
                             </div>
-                            <span asp-validation-for="UpdatedPayment.Name" class="text-danger"></span>
+                            <span asp-validation-for="UpdatedPayment.PaymentMethod" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="UpdatedPayment.Status" class="font-weight-bold">Trạng thái</label>

@@ -136,7 +136,7 @@ namespace BusinessLogic.Services
                 responseItem.Id = item.Id;
                 responseItem.AppointmentId = item.Appointment != null ? item.Appointment.Id : Guid.Empty;
                 responseItem.AppointmentName = item.Appointment != null ? item.Appointment.Name : "Empty";
-                responseItem.Amount = item.Amount;
+                responseItem.Amount = (int)(decimal)item.Amount;
                 responseItem.PaymentMethod = item.PaymentMethod;
                 responseItem.Name = item.Name;
                 responseItem.Status = item.Status.HasValue ? (EnumPayment)item.Status.Value : EnumPayment.Pending;

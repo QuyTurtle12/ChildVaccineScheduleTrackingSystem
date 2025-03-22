@@ -21,7 +21,7 @@ namespace BusinessLogic.DTOs.PaymentDTO
         public DateTimeOffset LastUpdatedTime { get; set; }
         public DateTimeOffset? DeletedTime { get; set; }
         public Guid AppointmentId { get; set; }
-        public decimal Amount { get; set; }
+        public int Amount { get; set; }
         public string? PaymentMethod { get; set; }
     }
 }
