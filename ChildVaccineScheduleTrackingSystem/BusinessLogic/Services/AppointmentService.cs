@@ -20,13 +20,14 @@ namespace BusinessLogic.Services
         private readonly IMapper _mapper;
         private readonly IUOW _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IPackageService _packageService;
 
-
-        public AppointmentService(IMapper mapper, IUOW unitOfWork, IHttpContextAccessor httpContextAccessor)
+        public AppointmentService(IMapper mapper, IUOW unitOfWork, IHttpContextAccessor httpContextAccessor, IPackageService packageService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
+            _packageService = packageService;
         }
         private string GetCurrentUserName()
         {
@@ -187,11 +188,15 @@ namespace BusinessLogic.Services
 
             #region Create payment
             // Create the payment associated with this appointment
+
+             Guid packageId = (Guid)appointmentDto.PackageId!;
+             var package = await _packageService.GetByIdAsync(packageId);
+
             PostPaymentDTO paymentDto = new PostPaymentDTO
             {
                 AppointmentId = appointment.Id,
                 Name = appointmentDto.PaymentName ?? "Empty",
-                Amount = 555, // Set price from appointment DTO
+                Amount = (int)package.Price, // Set price from appointment DTO
                 PaymentMethod = "Cash", // Default payment method, change as needed
                 Status = 0, // Pending payment
                 CreatedBy = currentUser,
