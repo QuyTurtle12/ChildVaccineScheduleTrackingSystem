@@ -22,6 +22,15 @@ namespace RazorPage.Pages.Vaccine
         public VaccineGetDto Vaccine { get; set; } = default!;
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole.ToLower() != "staff")
+            {
+                return Forbid();
+            }
 
             var vaccine =  await _vaccineService.GetByIdAsync(id);
             if (vaccine == null)

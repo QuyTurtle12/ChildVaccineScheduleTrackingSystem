@@ -18,6 +18,16 @@ namespace RazorPage.Pages.Vaccine
 
         public IActionResult OnGet()
         {
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole.ToLower() != "staff")
+            {
+                return Forbid();
+            }
+
             return Page();
         }
 

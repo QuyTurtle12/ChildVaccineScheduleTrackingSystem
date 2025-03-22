@@ -15,17 +15,17 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="VaccineRecord.DateAdministered" class="control-label"></label>
-                <input asp-for="VaccineRecord.DateAdministered" class="form-control" value="@Model.VaccineRecordGet.DateAdministered"/>
+                <input asp-for="VaccineRecord.DateAdministered" class="form-control" value="@Model.VaccineRecordGet.DateAdministered" readonly="@(Model.UserRole != "staff" ? "readonly" : null)" />
                 <span asp-validation-for="VaccineRecord.DateAdministered" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="VaccineRecord.NextDoseDue" class="control-label"></label>
-                <input asp-for="VaccineRecord.NextDoseDue" class="form-control" value="@Model.VaccineRecordGet.NextDoseDue" />
+                <input asp-for="VaccineRecord.NextDoseDue" class="form-control" value="@Model.VaccineRecordGet.NextDoseDue" readonly="@(Model.UserRole != "staff" ? "readonly" : null)" />
                 <span asp-validation-for="VaccineRecord.NextDoseDue" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="VaccineRecord.CustomerNote" class="control-label"></label>
-                <input asp-for="VaccineRecord.CustomerNote" class="form-control" value="@Model.VaccineRecordGet.CustomerNote" />
+                <input asp-for="VaccineRecord.CustomerNote" class="form-control" value="@Model.VaccineRecordGet.CustomerNote" readonly="@(Model.UserRole != "customer" ? "readonly" : null)" />
                 <span asp-validation-for="VaccineRecord.CustomerNote" class="text-danger"></span>
             </div>
             <div class="form-group">

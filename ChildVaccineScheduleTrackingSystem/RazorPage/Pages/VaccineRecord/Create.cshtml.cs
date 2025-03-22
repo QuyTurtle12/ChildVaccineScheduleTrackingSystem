@@ -11,14 +11,17 @@ namespace RazorPage.Pages.VaccineRecord
         private readonly IVaccineRecordService _vaccineRecordService;
         private readonly IChildrenService _childrenService;
         private readonly IVaccineService _vaccineService;
+        private readonly IJwtTokenService _jwtTokenService;
 
         public CreateModel(IVaccineRecordService vaccineRecordService,
                            IChildrenService childrenService,
-                           IVaccineService vaccineService)
+                           IVaccineService vaccineService,
+                           IJwtTokenService jwtTokenService)
         {
             _vaccineRecordService = vaccineRecordService;
             _childrenService = childrenService;
             _vaccineService = vaccineService;
+            _jwtTokenService = jwtTokenService;
         }
 
         [BindProperty]
@@ -30,9 +33,18 @@ namespace RazorPage.Pages.VaccineRecord
         public List<SelectListItem> ChildrenList { get; set; } = new();
         public List<SelectListItem> VaccineList { get; set; } = new();
 
-        public async Task OnGet(string? phoneNumber)
+        public async Task<IActionResult> OnGetAsync(string? phoneNumber)
         {
-            
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole.ToLower() != "staff")
+            {
+                return Forbid();
+            }
+
             if (!string.IsNullOrEmpty(phoneNumber))
             {
                 PhoneNumber = phoneNumber;
@@ -54,6 +66,8 @@ namespace RazorPage.Pages.VaccineRecord
                 Value = v.Id.ToString(),
                 Text = v.Name
             }).ToList();
+
+            return Page(); // Ensure you return IActionResult
         }
 
         public async Task<IActionResult> OnPostAsync()

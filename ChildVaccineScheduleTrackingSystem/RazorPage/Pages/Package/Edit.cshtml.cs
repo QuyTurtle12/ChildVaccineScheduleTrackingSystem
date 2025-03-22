@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
+using BusinessLogic.Services;
 using Data.Enum;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,13 +11,15 @@ namespace RazorPage.Pages.Package
     {
         private readonly IPackageService _packageService;
         private readonly IVaccineService _vaccineService;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public EditModel(IPackageService packageService, IVaccineService vaccineService)
+        public EditModel(IPackageService packageService, IVaccineService vaccineService, IJwtTokenService jwtTokenService)
         {
             _packageService = packageService;
             _vaccineService = vaccineService;
+            _jwtTokenService = jwtTokenService;
         }
-        
+
         public IEnumerable<VaccineGetDto> VaccinesInPackage { get; set; } = default!;
         public IEnumerable<VaccineGetDto> AllVaccines { get; set; } = default!;
         [BindProperty]
@@ -26,7 +29,16 @@ namespace RazorPage.Pages.Package
         public List<string> Types { get; set; } = new List<string> { PackageType.Single.ToString(), PackageType.LongTerm.ToString() };
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-               
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole.ToLower() != "staff")
+            {
+                return Forbid();
+            }
+
             var package =  await _packageService.GetByIdAsync(id);
             if (package == null)
             {
