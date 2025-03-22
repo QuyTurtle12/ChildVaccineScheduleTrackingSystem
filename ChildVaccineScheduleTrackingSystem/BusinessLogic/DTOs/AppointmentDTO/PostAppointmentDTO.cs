@@ -11,8 +11,8 @@ namespace BusinessLogic.DTOs.AppointmentDTO
     {
         public string? CustomerPhoneNumber { get; set; }
         public string? PaymentName { get; set; }
-        public Guid? PackageId { get; set; }
-        // public List<Guid> PackageIds { get; set; } = new List<Guid>(); // Allow multiple packages
+        //public Guid? PackageId { get; set; }
+        public List<Guid> PackageIds { get; set; } = new List<Guid>(); // Allow multiple packages
 
     }
 }

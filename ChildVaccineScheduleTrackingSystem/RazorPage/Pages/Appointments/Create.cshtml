@@ -20,7 +20,8 @@
 
 
     <input type="hidden" asp-for="Appointment.UserId" />
-    <input type="hidden" asp-for="Appointment.PackageId" id="selectedPackageId" />
+    @* <input type="hidden" asp-for="Appointment.PackageId" id="selectedPackageId" /> *@
+    <input type="hidden" asp-for="Appointment.PackageIds" id="selectedPackageIds" />
 
 
     @if (Model.UserRole == "Staff")
@@ -48,7 +49,7 @@
     </div>
 
     <!-- Package Selection -->
-    <div class="form-group">
+    @* <div class="form-group">
         <label>Select Package</label>
         <ul class="list-group">
             @foreach (var package in Model.Packages)
@@ -59,9 +60,28 @@
             }
         </ul>
         <span asp-validation-for="Appointment.PackageId" class="text-danger"></span>
+    </div> *@
+    <div class="form-group">
+        <label>Select Packages</label>
+        <ul class="list-group">
+            @foreach (var package in Model.Packages)
+            {
+                @* <li class="list-group-item package-option" data-package-id="@package.Id">
+                    <input type="checkbox" class="package-checkbox" value="@package.Id" /> @package.Name
+                </li> *@
+                <div>
+                    <input type="checkbox" name="Appointment.PackageIds" value="@package.Id" />
+                    <label>@package.Name</label>
+                </div>
+                
+            }
+        </ul>
+        <input type="hidden" asp-for="Appointment.PackageIds" id="selectedPackageIds" />
+        <span asp-validation-for="Appointment.PackageIds" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
+
+    <div class="form-group" style="display: none">
         <label>Selected Package ID</label>
         <input id="packageInput" class="form-control" disabled />
     </div>
@@ -113,22 +133,49 @@
         });
 
 
+        // document.addEventListener("DOMContentLoaded", function () {
+        //     const packageOptions = document.querySelectorAll(".package-option");
+        //     const packageIdInput = document.getElementById("selectedPackageId"); // Correct ID
+        //     const packageDisplayInput = document.getElementById("packageInput"); // Show selected ID
+
+        //     packageOptions.forEach(option => {
+        //         option.addEventListener("click", function () {
+        //             const selectedPackageId = this.getAttribute("data-package-id");
+        //             packageIdInput.value = selectedPackageId; // Set hidden field
+        //             packageDisplayInput.value = selectedPackageId; // Show in disabled input
+
+        //             packageOptions.forEach(opt => opt.classList.remove("active")); // Remove highlight
+        //             this.classList.add("active"); // Highlight selected package
+        //         });
+        //     });
+        // });
+
         document.addEventListener("DOMContentLoaded", function () {
-            const packageOptions = document.querySelectorAll(".package-option");
-            const packageIdInput = document.getElementById("selectedPackageId"); // Correct ID
-            const packageDisplayInput = document.getElementById("packageInput"); // Show selected ID
+            const checkboxes = document.querySelectorAll(".package-checkbox");
+            // const packageIdInput = document.getElementById("selectedPackageIds");
+            const hiddenInput = document.getElementById("selectedPackageIds");
 
-            packageOptions.forEach(option => {
-                option.addEventListener("click", function () {
-                    const selectedPackageId = this.getAttribute("data-package-id");
-                    packageIdInput.value = selectedPackageId; // Set hidden field
-                    packageDisplayInput.value = selectedPackageId; // Show in disabled input
 
-                    packageOptions.forEach(opt => opt.classList.remove("active")); // Remove highlight
-                    this.classList.add("active"); // Highlight selected package
+            // checkboxes.forEach(checkbox => {
+            //     checkbox.addEventListener("change", function () {
+            //         const selectedIds = Array.from(document.querySelectorAll(".package-checkbox:checked"))
+            //             .map(cb => cb.value);
+            //         packageIdInput.value = JSON.stringify(selectedIds); // Store as JSON string
+            //         console.log("Selected Package IDs:", packageIdInput.value);
+            //     });
+            // });
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", function () {
+                    let selectedValues = Array.from(checkboxes)
+                        .filter(c => c.checked)
+                        .map(c => c.value);
+
+                    hiddenInput.value = JSON.stringify(selectedValues); // Store as JSON array
                 });
             });
         });
+
+
 
     </script>
 }

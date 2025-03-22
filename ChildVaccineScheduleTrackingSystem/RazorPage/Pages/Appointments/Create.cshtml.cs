@@ -24,6 +24,8 @@ namespace RazorPage.Pages.Appointments
 
         public List<PackageGetDTO> Packages { get; set; } // Store available packages
 
+        [BindProperty]
+        public List<Guid> PackageIds { get; set; }
 
         public CreateModel(IAppointmentService appointmentService, IUserService userService, IJwtTokenService jwtTokenService, IPackageService packageService)
         {
@@ -31,6 +33,7 @@ namespace RazorPage.Pages.Appointments
             _userService = userService;
             _jwtTokenService = jwtTokenService;
             _packageService = packageService;
+            Packages = new List<PackageGetDTO>();
         }
 
 
@@ -41,7 +44,16 @@ namespace RazorPage.Pages.Appointments
             var jwtToken = HttpContext.Session.GetString("jwt_token");
             UserRole = _jwtTokenService.GetRole(jwtToken);
 
-            Packages = (await _packageService.GetAllAsync()).ToList(); // Load available packages
+            /*Packages = (await _packageService.GetAllAsync()).ToList();*/ // Load available packages
+            var packages = await _packageService.GetAllAsync(); // Fetch packages
+            if (packages != null)
+            {
+                Packages = packages.ToList();
+            }
+            else
+            {
+                Packages = new List<PackageGetDTO>(); // Ensure it's not null
+            }
 
             return Page();
         }
@@ -81,6 +93,13 @@ namespace RazorPage.Pages.Appointments
             if (Appointment.AppointmentDate <= DateTimeOffset.Now.AddMinutes(1))
             {
                 ModelState.AddModelError("Appointment.AppointmentDate", "Date can not be a date in past or presence.");
+                return Page();
+            }
+
+
+            if (Appointment.PackageIds == null || !Appointment.PackageIds.Any())
+            {
+                ModelState.AddModelError("Appointment.PackageIds", "At least one package must be selected.");
                 return Page();
             }
 

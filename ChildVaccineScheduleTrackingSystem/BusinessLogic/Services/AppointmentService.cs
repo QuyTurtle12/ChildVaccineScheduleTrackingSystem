@@ -188,25 +188,30 @@ namespace BusinessLogic.Services
 
             #region Create payment
             // Create the payment associated with this appointment
-            if (appointmentDto.PackageId != null)
+            if (appointmentDto.PackageIds != null && appointmentDto.PackageIds.Any())
             {
-                Guid packageId = appointmentDto.PackageId.Value; // Safe conversion
-                var package = await _packageService.GetByIdAsync(packageId);
-
-                PostPaymentDTO paymentDto = new PostPaymentDTO
+                foreach (var packageId in appointmentDto.PackageIds)
                 {
-                    AppointmentId = appointment.Id,
-                    Name = appointmentDto.PaymentName ?? "Empty",
-                    Amount = (int)package.Price, // Set price from appointment DTO
-                    PaymentMethod = "Cash", // Default payment method, change as needed
-                    Status = 0, // Pending payment
-                    CreatedBy = currentUser,
-                    CreatedTime = DateTimeOffset.Now
-                };
+                    var package = await _packageService.GetByIdAsync(packageId);
 
-                Payment payment = _mapper.Map<Payment>(paymentDto);
-                await _unitOfWork.GetRepository<Payment>().InsertAsync(payment);
-                await _unitOfWork.SaveAsync();
+                    if (package != null)
+                    {
+                        PostPaymentDTO paymentDto = new PostPaymentDTO
+                        {
+                            AppointmentId = appointment.Id,
+                            Name = appointmentDto.PaymentName ?? "Empty",
+                            Amount = (int)package.Price, // Price per package
+                            PaymentMethod = "Cash",
+                            Status = 0,
+                            CreatedBy = currentUser,
+                            CreatedTime = DateTimeOffset.Now
+                        };
+
+                        Payment payment = _mapper.Map<Payment>(paymentDto);
+                        await _unitOfWork.GetRepository<Payment>().InsertAsync(payment);
+                        await _unitOfWork.SaveAsync();
+                    }
+                }
             }
             else
             {
@@ -229,17 +234,39 @@ namespace BusinessLogic.Services
 
             #region PackageAppointment
             // **Save AppointmentPackage only if a package is selected**
-            if (appointmentDto.PackageId != null)
+            //if (appointmentDto.PackageId != null)
+            //{
+            //    AppointmentPackage appointmentPackage = new AppointmentPackage
+            //    {
+            //        AppointmentId = appointment.Id,
+            //        PackageId = (Guid)appointmentDto.PackageId,
+            //    };
+
+            //    await _unitOfWork.GetRepository<AppointmentPackage>().InsertAsync(appointmentPackage);
+            //    await _unitOfWork.SaveAsync();
+            //}
+            // Save the selected packages
+            if (appointmentDto.PackageIds == null || !appointmentDto.PackageIds.Any())
             {
-                AppointmentPackage appointmentPackage = new AppointmentPackage
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "At least one package must be selected.");
+            }
+            var appointmentPackages = new List<AppointmentPackage>();
+
+            foreach (var packageId in appointmentDto.PackageIds)
+            {
+                var appointmentPackage = new AppointmentPackage
                 {
                     AppointmentId = appointment.Id,
-                    PackageId = (Guid)appointmentDto.PackageId,
+                    PackageId = packageId
                 };
 
-                await _unitOfWork.GetRepository<AppointmentPackage>().InsertAsync(appointmentPackage);
-                await _unitOfWork.SaveAsync();
+                appointmentPackages.Add(appointmentPackage);
             }
+
+            // Bulk insert all at once
+            await _unitOfWork.GetRepository<AppointmentPackage>().InsertRangeAsync(appointmentPackages);
+            await _unitOfWork.SaveAsync();
+
             #endregion
 
         }
