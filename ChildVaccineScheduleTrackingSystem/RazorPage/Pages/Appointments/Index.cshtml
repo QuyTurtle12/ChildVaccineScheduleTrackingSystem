@@ -116,7 +116,7 @@
                     @if (HttpContextAccessor.HttpContext!.User.IsInRole("Customer"))
                     {
                         <a class="btn btn-secondary" asp-page="/Feedback/Create" asp-route-id="@item.Id">Feedback</a>
-                        <a class="btn btn-danger" asp-page="./Update" asp-route-id="@item.Id">Cancel</a>
+                        <a class="btn btn-danger" asp-page="./Update" asp-route-id="@item.Id" asp-route-actionType="Cancel">Cancel</a>
                     }
                 </td>
             </tr>

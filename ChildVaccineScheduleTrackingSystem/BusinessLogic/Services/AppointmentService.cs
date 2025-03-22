@@ -190,28 +190,31 @@ namespace BusinessLogic.Services
             // Create the payment associated with this appointment
             if (appointmentDto.PackageIds != null && appointmentDto.PackageIds.Any())
             {
+                int totalPrice = 0;
                 foreach (var packageId in appointmentDto.PackageIds)
                 {
                     var package = await _packageService.GetByIdAsync(packageId);
-
+                    
                     if (package != null)
                     {
-                        PostPaymentDTO paymentDto = new PostPaymentDTO
-                        {
-                            AppointmentId = appointment.Id,
-                            Name = appointmentDto.PaymentName ?? "Empty",
-                            Amount = (int)package.Price, // Price per package
-                            PaymentMethod = "Cash",
-                            Status = 0,
-                            CreatedBy = currentUser,
-                            CreatedTime = DateTimeOffset.Now
-                        };
-
-                        Payment payment = _mapper.Map<Payment>(paymentDto);
-                        await _unitOfWork.GetRepository<Payment>().InsertAsync(payment);
-                        await _unitOfWork.SaveAsync();
+                        totalPrice += (int)package.Price;
                     }
+
                 }
+                PostPaymentDTO paymentDto = new PostPaymentDTO
+                {
+                    AppointmentId = appointment.Id,
+                    Name = appointmentDto.PaymentName ?? "Empty",
+                    Amount =  totalPrice,
+                    PaymentMethod = "Cash",
+                    Status = 0,
+                    CreatedBy = currentUser,
+                    CreatedTime = DateTimeOffset.Now
+                };
+
+                Payment payment = _mapper.Map<Payment>(paymentDto);
+                await _unitOfWork.GetRepository<Payment>().InsertAsync(payment);
+                await _unitOfWork.SaveAsync();
             }
             else
             {
@@ -279,6 +282,14 @@ namespace BusinessLogic.Services
             {
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Appointment not found!");
             }
+
+            // Prevent canceling a completed appointment
+            if ((EnumAppointment?)existingAppointment.Status == EnumAppointment.Completed && putAppointmentDto.Status == EnumAppointment.Canceled)
+            {
+                //throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Cannot cancel an appointment that is already completed!");
+                return;
+            }
+
             // Update properties
             string currentUser = GetCurrentUserName();
 
