@@ -1,19 +1,15 @@
-﻿using AutoMapper;
-using Azure;
+﻿using System.Security.Claims;
+using AutoMapper;
 using BusinessLogic.DTOs.AppointmentDTO;
 using BusinessLogic.Interfaces;
 using Data.Constants;
 using Data.Entities;
+using Data.Enum;
 using Data.ExceptionCustom;
 using Data.Interface;
 using Data.PaggingItem;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
 {
@@ -22,16 +18,35 @@ namespace BusinessLogic.Services
 
         private readonly IMapper _mapper;
         private readonly IUOW _unitOfWork;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AppointmentService(IMapper mapper, IUOW unitOfWork)
+
+        public AppointmentService(IMapper mapper, IUOW unitOfWork, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _httpContextAccessor = httpContextAccessor;
+        }
+        private string GetCurrentUserName()
+        {
+            return _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Unknown";
+        }
+        private Guid GetCurrentUserId()
+        {
+            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
+            return userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId) ? userId : Guid.Empty;
+        }
+
+        private string GetCurrentUserRole()
+        {
+            var roleClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role);
+            return roleClaim?.Value ?? "Customer"; // Default to "Customer" if role is missing
         }
 
         public async Task<IEnumerable<GetAppointmentDTO>> GetAllAppointments()
         {
             IQueryable<Appointment> query = _unitOfWork.GetRepository<Appointment>().Entities;
+            query = query.Where(a => !a.DeletedTime.HasValue); // Exclude deleted appointments
             query = query.OrderBy(c => c.Name);
             IEnumerable<Appointment> appointments = await query.ToListAsync();
             return _mapper.Map<IEnumerable<GetAppointmentDTO>>(appointments);
@@ -48,14 +63,17 @@ namespace BusinessLogic.Services
             return responseItem;
         }
 
-        public async Task<PaginatedList<GetAppointmentDTO>> GetAppointments(int index, int pageSize, Guid? idSearch, string? userSearch, string? nameSearch, DateTimeOffset? fromDateSearch, DateTimeOffset? toDateSearch, int? statusSearch)
+        public async Task<PaginatedList<GetAppointmentDTO>> GetAppointments(int index, int pageSize, Guid? idSearch, string? userSearch, string? userIdSearch, string? nameSearch, DateTimeOffset? fromDateSearch, DateTimeOffset? toDateSearch, int? statusSearch)
         {
+            var currentUserId = GetCurrentUserId();
+            var currentUserRole = GetCurrentUserRole();
+
             if (index <= 0 || pageSize <= 0)
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Please input index or page size correctly!");
             }
 
-            IQueryable<Appointment> query = _unitOfWork.GetRepository<Appointment>().Entities;
+            IQueryable<Appointment> query = _unitOfWork.GetRepository<Appointment>().Entities.Include(a => a.User);
 
             // Only show records where DeletedBy is null
             query = query.Where(u => u.DeletedBy == null);
@@ -66,10 +84,22 @@ namespace BusinessLogic.Services
                 query = query.Where(u => u.Id == idSearch);
             }
 
+            // If the user is a customer, filter by their UserId
+            if (currentUserRole == "Customer")
+            {
+                query = query.Where(a => a.UserId == currentUserId);
+            }
+
             // Search by user name
             if (!string.IsNullOrWhiteSpace(userSearch))
             {
                 query = query.Where(u => u.User!.Name.Contains(userSearch.Trim()));
+            }
+
+            // Search by user id
+            if (!string.IsNullOrWhiteSpace(userIdSearch))
+            {
+                query = query.Where(u => u.UserId.Equals(Guid.Parse(userIdSearch)));
             }
 
             // Search by name
@@ -77,6 +107,7 @@ namespace BusinessLogic.Services
             {
                 query = query.Where(u => u.Name!.Contains(nameSearch.Trim()));
             }
+
 
 
             if (statusSearch.HasValue)
@@ -110,7 +141,7 @@ namespace BusinessLogic.Services
                 responseItem.UserName = item.User != null ? item.User.Name : "Unknown";
                 responseItem.AppointmentDate = item.AppointmentDate;
                 responseItem.Name = item.Name;
-                responseItem.Status = item.Status;
+                responseItem.Status = item.Status.HasValue ? (EnumAppointment)item.Status.Value : EnumAppointment.Pending;
                 responseItem.CreatedBy = item.CreatedBy;
                 responseItem.LastUpdatedBy = item.LastUpdatedBy;
                 responseItem.DeletedBy = item.DeletedBy;
@@ -137,15 +168,19 @@ namespace BusinessLogic.Services
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Apppointment data is required!");
             }
-            appointmentDto.Status = 0;
 
-            appointmentDto.CreatedBy = "system"; // Will use token
-            appointmentDto.CreatedTime = DateTime.Now;
-            appointmentDto.LastUpdatedBy = "system"; // Will use token
-            appointmentDto.LastUpdatedTime = DateTime.Now;
+            string currentUser = GetCurrentUserName();
+
+            if(appointmentDto.AppointmentDate <= DateTimeOffset.Now)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Apppointment date can not be a day in the past or today!");
+            }
+
+            appointmentDto.Status = 0;
+            appointmentDto.CreatedBy = currentUser;
+            appointmentDto.CreatedTime = DateTimeOffset.UtcNow;
 
             Appointment appointment = _mapper.Map<Appointment>(appointmentDto);
-
             await _unitOfWork.GetRepository<Appointment>().InsertAsync(appointment);
             await _unitOfWork.SaveAsync();
 
@@ -160,7 +195,9 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Appointment not found!");
             }
             // Update properties
-            putAppointmentDto.LastUpdatedBy = "System update";
+            string currentUser = GetCurrentUserName();
+
+            putAppointmentDto.LastUpdatedBy = currentUser;
             putAppointmentDto.LastUpdatedTime = DateTimeOffset.Now;
 
             _mapper.Map(putAppointmentDto, existingAppointment);
@@ -178,7 +215,9 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Appointment not found!");
             }
 
-            existingAppointment.DeletedBy = "system delete"; // Will use token
+            string currentUser = GetCurrentUserName();
+
+            existingAppointment.DeletedBy = currentUser;
             existingAppointment.DeletedTime = DateTime.Now;
 
             repository.Update(existingAppointment);

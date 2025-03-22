@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Data.Entities;
 using BusinessLogic.Interfaces;
 using BusinessLogic.DTOs.ChildrenDTO;
 
@@ -11,6 +9,8 @@ namespace RazorPage.Pages.Children
     {
         private readonly IChildrenService _childrenService;
         private readonly IJwtTokenService _jwtTokenService;
+
+        private const string CUSTOMER_ROLE = "Customer";
 
         public DetailsModel(IChildrenService childrenService, IJwtTokenService jwtTokenService)
         {
@@ -22,6 +22,16 @@ namespace RazorPage.Pages.Children
 
         public async Task<IActionResult> OnGetAsync(string? id)
         {
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole != CUSTOMER_ROLE)
+            {
+                return Forbid();
+            }
+
             if (id == null)
             {
                 return NotFound();

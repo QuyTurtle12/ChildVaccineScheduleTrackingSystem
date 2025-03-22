@@ -13,6 +13,8 @@ namespace RazorPage.Pages.Children
         private readonly IChildrenService _childrenService;
         private readonly IJwtTokenService _jwtTokenService;
 
+        private const string CUSTOMER_ROLE = "Customer";
+
         public DeleteModel(IChildrenService childrenService, IJwtTokenService jwtTokenService)
         {
             _childrenService = childrenService;
@@ -24,6 +26,16 @@ namespace RazorPage.Pages.Children
 
         public async Task<IActionResult> OnGetAsync(string? id)
         {
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole != CUSTOMER_ROLE)
+            {
+                return Forbid();
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -43,6 +55,16 @@ namespace RazorPage.Pages.Children
 
         public async Task<IActionResult> OnPostAsync(string? id)
         {
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole != CUSTOMER_ROLE)
+            {
+                return Forbid();
+            }
+
             if (id == null)
             {
                 return NotFound();

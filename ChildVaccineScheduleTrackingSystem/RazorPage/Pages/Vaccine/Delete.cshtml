@@ -1,76 +1,127 @@
 ﻿@page
 @model RazorPage.Pages.Vaccine.DeleteModel
-
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Xóa Vaccine - Trung tâm Vaccine";
 }
 
-<h1>Delete</h1>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Vaccine</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            Manufacturer
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Vaccine.Manufacturer)
-        </dd>
-        <dt class="col-sm-2">
-            Description
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Vaccine.Description)
-        </dd>
-        <dt class="col-sm-2">
-            Name
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Vaccine.Name)
-        </dd>
-        <dt class="col-sm-2">
-            Created By
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Vaccine.CreatedBy)
-        </dd>
-        <dt class="col-sm-2">
-            Last Updated By
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Vaccine.LastUpdatedBy)
-        </dd>
-        <dt class="col-sm-2">
-            Deleted By
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Vaccine.DeletedBy)
-        </dd>
-        <dt class="col-sm-2">
-            Created Time
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Vaccine.CreatedTime)
-        </dd>
-        <dt class="col-sm-2">
-            Last Updated Time
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Vaccine.LastUpdatedTime)
-        </dd>
-        <dt class="col-sm-2">
-            Deleted Time
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Vaccine.DeletedTime)
-        </dd>
-    </dl>
-    
-    <form method="post">
-        <input type="hidden" asp-for="Vaccine.Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-page="./Index">Back to List</a>
-    </form>
+
+<!-- Nội dung chính -->
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card lively-card animate__animated animate__fadeIn">
+                <div class="card-body">
+                    <h1 class="text-center text-vibrant mb-4 animate__animated animate__bounceIn">
+                        <i class="fas fa-trash mr-2"></i>Xóa Vaccine
+                    </h1>
+                    <h3 class="text-center text-danger mb-4">Bạn có chắc muốn xóa vaccine này?</h3>
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <img src="@Model.Vaccine.ImageUrl" alt="@Model.Vaccine.Name" class="img-fluid vaccine-img mb-3" />
+                            <h4>@Model.Vaccine.Name</h4>
+                        </div>
+                        <div class="col-md-8">
+                            <dl class="row">
+                                <dt class="col-sm-4">Nhà sản xuất</dt>
+                                <dd class="col-sm-8">@Model.Vaccine.Manufacturer</dd>
+                                <dt class="col-sm-4">Mô tả</dt>
+                                <dd class="col-sm-8">@Model.Vaccine.Description</dd>
+                                <dt class="col-sm-4">Đơn giá</dt>
+                                <dd class="col-sm-8">@Model.Vaccine.Price.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</dd>
+                                <dt class="col-sm-4">Người tạo</dt>
+                                <dd class="col-sm-8">@Model.Vaccine.CreatedBy</dd>
+                                <dt class="col-sm-4">Thời gian tạo</dt>
+                                <dd class="col-sm-8">@Model.Vaccine.CreatedTime</dd>
+                                <dt class="col-sm-4">Người cập nhật</dt>
+                                <dd class="col-sm-8">@Model.Vaccine.LastUpdatedBy</dd>
+                                <dt class="col-sm-4">Thời gian cập nhật</dt>
+                                <dd class="col-sm-8">@Model.Vaccine.LastUpdatedTime</dd>
+                                <dt class="col-sm-4">Người xóa</dt>
+                                <dd class="col-sm-8">@Model.Vaccine.DeletedBy</dd>
+                                <dt class="col-sm-4">Thời gian xóa</dt>
+                                <dd class="col-sm-8">@Model.Vaccine.DeletedTime</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <form method="post" class="text-center mt-4">
+                        <input type="hidden" asp-for="Vaccine.Id" />
+                        <input type="submit" value="Xóa" class="btn btn-danger btn-lg animate__animated animate__pulse animate__infinite" />
+                        <a asp-page="./Index" class="btn btn-secondary ml-2"><i class="fas fa-arrow-left"></i> Quay lại</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Chân trang -->
+
+
+@section Scripts {
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f4f8;
+    }
+
+    .navbar {
+        background-color: #0078D4 !important;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand, .nav-link {
+        color: white !important;
+        transition: color 0.3s;
+    }
+
+        .nav-link:hover {
+            color: #F28C38 !important;
+        }
+
+    .lively-card {
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        background-color: white;
+        border-radius: 10px;
+    }
+
+        .lively-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .text-vibrant {
+        color: #F28C38;
+        font-weight: bold;
+    }
+
+    .btn-danger {
+        transition: transform 0.2s;
+    }
+
+        .btn-danger:hover {
+            transform: scale(1.05);
+        }
+
+    .vaccine-img {
+        max-width: 150px;
+        border-radius: 10px;
+    }
+
+    .footer {
+        background-color: #0078D4;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+</style>

@@ -1,86 +1,185 @@
 ﻿@page
 @model RazorPage.Pages.Users.IndexModel
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản lý Người dùng - Trung tâm Vaccine";
 }
 
-<h1>User Management</h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Full Name
-            </th>
-            <th>
-                Email
-            </th>
-            <th>
-                Role
-            </th>
-            <th>
-                Phone Number
-            </th>
-            <th>
-                Address
-            </th>
-            <th>
-                Status
-            </th>
-            <th>
-                Action
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.UserDTOList.Items)
-        {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RoleName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
 
-<div>
-    @if (Model.UserDTOList != null)
+<!-- Nội dung chính -->
+<div class="container my-5">
+    <h1 class="text-center text-vibrant mb-4 animate__animated animate__bounceIn">
+        <i class="fas fa-users mr-2"></i>Quản lý Người dùng
+    </h1>
+
+    <!-- Form tìm kiếm -->
+    <form method="get" asp-page="./Index" class="mb-4 p-4 bg-light rounded shadow animate__animated animate__fadeIn">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="phoneSearch" class="form-label fw-bold text-success">Tìm theo SĐT</label>
+                <input type="text" id="phoneSearch" name="phoneSearch" class="form-control" value="@Model.PhoneSearch" placeholder="Nhập số điện thoại..." />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search mr-2"></i>Tìm</button>
+            </div>
+            <div class="col-md-2">
+                <a asp-page="./Index" class="btn btn-secondary w-100"><i class="fas fa-times mr-2"></i>Xóa bộ lọc</a>
+            </div>
+        </div>
+    </form>
+
+    <!-- Nút tạo mới (chỉ Admin thấy) -->
+    @if (Model.loggedInUserRole == "Admin")
     {
+        <p class="text-center mb-4">
+            <a asp-page="Create" class="btn btn-success"><i class="fas fa-plus mr-2"></i>Thêm Người dùng</a>
+        </p>
+    }
+
+    <!-- Bảng danh sách -->
+    <div class="table-responsive">
+        <table class="table table-hover animate__animated animate__fadeIn">
+            <thead class="thead-light">
+                <tr>
+                    <th>Họ tên</th>
+                    <th>Email</th>
+                    <th>Vai trò</th>
+                    <th>Số điện thoại</th>
+                    <th>Địa chỉ</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.UserDTOList.Items)
+                {
+                    <tr class="lively-row">
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                        <td>@Html.DisplayFor(modelItem => item.RoleName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                        <td>
+                            @if (Model.loggedInUserRole == "Admin")
+                            {
+                                <a class="btn btn-primary btn-sm mr-2" asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Sửa</a>
+                                <a class="btn btn-info btn-sm mr-2" asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i> Chi tiết</a>
+                                <a class="btn btn-danger btn-sm" asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i> Xóa</a>
+                            }
+                            @if (Model.loggedInUserRole == "Staff")
+                            {
+                                <a class="btn btn-info btn-sm" asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i> Chi tiết</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Phân trang -->
+    <div class="text-center mt-4">
         @if (Model.UserDTOList.HasPreviousPage)
         {
-            <a asp-page="./Index" asp-route-pageNumber="@(Model.UserDTOList.PageNumber - 1)" class="btn btn-primary">Previous</a>
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.UserDTOList.PageNumber - 1)" asp-route-phoneSearch="@Model.PhoneSearch" class="btn btn-primary mr-2"><i class="fas fa-arrow-left"></i> Trước</a>
         }
-
-        <span>Page @Model.UserDTOList.PageNumber of @Model.UserDTOList.TotalPages</span>
-
+        <span class="text-muted">Trang @Model.UserDTOList.PageNumber / @Model.UserDTOList.TotalPages</span>
         @if (Model.UserDTOList.HasNextPage)
         {
-            <a asp-page="./Index" asp-route-pageNumber="@(Model.UserDTOList.PageNumber + 1)" class="btn btn-primary">Next</a>
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.UserDTOList.PageNumber + 1)" asp-route-phoneSearch="@Model.PhoneSearch" class="btn btn-primary ml-2">Tiếp <i class="fas fa-arrow-right"></i></a>
         }
-    }
+    </div>
 </div>
+
+
+@section Scripts {
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f4f8;
+    }
+
+    .navbar {
+        background-color: #0078D4 !important;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand, .nav-link {
+        color: white !important;
+        transition: color 0.3s;
+    }
+
+        .nav-link:hover {
+            color: #F28C38 !important;
+        }
+
+    .text-vibrant {
+        color: #F28C38;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #0078D4;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-primary:hover {
+            background-color: #005BB5;
+            transform: scale(1.05);
+        }
+
+    .btn-success {
+        background-color: #28A745;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+    .btn-info {
+        background-color: #17A2B8;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-info:hover {
+            background-color: #138496;
+            transform: scale(1.05);
+        }
+
+    .btn-danger {
+        background-color: #DC3545;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-danger:hover {
+            background-color: #C82333;
+            transform: scale(1.05);
+        }
+
+    .lively-row:hover {
+        background-color: #e9f7ef;
+        transition: background-color 0.3s;
+    }
+
+    .footer {
+        background-color: #0078D4;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+</style>

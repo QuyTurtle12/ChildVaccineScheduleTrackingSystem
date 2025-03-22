@@ -47,7 +47,6 @@ namespace RazorPage.Pages.Payments
             var userRole = _jwtTokenService.GetRole(jwtToken);
             ViewData["JwtToken"] = jwtToken;
             ViewData["UserRole"] = userRole;
-            Console.WriteLine($"JWT Token: {jwtToken}");
             // Fetch paginated search categories
             Payments = await _paymentService.GetPayments(pageNumber, pageSize, null, paymentMethodSearch, fromAmountSearch, toAmountSearch, nameSearch, statusSearch);
         }

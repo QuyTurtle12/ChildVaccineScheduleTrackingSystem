@@ -78,6 +78,12 @@ namespace Data.Base
                 .HasForeignKey(ap => ap.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<Appointment>()
+                .HasMany(pa => pa.AppointmentPackages)
+                .WithOne(ap => ap.Appointment)
+                .HasForeignKey(fb => fb.AppointmentId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Feedback>()
                 .HasOne(fb => fb.Appointment)
                 .WithMany(ap => ap.Feedbacks)
@@ -85,8 +91,9 @@ namespace Data.Base
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Package>()
-                .HasOne(pa => pa.Appointment)
-                .WithMany(ap => ap.Packages)
+                .HasMany(pa => pa.AppointmentPackages)
+                .WithOne(ap => ap.Package)
+                .HasForeignKey(fb => fb.PackageId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Package>()

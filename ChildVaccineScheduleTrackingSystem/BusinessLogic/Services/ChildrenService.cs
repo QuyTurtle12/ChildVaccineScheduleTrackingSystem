@@ -38,6 +38,9 @@ namespace BusinessLogic.Services
             // Get parent id
             string? parentId = _tokenService.GetCurrentUserId();
 
+            // Parent Id of created children
+            newChild.UserId = Guid.Parse(parentId);
+
             // Add Audit Fields
             newChild.CreatedBy = parentId;
             newChild.LastUpdatedBy = newChild.CreatedBy;

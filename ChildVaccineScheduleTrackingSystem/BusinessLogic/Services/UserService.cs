@@ -32,7 +32,7 @@ namespace BusinessLogic.Services
         }
 
         // Get list of system user
-        public async Task<PaginatedList<GetUserDTO>> GetUserAccounts(int index, int pageSize, string? idSearch, string? nameSearch, string? emailSearch, EnumRole? role)
+        public async Task<PaginatedList<GetUserDTO>> GetUserAccounts(int index, int pageSize, string? idSearch, string? nameSearch, string? emailSearch, string? phoneSearch, EnumRole? role)
         {
             // Validate index & page size
             if (index <= 0 || pageSize <= 0)
@@ -56,7 +56,7 @@ namespace BusinessLogic.Services
             if (!string.IsNullOrWhiteSpace(nameSearch))
             {
                 query = query.Where(u => u.Name!.Contains(nameSearch));
-            }
+            }     
 
             // Search by email
             if (!string.IsNullOrWhiteSpace(emailSearch))
@@ -64,6 +64,12 @@ namespace BusinessLogic.Services
                 // query = query.Where(u => u.AccountEmail!.Equals(emailSearch));
                 emailSearch = emailSearch.Trim();
                 query = query.Where(u => u.Email!.Trim().ToLower().Contains(emailSearch.ToLower()));
+            }
+
+            // Search by phone number
+            if (!string.IsNullOrWhiteSpace(phoneSearch))
+            {
+                query = query.Where(u => u.PhoneNumber!.Equals(phoneSearch));
             }
 
             // Search by role
@@ -216,5 +222,29 @@ namespace BusinessLogic.Services
             await _unitOfWork.GetRepository<User>().InsertAsync(newUser);
             await _unitOfWork.SaveAsync();
         }
+
+
+        // Get 1 user account by phone number
+        public async Task<GetUserDTO> GetUserByPhoneNumber(string phoneNumber)
+        {
+            IQueryable<User> query = _unitOfWork.GetRepository<User>().Entities.Include(u => u.Role);
+
+            User? user = await query.Where(u => u.PhoneNumber == phoneNumber).FirstOrDefaultAsync();
+
+            // Validate user
+            if (user == null || user.DeletedTime.HasValue)
+            {
+                //throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "User not found!");
+                return null;
+            }
+
+            // Mapping user entities to DTO
+            GetUserDTO responseItem = _mapper.Map<GetUserDTO>(user);
+
+            responseItem.RoleName = user.Role!.Name == EnumRole.Staff.ToString() ? "Staff" : "Customer";
+
+            return responseItem;
+        }
+
     }
 }

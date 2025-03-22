@@ -1,0 +1,132 @@
+﻿@page
+@model RazorPage.Pages.Feedback.IndexModel
+@{
+    ViewData["Title"] = "Danh sách Phản hồi - Trung tâm Vaccine";
+}
+
+
+
+<!-- Nội dung chính -->
+<div class="container my-5">
+    <h1 class="text-center text-vibrant mb-4 animate__animated animate__bounceIn">
+        <i class="fas fa-comment-alt mr-2"></i>Danh sách Phản hồi
+    </h1>
+
+    <!-- Form tìm kiếm -->
+    <form method="get" asp-page="./Index" class="mb-5 p-4 bg-light rounded shadow animate__animated animate__fadeIn">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label for="customerNameSearch" class="form-label fw-bold text-success">Tên khách hàng</label>
+                <input type="text" id="customerNameSearch" name="customerNameSearch" class="form-control" placeholder="Nhập tên..." value="@Model.CustomerNameSearch" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search mr-2"></i>Tìm</button>
+            </div>
+            <div class="col-md-2">
+                <a asp-page="./Index" class="btn btn-secondary w-100"><i class="fas fa-times mr-2"></i>Xóa bộ lọc</a>
+            </div>
+        </div>
+    </form>
+
+    <!-- Bảng danh sách -->
+    <div class="table-responsive">
+        <table class="table table-hover animate__animated animate__fadeIn">
+            <thead class="thead-light">
+                <tr>
+                    <th>Tên khách hàng</th>
+                    <th>Đánh giá</th>
+                    <th>Bình luận</th>
+                    <th>Thời gian phản hồi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.FeedbackList.Items)
+                {
+                    <tr class="lively-row">
+                        <td>@Html.DisplayFor(modelItem => item.UserName)</td>
+                        <td>
+                            <span class="badge badge-warning">@Html.DisplayFor(modelItem => item.Rating) <i class="fas fa-star"></i></span>
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Comment)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CreatedTime)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Phân trang -->
+    <div class="text-center mt-4">
+        @if (Model.FeedbackList.HasPreviousPage)
+        {
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.FeedbackList.PageNumber - 1)" asp-route-customerNameSearch="@Model.CustomerNameSearch" class="btn btn-primary mr-2"><i class="fas fa-arrow-left"></i> Trước</a>
+        }
+        <span class="text-muted">Trang @Model.FeedbackList.PageNumber / @Model.FeedbackList.TotalPages</span>
+        @if (Model.FeedbackList.HasNextPage)
+        {
+            <a asp-page="./Index" asp-route-pageNumber="@(Model.FeedbackList.PageNumber + 1)" asp-route-customerNameSearch="@Model.CustomerNameSearch" class="btn btn-primary ml-2">Tiếp <i class="fas fa-arrow-right"></i></a>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f4f8;
+    }
+
+    .navbar {
+        background-color: #0078D4 !important;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand, .nav-link {
+        color: white !important;
+        transition: color 0.3s;
+    }
+
+        .nav-link:hover {
+            color: #F28C38 !important;
+        }
+
+    .text-vibrant {
+        color: #F28C38;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #0078D4;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-primary:hover {
+            background-color: #005BB5;
+            transform: scale(1.05);
+        }
+
+    .badge-warning {
+        background-color: #F28C38;
+    }
+
+    .lively-row:hover {
+        background-color: #e9f7ef;
+        transition: background-color 0.3s;
+    }
+
+    .footer {
+        background-color: #0078D4;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+</style>

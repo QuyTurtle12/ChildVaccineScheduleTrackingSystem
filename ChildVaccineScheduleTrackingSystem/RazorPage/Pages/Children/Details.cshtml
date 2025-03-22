@@ -1,49 +1,101 @@
 ﻿@page
 @model RazorPage.Pages.Children.DetailsModel
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết Trẻ em - Trung tâm Vaccine";
 }
 
-<h1>Details</h1>
+<!-- Nội dung chính -->
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card lively-card animate__animated animate__fadeIn">
+                <div class="card-body">
+                    <h1 class="text-center text-vibrant mb-4 animate__animated animate__bounceIn">
+                        <i class="fas fa-info-circle mr-2"></i>Chi tiết Trẻ em
+                    </h1>
+                    <dl class="row">
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.ChildDTO.Name)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.ChildDTO.Name)</dd>
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.ChildDTO.Age)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.ChildDTO.Age)</dd>
+                        <dt class="col-sm-4">Tên Phụ huynh</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.ChildDTO.ParentName)</dd>
+                        <dt class="col-sm-4">Email Phụ huynh</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.ChildDTO.ParentEmail)</dd>
+                    </dl>
+                    <div class="text-center mt-4">
+                        <a class="btn btn-primary mr-2" asp-page="./Edit" asp-route-id="@Model.ChildDTO.Id"><i class="fas fa-edit mr-2"></i>Sửa</a>
+                        <a class="btn btn-secondary" asp-page="./Index"><i class="fas fa-arrow-left mr-2"></i>Quay lại</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<div>
-    <h4>Child</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ChildDTO.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ChildDTO.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ChildDTO.Age)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ChildDTO.Age)
-        </dd>
-        <dt class="col-sm-2">
-            Parent Name
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ChildDTO.ParentName)
-        </dd>
-        <dt class="col-sm-2">
-            Parent Email
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ChildDTO.ParentEmail)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ChildDTO.Status)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ChildDTO.Status)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.ChildDTO.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
-</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f4f8;
+    }
+
+    .navbar {
+        background-color: #0078D4 !important;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand, .nav-link {
+        color: white !important;
+        transition: color 0.3s;
+    }
+
+        .nav-link:hover {
+            color: #F28C38 !important;
+        }
+
+    .lively-card {
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        background-color: white;
+        border-radius: 10px;
+    }
+
+        .lively-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .text-vibrant {
+        color: #F28C38;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #0078D4;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-primary:hover {
+            background-color: #005BB5;
+            transform: scale(1.05);
+        }
+
+    .footer {
+        background-color: #0078D4;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+</style>

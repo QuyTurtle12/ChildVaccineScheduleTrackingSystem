@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Data.Base;
-using Data.Entities;
 using BusinessLogic.Interfaces;
 using BusinessLogic.DTOs.ChildrenDTO;
 using AutoMapper;
-using BusinessLogic.Services;
 
 namespace RazorPage.Pages.Children
 {
@@ -20,6 +11,8 @@ namespace RazorPage.Pages.Children
         private readonly IChildrenService _childrenService;
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IMapper _mapper;
+
+        private const string CUSTOMER_ROLE = "Customer";
 
         public EditModel(IChildrenService childrenService, IJwtTokenService jwtTokenService, IMapper mapper)
         {
@@ -33,6 +26,16 @@ namespace RazorPage.Pages.Children
 
         public async Task<IActionResult> OnGetAsync(string? id)
         {
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole != CUSTOMER_ROLE)
+            {
+                return Forbid();
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -49,8 +52,18 @@ namespace RazorPage.Pages.Children
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync(PutChildrenDTO editedChild)
+        public async Task<IActionResult> OnPostAsync()
         {
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole != CUSTOMER_ROLE) // Customer's function
+            {
+                return Forbid();
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -58,7 +71,7 @@ namespace RazorPage.Pages.Children
 
             try
             {
-                await _childrenService.UpdateChildrenAccount(editedChild);
+                await _childrenService.UpdateChildrenAccount(EditChild);
             }
             catch (Exception ex)
             {

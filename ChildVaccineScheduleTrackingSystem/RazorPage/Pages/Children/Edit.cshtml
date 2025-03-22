@@ -1,45 +1,133 @@
 ﻿@page
 @model RazorPage.Pages.Children.EditModel
-
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Sửa Thông tin Trẻ em - Trung tâm Vaccine";
 }
 
-<h1>Edit Child Info</h1>
 
-<h4>Child</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="EditChild.Id" />
-            <div class="form-group">
-                <label asp-for="EditChild.Name" class="control-label"></label>
-                <input asp-for="EditChild.Name" class="form-control" />
-                <span asp-validation-for="EditChild.Name" class="text-danger"></span>
+
+<!-- Nội dung chính -->
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card lively-card animate__animated animate__fadeIn">
+                <div class="card-body">
+                    <h1 class="text-center text-vibrant mb-4 animate__animated animate__bounceIn">
+                        <i class="fas fa-edit mr-2"></i>Sửa Thông tin Trẻ em
+                    </h1>
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="EditChild.Id" />
+                        <div class="form-group">
+                            <label asp-for="EditChild.Name" class="font-weight-bold">Tên Trẻ em</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                </div>
+                                <input asp-for="EditChild.Name" class="form-control" />
+                            </div>
+                            <span asp-validation-for="EditChild.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EditChild.Age" class="font-weight-bold">Tuổi</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-birthday-cake"></i></span>
+                                </div>
+                                <input asp-for="EditChild.Age" class="form-control" type="number" min="0" />
+                            </div>
+                            <span asp-validation-for="EditChild.Age" class="text-danger"></span>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success btn-lg animate__animated animate__pulse animate__infinite">
+                                <i class="fas fa-save mr-2"></i>Lưu
+                            </button>
+                            <a class="btn btn-secondary ml-2" asp-page="./Index"><i class="fas fa-arrow-left mr-2"></i>Quay lại</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="EditChild.Age" class="control-label"></label>
-                <input asp-for="EditChild.Age" class="form-control" />
-                <span asp-validation-for="EditChild.Age" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EditChild.Status" class="control-label"></label>
-                <input asp-for="EditChild.Status" class="form-control" />
-                <span asp-validation-for="EditChild.Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-page="./Index">Back to List</a>
-</div>
+
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f4f8;
+    }
+
+    .navbar {
+        background-color: #0078D4 !important;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand, .nav-link {
+        color: white !important;
+        transition: color 0.3s;
+    }
+
+        .nav-link:hover {
+            color: #F28C38 !important;
+        }
+
+    .lively-card {
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        background-color: white;
+        border-radius: 10px;
+    }
+
+        .lively-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .text-vibrant {
+        color: #F28C38;
+        font-weight: bold;
+    }
+
+    .btn-success {
+        background-color: #28A745;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+    .input-group-text {
+        background-color: #0078D4;
+        color: white;
+    }
+
+    .form-control:focus {
+        border-color: #28A745;
+        box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+    }
+
+    .footer {
+        background-color: #0078D4;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+</style>

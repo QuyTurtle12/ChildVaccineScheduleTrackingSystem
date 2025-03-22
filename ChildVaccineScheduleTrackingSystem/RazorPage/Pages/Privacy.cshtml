@@ -1,8 +1,134 @@
 ﻿@page
-@model PrivacyModel
+@model RazorPage.Pages.PrivacyModel
 @{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Chính sách bảo mật - Trung tâm Vaccine";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+
+
+<!-- Nội dung chính -->
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card lively-card animate__animated animate__fadeIn">
+                <div class="card-body">
+                    <h1 class="text-center text-vibrant mb-4 animate__animated animate__bounceIn">
+                        <i class="fas fa-shield-alt mr-2"></i>Chính sách bảo mật
+                    </h1>
+                    <p class="lead text-center text-muted animate__animated animate__fadeInUp">
+                        Chúng tôi cam kết bảo vệ thông tin cá nhân của bạn với sự minh bạch và an toàn tuyệt đối.
+                    </p>
+                    <hr class="my-4" style="border-color: #28A745;">
+
+                    <section class="policy-section">
+                        <h3 class="text-success"><i class="fas fa-lock mr-2"></i>Thông tin chúng tôi thu thập</h3>
+                        <p>
+                            Trung tâm Vaccine chỉ thu thập các thông tin cần thiết như email, họ tên, và số điện thoại để hỗ trợ đặt lịch tiêm chủng và cung cấp dịch vụ tốt nhất. Mọi dữ liệu đều được mã hóa và bảo vệ.
+                        </p>
+                    </section>
+
+                    <section class="policy-section">
+                        <h3 class="text-success"><i class="fas fa-users mr-2"></i>Mục đích sử dụng</h3>
+                        <p>
+                            Thông tin của bạn được dùng để xác nhận lịch hẹn, gửi thông báo về vaccine, và cải thiện trải nghiệm dịch vụ. Chúng tôi không chia sẻ dữ liệu với bên thứ ba mà không có sự đồng ý của bạn.
+                        </p>
+                    </section>
+
+                    <section class="policy-section">
+                        <h3 class="text-success"><i class="fas fa-shield-virus mr-2"></i>Cam kết bảo mật</h3>
+                        <p>
+                            Với công nghệ bảo mật tiên tiến, chúng tôi đảm bảo thông tin của bạn luôn an toàn. Nếu có thắc mắc, hãy liên hệ qua hotline <span class="text-warning">028 7102 6595</span>.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- CSS và JS -->
+@section Scripts {
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f4f8;
+    }
+
+    .navbar {
+        background-color: #0078D4 !important;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand, .nav-link {
+        color: white !important;
+        transition: color 0.3s;
+    }
+
+        .nav-link:hover {
+            color: #F28C38 !important;
+        }
+
+    .lively-card {
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        background-color: white;
+        border-radius: 10px;
+    }
+
+        .lively-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .text-vibrant {
+        color: #F28C38;
+        font-weight: bold;
+    }
+
+    .text-success {
+        color: #28A745;
+    }
+
+    .btn-primary {
+        background-color: #0078D4;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-primary:hover {
+            background-color: #005BB5;
+            transform: scale(1.05);
+        }
+
+    .policy-section {
+        margin-bottom: 20px;
+    }
+
+        .policy-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .policy-section p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+    .footer {
+        background-color: #0078D4;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+</style>
