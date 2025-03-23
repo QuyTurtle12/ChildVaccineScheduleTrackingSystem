@@ -15,7 +15,7 @@
                     </h1>
                     <form method="get">
                         <div class="form-group">
-                            <label for="phoneNumber" class="control-label">Enter Phone Number</label>
+                            <label for="phoneNumber" class="control-label">Nhập số điện thoại khách hàng</label>
                             <input type="text" id="phoneNumber" name="phoneNumber" class="form-control" value="@Model.PhoneNumber" />
                             <button type="submit" class="btn btn-primary mt-2">Search</button>
                         </div>
@@ -23,14 +23,14 @@
                     <form method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                         <div class="form-group">
-                            <label asp-for="VaccineRecord.ChildId" class="font-weight-bold">ID Trẻ em</label>
+                            <label asp-for="VaccineRecord.ChildId" class="font-weight-bold">Tên Trẻ em</label>
                             <select asp-for="VaccineRecord.ChildId" asp-items="@Model.ChildrenList" class="form-control">
                                 <option value="">-- Select Child --</option>
                             </select>
                             <span asp-validation-for="VaccineRecord.ChildId" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="VaccineRecord.VaccineId" class="font-weight-bold">ID Vaccine</label>
+                            <label asp-for="VaccineRecord.VaccineId" class="font-weight-bold">Tên Vaccine</label>
                             <!-- Vaccine Selection Dropdown -->
                             <select asp-for="VaccineRecord.VaccineId" asp-items="@Model.VaccineList" class="form-control">
                                 <option value="">-- Select Vaccine --</option>

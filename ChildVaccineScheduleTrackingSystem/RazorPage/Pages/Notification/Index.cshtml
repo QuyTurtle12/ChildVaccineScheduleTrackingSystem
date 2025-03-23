@@ -30,7 +30,7 @@
                         <th>Email</th>
                     }
                     <th>Thông điệp</th>
-                    <th>Ngày cuộc hẹn</th>
+                    @* <th>Ngày cuộc hẹn</th> *@
                     <th>Ngày tạo</th>
                     @if (Model.LoggedInUserRole.Equals("Staff"))
                     {
@@ -47,7 +47,7 @@
                             <td>@notification.Email</td>
                         }
                         <td>@notification.Message</td>
-                        <td>@notification.AppointmentDate.ToString("dd-MM-yyyy")</td>
+                        @* <td>@notification.AppointmentDate.ToString("dd-MM-yyyy")</td> *@
                         <td>@notification.CreatedTime.ToString("dd-MM-yyyy HH:mm")</td>
                         @if (Model.LoggedInUserRole.Equals("Staff"))
                         {

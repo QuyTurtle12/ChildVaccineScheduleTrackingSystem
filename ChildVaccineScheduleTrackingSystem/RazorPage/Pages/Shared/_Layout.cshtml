@@ -61,49 +61,67 @@
                 <div class="modal-body">
                     <ul class="list-group">
                         <li class="list-group-item animate__animated animate__fadeInUp">
-                            <a asp-area="" asp-page="/Privacy"><i class="fas fa-shield-alt me-2"></i>Privacy</a>
+                            <a asp-area="" asp-page="/Privacy"><i class="fas fa-shield-alt me-2"></i>Riêng tư</a>
                         </li>
                         <li class="list-group-item animate__animated animate__fadeInUp">
-                            <a asp-area="" asp-page="/Package/Index"><i class="fas fa-box me-2"></i>Package</a>
-                        </li>
-                        <li class="list-group-item animate__animated animate__fadeInUp">
-                            <a asp-area="" asp-page="/Children/Index"><i class="fas fa-child me-2"></i>View Children</a>
-                        </li>
-                        <li class="list-group-item animate__animated animate__fadeInUp">
-                            <a asp-area="" asp-page="/Feedback/Index"><i class="fas fa-comment-dots me-2"></i>Feedback</a>
-                        </li>
-                        <li class="list-group-item animate__animated animate__fadeInUp">
-                            <a asp-area="" asp-page="/Notification/Index"><i class="fas fa-bell me-2"></i>Notification</a>
-                        </li>
-                        <li class="list-group-item animate__animated animate__fadeInUp">
-                            <a asp-area="" asp-page="/VaccineRecord/Index"><i class="fas fa-syringe me-2"></i>Vaccine Record</a>
-                        </li>
-                        <li class="list-group-item animate__animated animate__fadeInUp">
-                            <a asp-area="" asp-page="/Appointments/Index"><i class="fas fa-calendar-check me-2"></i>Appointment</a>
-                        </li>
-                        <li class="list-group-item animate__animated animate__fadeInUp">
-                            <a asp-area="" asp-page="/Payments/Index"><i class="fas fa-credit-card me-2"></i>Payment</a>
+                            <a asp-area="" asp-page="/Package/Index"><i class="fas fa-box me-2"></i>Bảng giá các gói tiêm chủng</a>
                         </li>
 
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="list-group-item animate__animated animate__fadeInUp">
-                                <a asp-area="" asp-page="/Users/Index"><i class="fas fa-users me-2"></i>User Management</a>
+                                <a asp-area="" asp-page="/Users/Index"><i class="fas fa-users me-2"></i>Quản lý người dùng</a>
+                            </li>
+                            @* <li class="list-group-item animate__animated animate__fadeInUp"> *@
+                            @*     <a href="/Dashboard/Appointments"><i class="fas fa-calendar-alt me-2"></i>Appointments</a> *@
+                            @* </li> *@
+                            <li class="list-group-item animate__animated animate__fadeInUp">
+                                <a href="/Dashboard/Reports"><i class="fas fa-chart-bar me-2"></i>Báo cáo thống kê</a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Staff"))
+                        {
+                            <li class="list-group-item animate__animated animate__fadeInUp">
+                                <a asp-area="" asp-page="/Users/Index"><i class="fas fa-users me-2"></i>Danh sách khách hàng</a>
                             </li>
                             <li class="list-group-item animate__animated animate__fadeInUp">
-                                <a href="/Dashboard/Appointments"><i class="fas fa-calendar-alt me-2"></i>Appointments</a>
+                                <a asp-area="" asp-page="/Feedback/Index"><i class="fas fa-comment-dots me-2"></i>Danh sách Feedback</a>
                             </li>
                             <li class="list-group-item animate__animated animate__fadeInUp">
-                                <a href="/Dashboard/Reports"><i class="fas fa-chart-bar me-2"></i>Overview</a>
+                                <a asp-area="" asp-page="/Notification/Index"><i class="fas fa-bell me-2"></i>Quản lý thông báo cho khách hàng</a>
+                            </li>
+                            <li class="list-group-item animate__animated animate__fadeInUp">
+                                <a asp-area="" asp-page="/VaccineRecord/Index"><i class="fas fa-syringe me-2"></i>Danh sách Vaccine Record</a>
+                            </li>
+                            <li class="list-group-item animate__animated animate__fadeInUp">
+                                <a asp-area="" asp-page="/Payments/Index"><i class="fas fa-credit-card me-2"></i>Danh sách thanh toán</a>
+                            </li>
+                            <li class="list-group-item animate__animated animate__fadeInUp">
+                                <a asp-area="" asp-page="/Appointments/Index"><i class="fas fa-calendar-check me-2"></i>Danh sách cuộc hẹn</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Customer")){
+                            <li class="list-group-item animate__animated animate__fadeInUp">
+                                <a asp-area="" asp-page="/Children/Index"><i class="fas fa-child me-2"></i>Xem danh sách trẻ nhỏ</a>
+                            </li>
+                            <li class="list-group-item animate__animated animate__fadeInUp">
+                                <a asp-area="" asp-page="/Notification/Index"><i class="fas fa-bell me-2"></i>Thông báo</a>
+                            </li>
+                            <li class="list-group-item animate__animated animate__fadeInUp">
+                                <a asp-area="" asp-page="/VaccineRecord/Index"><i class="fas fa-syringe me-2"></i>Danh sách Vaccine Record</a>
+                            </li>
+                            <li class="list-group-item animate__animated animate__fadeInUp">
+                                <a asp-area="" asp-page="/Appointments/Index"><i class="fas fa-calendar-check me-2"></i>Đặt hẹn</a>
                             </li>
                         }
 
                         <li class="list-group-item animate__animated animate__fadeInUp">
                             @if (jwtToken == null)
                             {
-                                <a asp-area="" asp-page="/Login"><i class="fas fa-sign-in-alt me-2"></i>Login</a>
+                                <a asp-area="" asp-page="/Login"><i class="fas fa-sign-in-alt me-2"></i>Đăng nhập</a>
                                 <span class="mx-2">|</span>
-                                <a asp-area="" asp-page="/Register"><i class="fas fa-user-plus me-2"></i>Register</a>
+                                <a asp-area="" asp-page="/Register"><i class="fas fa-user-plus me-2"></i>Đăng ký</a>
                             }
                             else
                             {

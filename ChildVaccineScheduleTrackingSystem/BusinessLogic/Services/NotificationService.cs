@@ -30,7 +30,7 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status400BadRequest, "BAD_REQUEST", "Please enter a valid index or pageSize!");
             }
 
-            AutoAnnouceNextDose();
+            await AutoAnnouceNextDose();
 
             IQueryable<Notification> query = _unitOfWork.GetRepository<Notification>()
                 .Entities
@@ -71,7 +71,7 @@ namespace BusinessLogic.Services
             );
         }
 
-        private async void AutoAnnouceNextDose()
+        private async Task AutoAnnouceNextDose()
         {
             string currentUserId = _tokenService.GetCurrentUserId();
 
@@ -135,7 +135,8 @@ namespace BusinessLogic.Services
                             {
                                 AppointmentDate = today, // This is a fake data
                                 DeletedTime = today,
-                                DeletedBy = currentUserId
+                                DeletedBy = currentUserId,
+                                UserId = Guid.Parse(currentUserId)
                             };
 
                             unExistedAppointment.Id = appointmentId;
@@ -198,19 +199,39 @@ namespace BusinessLogic.Services
                 throw new ErrorException(StatusCodes.Status404NotFound, "NOT_FOUND", "User not found!");
             }
 
+            string currentUserId = _tokenService.GetCurrentUserId();
+
+            DateTimeOffset today = DateTimeOffset.UtcNow.Date;
+
+            // Create a fake appointment
+            Guid appointmentId = Guid.NewGuid();
+            Appointment unExistedAppointment = new Appointment()
+            {
+                AppointmentDate = today, // This is a fake data
+                DeletedTime = today,
+                DeletedBy = currentUserId,
+                UserId = Guid.Parse(currentUserId)
+            };
+
+            unExistedAppointment.Id = appointmentId;
+            unExistedAppointment.Status = 0;
+
+            // Save a fake appoinment
+            await _unitOfWork.GetRepository<Appointment>().InsertAsync(unExistedAppointment);
+            await _unitOfWork.SaveAsync();
 
             // Map DTO to entity
             Notification newNotification = new Notification(
                 user.Id,
-                postNotification.AppointmentId,
+                appointmentId,
                 postNotification.Message
                 );
 
             // Set audit fields
             newNotification.Status = postNotification.Status;
             newNotification.CreatedTime = DateTime.Now;
-            newNotification.CreatedBy = _tokenService.GetCurrentUserId();
-            newNotification.LastUpdatedBy = _tokenService.GetCurrentUserId();
+            newNotification.CreatedBy = currentUserId;
+            newNotification.LastUpdatedBy = currentUserId;
        
             await _unitOfWork.GetRepository<Notification>().InsertAsync(newNotification);
             await _unitOfWork.SaveAsync();
