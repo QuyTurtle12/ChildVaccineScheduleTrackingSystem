@@ -77,7 +77,7 @@ namespace BusinessLogic.Services
 
             // Get current user info
             User? user = await _unitOfWork.GetRepository<User>().Entities
-                                    .Where(u => u.Id.Equals(currentUserId))
+                                    .Where(u => u.Id.Equals(Guid.Parse(currentUserId)))
                                     .Include(u => u.Children)!
                                     .ThenInclude(c => c.VaccineRecords)!
                                     .ThenInclude(vr => vr.Vaccine)
@@ -127,7 +127,7 @@ namespace BusinessLogic.Services
                                 continue;
                             }
                             // Create notification message
-                            string message = $"{daysLeft} days left for {child.Name}'s next {record.Vaccine?.Name} dose on {record.NextDoseDue:yyyy-MM-dd}. Vaccine Record ID: {record.Id.ToString()}";
+                            string message = $"{daysLeft} days left for {child.Name}'s next {record.Vaccine?.Name} dose on {record.NextDoseDue:yyyy-MM-dd}.";
 
                             // Create a fake appointment
                             Guid appointmentId = Guid.NewGuid();
