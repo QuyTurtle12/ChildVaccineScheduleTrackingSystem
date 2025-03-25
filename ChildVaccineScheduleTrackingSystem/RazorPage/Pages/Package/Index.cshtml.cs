@@ -24,8 +24,11 @@ namespace RazorPage.Pages.Package
             Package = await _packageService.GetAllAsync();
             var jwtToken = HttpContext.Session.GetString("jwt_token");
             string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
-            UserRole = loggedInUserRole.ToLower();
-
+            if (!string.IsNullOrWhiteSpace(loggedInUserRole))
+            {
+                UserRole = loggedInUserRole.ToLower();
+            }
+            
             return Page();
         }
     }

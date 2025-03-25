@@ -3,6 +3,6 @@
     public enum PackageType
     {
         Single,
-        LongTerm
+        Combo
     }
 }

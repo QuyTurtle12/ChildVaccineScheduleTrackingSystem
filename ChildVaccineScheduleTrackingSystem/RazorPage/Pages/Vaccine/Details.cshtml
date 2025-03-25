@@ -17,7 +17,7 @@
                     </h1>
                     <div class="row">
                         <div class="col-md-4 text-center">
-                            <img src="@Model.Vaccine.ImageUrl" alt="@Model.Vaccine.Name" class="img-fluid vaccine-img mb-3" />
+                            
                             <h4>@Model.Vaccine.Name</h4>
                         </div>
                         <div class="col-md-8">
@@ -26,9 +26,7 @@
                                 <dd class="col-sm-8">@Model.Vaccine.Manufacturer</dd>
                                 <dt class="col-sm-4">Mô tả</dt>
                                 <dd class="col-sm-8">@Model.Vaccine.Description</dd>
-                                <dt class="col-sm-4">Đơn giá</dt>
-                                <dd class="col-sm-8">@Model.Vaccine.Price.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</dd>
-                                <dt class="col-sm-4">Người tạo</dt>
+                                @* <dt class="col-sm-4">Người tạo</dt>
                                 <dd class="col-sm-8">@Model.Vaccine.CreatedBy</dd>
                                 <dt class="col-sm-4">Thời gian tạo</dt>
                                 <dd class="col-sm-8">@Model.Vaccine.CreatedTime</dd>
@@ -39,7 +37,7 @@
                                 <dt class="col-sm-4">Người xóa</dt>
                                 <dd class="col-sm-8">@Model.Vaccine.DeletedBy</dd>
                                 <dt class="col-sm-4">Thời gian xóa</dt>
-                                <dd class="col-sm-8">@Model.Vaccine.DeletedTime</dd>
+                                <dd class="col-sm-8">@Model.Vaccine.DeletedTime</dd> *@
                             </dl>
                         </div>
                     </div>

@@ -31,7 +31,7 @@
                 <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label asp-for="Package.Price" class="control-label fw-bold text-muted"></label>
-                        <input asp-for="Package.Price" class="form-control" value="@Model.PackageGetDto.Price" />
+                        <input asp-for="Package.Price" class="form-control" type="number" step="0.01" />
                         <span asp-validation-for="Package.Price" class="text-danger"></span>
                     </div>
                 </div>

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using BusinessLogic.Interfaces;
 using BusinessLogic.DTOs;
+using BusinessLogic.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace RazorPage.Pages.VaccineRecord
 {
@@ -17,12 +19,25 @@ namespace RazorPage.Pages.VaccineRecord
         public string UserRole { get; set; } = string.Empty;
         public IEnumerable<GetVaccineRecordDto> VaccineRecord { get;set; } = default!;
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
-            VaccineRecord = await _vaccineRecordService.GetAllAsync();
             var jwtToken = HttpContext.Session.GetString("jwt_token");
             string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+            string loggedInUserId = _jwtTokenService.GetId(jwtToken!);
+
+            if (loggedInUserRole == null) return Unauthorized();
+
+            if (loggedInUserRole.ToLower() != "staff" && loggedInUserRole.ToLower() != "customer")
+            {
+                return Forbid();
+            }
             UserRole = loggedInUserRole.ToLower();
+
+            if (UserRole == "staff") VaccineRecord = await _vaccineRecordService.GetAllAsync();
+
+            if(UserRole == "customer") VaccineRecord = await _vaccineRecordService.GetByUserId(Guid.Parse(loggedInUserId));
+
+            return Page();
         }
     }
 }

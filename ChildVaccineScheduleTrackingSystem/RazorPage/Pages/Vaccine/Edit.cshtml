@@ -48,26 +48,7 @@
                             </div>
                             <span asp-validation-for="UpdatedVaccine.Description" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="UpdatedVaccine.Price" class="font-weight-bold">Đơn giá (VNĐ)</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-money-bill"></i></span>
-                                </div>
-                                <input asp-for="UpdatedVaccine.Price" class="form-control" type="number" step="1000" value="@Model.Vaccine.Price" />
-                            </div>
-                            <span asp-validation-for="UpdatedVaccine.Price" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="UpdatedVaccine.ImageUrl" class="font-weight-bold">Đường dẫn hình ảnh</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-image"></i></span>
-                                </div>
-                                <input asp-for="UpdatedVaccine.ImageUrl" class="form-control" value="@Model.Vaccine.ImageUrl" />
-                            </div>
-                            <span asp-validation-for="UpdatedVaccine.ImageUrl" class="text-danger"></span>
-                        </div>
+                        
                         <div class="text-center">
                             <input type="submit" value="Lưu" class="btn btn-success btn-lg animate__animated animate__pulse animate__infinite" />
                         </div>

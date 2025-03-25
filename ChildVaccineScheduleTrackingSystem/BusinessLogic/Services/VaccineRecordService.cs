@@ -14,11 +14,12 @@ namespace BusinessLogic.Services
     {
         private readonly IUOW _unitOfWork;
         private readonly IMapper _mapper;
-
-        public VaccineRecordService(IUOW unitOfWork, IMapper mapper)
+        private readonly IChildrenService _childrenService;
+        public VaccineRecordService(IUOW unitOfWork, IMapper mapper, IChildrenService childrenService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _childrenService = childrenService;
         }
 
         public async Task<IEnumerable<GetVaccineRecordDto>> GetAllAsync()
@@ -109,6 +110,31 @@ namespace BusinessLogic.Services
                 .Where(v => v.Id == dto.VaccineId)
                 .Select(v => v.Name)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<GetVaccineRecordDto>> GetByUserId(Guid userId)
+        {
+            IEnumerable<Guid> childrenIds = await _unitOfWork.GetRepository<Child>()
+                .Entities
+                .Where(c => c.UserId == userId)
+                .Select(c => c.Id)
+                .ToListAsync();
+            List<VaccineRecord> records = new List<VaccineRecord>();
+            foreach (Guid childId in childrenIds) 
+            {
+                records.AddRange(await _unitOfWork.GetRepository<VaccineRecord>()
+                    .Entities
+                    .Where(vr => vr.ChildId == childId)
+                    .ToListAsync());
+            }
+            records.OrderByDescending(vr => vr.ChildId);
+            IEnumerable<GetVaccineRecordDto> result = _mapper.Map<IEnumerable<GetVaccineRecordDto>>(records);
+            foreach (var item in result)
+            {
+                await AssignVaccineAndChildNameToGetDto(item);
+            }
+
+            return result;
         }
     }
 }
