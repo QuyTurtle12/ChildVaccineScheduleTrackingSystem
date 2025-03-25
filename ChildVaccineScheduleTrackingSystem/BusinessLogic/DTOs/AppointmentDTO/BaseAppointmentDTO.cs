@@ -15,6 +15,7 @@ namespace BusinessLogic.DTOs.AppointmentDTO
         public string Name { get; set; } = string.Empty;
         //public int? Status { get; set; } = 0;
         // Use the Enum
+        [Display(Name = "Trạng thái")]
         public EnumAppointment Status { get; set; }
         public string? CreatedBy { get; set; }
         public string? LastUpdatedBy { get; set; }

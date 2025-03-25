@@ -1,4 +1,4 @@
-using BusinessLogic.DTOs.AppointmentDTO;
+﻿using BusinessLogic.DTOs.AppointmentDTO;
 using BusinessLogic.Interfaces;
 using Data.Entities;
 using Data.Enum;
@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using System.Security.Claims;
 
 namespace RazorPage.Pages.Appointments
@@ -32,12 +34,12 @@ namespace RazorPage.Pages.Appointments
             var appointment = await _appointmentService.GetAppointmentById(id);
             if (appointment == null)
             {
-                return NotFound("Appointment not found!");
+                return NotFound("Không tìm thấy cuộc hẹn!");
             }
             if (!string.IsNullOrEmpty(ActionType) && ActionType == "Cancel")
             {
                 // Handle the case where the user is canceling the appointment
-                TempData["Message"] = "Are you sure you want to cancel this appointment?";
+                TempData["Message"] = "Bạn có chắc chắn muốn hủy cuộc hẹn này không?";
             }
 
             Appointment = appointment;
@@ -47,8 +49,13 @@ namespace RazorPage.Pages.Appointments
                 .Cast<EnumAppointment>()
                 .Select(e => new SelectListItem
                 {
+                    //Value = ((int)e).ToString(),
+                    //Text = e.ToString()
                     Value = ((int)e).ToString(),
-                    Text = e.ToString()
+                     Text = e.GetType() // Get the type of EnumAppointment
+                     .GetField(e.ToString()) // Get the specific enum field
+                     ?.GetCustomAttribute<DisplayAttribute>()?
+                     .Name ?? e.ToString() // Use Display Name if available, otherwise default enum name
                 }).ToList();
 
             UpdatedAppointment = new PutAppointmentDTO
@@ -74,13 +81,13 @@ namespace RazorPage.Pages.Appointments
         {
             if (UpdatedAppointment == null)
             {
-                return NotFound("Updated appointment not found!");
+                return NotFound("Không tìm thấy cuộc hẹn đã cập nhật!");
             }
             // Retrieve the existing appointment before validation
             Appointment = await _appointmentService.GetAppointmentById(UpdatedAppointment.Id);
             if (Appointment == null)
             {
-                return NotFound("Appointment not found!");
+                return NotFound("Không tìm thấy cuộc hẹn!");
             }
             if (!ModelState.IsValid)
             {
@@ -92,7 +99,7 @@ namespace RazorPage.Pages.Appointments
             //}
             if (Appointment.Status == EnumAppointment.Completed && UpdatedAppointment.Status == EnumAppointment.Canceled)
             {
-                ModelState.AddModelError(string.Empty, "Cannot cancel an appointment that is already completed!");
+                ModelState.AddModelError(string.Empty, "Không thể hủy cuộc hẹn đã hoàn tất!");
                 return Page();
             }
 

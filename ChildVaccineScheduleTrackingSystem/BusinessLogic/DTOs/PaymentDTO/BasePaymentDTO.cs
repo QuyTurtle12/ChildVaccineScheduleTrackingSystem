@@ -13,6 +13,8 @@ namespace BusinessLogic.DTOs.PaymentDTO
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
+
+        [Display(Name = "Trạng thái")]
         public EnumPayment Status { get; set; }
         public string? CreatedBy { get; set; }
         public string? LastUpdatedBy { get; set; }

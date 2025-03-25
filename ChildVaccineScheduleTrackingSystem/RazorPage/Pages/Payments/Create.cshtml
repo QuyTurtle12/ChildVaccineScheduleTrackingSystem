@@ -53,8 +53,8 @@
                                     <span class="input-group-text"><i class="fas fa-credit-card"></i></span>
                                 </div>
                                 <select asp-for="Payment.PaymentMethod" class="form-control">
-                                    <option value="Online Banking">Online Banking</option>
-                                    <option value="Cash">Cash</option>
+                                    <option value="Ngân hàng online">Ngân hàng online</option>
+                                    <option value="Tiền mặt">Tiền mặt</option>
                                 </select>
                             </div>
                             <span asp-validation-for="Payment.PaymentMethod" class="text-danger"></span>
@@ -65,7 +65,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-tag"></i></span>
                                 </div>
-                                <input asp-for="Payment.Name" class="form-control" placeholder="Nhập tên thanh toán" />
+                                <input asp-for="Payment.Name" class="form-control" placeholder="Nhập tên thanh toán" value="Trả tiền chi phí khác" />
                             </div>
                             <span asp-validation-for="Payment.Name" class="text-danger"></span>
                         </div>

@@ -99,11 +99,12 @@
                                 <a asp-area="" asp-page="/VaccineRecord/Index"><i class="fas fa-syringe me-2"></i>Danh sách Vaccine Record</a>
                             </li>
                             <li class="list-group-item animate__animated animate__fadeInUp">
-                                <a asp-area="" asp-page="/Payments/Index"><i class="fas fa-credit-card me-2"></i>Danh sách thanh toán</a>
-                            </li>
-                            <li class="list-group-item animate__animated animate__fadeInUp">
                                 <a asp-area="" asp-page="/Appointments/Index"><i class="fas fa-calendar-check me-2"></i>Danh sách cuộc hẹn</a>
                             </li>
+                            <li class="list-group-item animate__animated animate__fadeInUp">
+                                <a asp-area="" asp-page="/Payments/Index"><i class="fas fa-credit-card me-2"></i>Danh sách thanh toán</a>
+                            </li>
+                            
                         }
                         @if (User.IsInRole("Customer")){
                             <li class="list-group-item animate__animated animate__fadeInUp">

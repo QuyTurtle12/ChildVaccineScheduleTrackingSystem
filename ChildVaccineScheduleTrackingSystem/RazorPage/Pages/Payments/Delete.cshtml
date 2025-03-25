@@ -22,9 +22,23 @@
                         <dd class="col-sm-8">@Model.Payment.Amount.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</dd>
                         <dt class="col-sm-4">Phương thức</dt>
                         <dd class="col-sm-8">@Model.Payment.PaymentMethod</dd>
-                        <dt class="col-sm-4">Trạng thái</dt>
-                        <dd class="col-sm-9 col-md-10">
+                        @* <dd class="col-sm-9 col-md-10">
                             @Html.DisplayFor(model => model.Payment.Status)
+                        </dd> *@
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Payment.Status)</dt>
+                        <dd class="col-sm-8">
+                            @switch ((int)Model.Payment.Status)
+                            {
+                                case 0:
+                                    <span class="badge bg-primary">Chờ xử lý</span>
+                                    break;
+                                case 1:
+                                    <span class="badge bg-success">Hoàn thành</span>
+                                    break;
+                                case 2:
+                                    <span class="badge bg-danger">Thất bại</span>
+                                    break;
+                            }
                         </dd>
                     </dl>
                     <form method="post" class="text-center mt-4">

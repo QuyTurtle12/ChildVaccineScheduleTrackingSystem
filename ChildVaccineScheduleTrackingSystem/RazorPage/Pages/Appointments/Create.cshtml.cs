@@ -1,4 +1,4 @@
-using BusinessLogic.DTOs;
+﻿using BusinessLogic.DTOs;
 using BusinessLogic.DTOs.AppointmentDTO;
 using BusinessLogic.Interfaces;
 using BusinessLogic.Services;
@@ -78,14 +78,14 @@ namespace RazorPage.Pages.Appointments
 
                 if (string.IsNullOrEmpty(Appointment.CustomerPhoneNumber))
                 {
-                    ModelState.AddModelError("Appointment.CustomerPhoneNumber", "Customer phone number is for booking.");
+                    ModelState.AddModelError("Appointment.CustomerPhoneNumber", "Số điện thoại khách hàng dùng để đặt chỗ.");
                     return Page();
                 }
                 // Find user by phone number
                 var customer = await _userService.GetUserByPhoneNumber(Appointment.CustomerPhoneNumber);
                 if (customer == null)
                 {
-                    ModelState.AddModelError("Appointment.CustomerPhoneNumber", "Customer not found.");
+                    ModelState.AddModelError("Appointment.CustomerPhoneNumber", "Không tìm thấy khách hàng.");
                     return Page();
                 }
 
@@ -94,14 +94,14 @@ namespace RazorPage.Pages.Appointments
 
             if (Appointment.AppointmentDate <= DateTimeOffset.Now.AddMinutes(1))
             {
-                ModelState.AddModelError("Appointment.AppointmentDate", "Date can not be a date in past or presence.");
+                ModelState.AddModelError("Appointment.AppointmentDate", "Ngày không thể là ngày trong quá khứ hoặc hiện tại.");
                 return Page();
             }
 
 
             if (Appointment.PackageIds == null || !Appointment.PackageIds.Any())
             {
-                ModelState.AddModelError("Appointment.PackageIds", "At least one package must be selected.");
+                ModelState.AddModelError("Appointment.PackageIds", "Ít nhất một gói phải được chọn.");
                 return Page();
             }
 

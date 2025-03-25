@@ -26,48 +26,33 @@
     @if (Model.UserRole == "Staff")
     {
         <div class="mb-3">
-            <label for="customerPhone" class="form-label">Customer Phone Number</label>
-            <input type="text" id="customerPhone" asp-for="Appointment.CustomerPhoneNumber" class="form-control" placeholder="Enter customer's phone number" />
+            <label for="customerPhone" class="form-label">Số điện thoại khách hàng</label>
+            <input type="text" id="customerPhone" asp-for="Appointment.CustomerPhoneNumber" class="form-control" placeholder="Nhập số điện thoại" />
             <span asp-validation-for="Appointment.CustomerPhoneNumber" class="text-danger"></span>
         </div>
     }
 
 
     <div class="form-group">
-        <label asp-for="Appointment.AppointmentDate">Appointment Date</label>
+        <label asp-for="Appointment.AppointmentDate">Ngày hẹn</label>
         <input asp-for="Appointment.AppointmentDate" class="form-control" type="datetime-local"/>
         <span asp-validation-for="Appointment.AppointmentDate" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Appointment.Name">Appointment Name</label>
+        <label asp-for="Appointment.Name">Tên cuộc hẹn</label>
         <input asp-for="Appointment.Name" class="form-control"></input>
     </div>
     <div class="form-group">
-        <label asp-for="Appointment.PaymentName">Payment Name</label>
-        <input asp-for="Appointment.PaymentName" class="form-control"></input>
+        <label asp-for="Appointment.PaymentName">Tên thanh toán</label>
+        <input asp-for="Appointment.PaymentName" class="form-control" value="Tiền mặt"></input>
     </div>
 
     <!-- Package Selection -->
-    @* <div class="form-group">
-        <label>Select Package</label>
-        <ul class="list-group">
-            @foreach (var package in Model.Packages)
-            {
-                <li class="list-group-item package-option" data-package-id="@package.Id">
-                    @package.Name
-                </li>
-            }
-        </ul>
-        <span asp-validation-for="Appointment.PackageId" class="text-danger"></span>
-    </div> *@
     <div class="form-group">
-        <label>Select Packages</label>
+        <label>Chọn gói</label>
         <ul class="list-group">
             @foreach (var package in Model.Packages)
             {
-                @* <li class="list-group-item package-option" data-package-id="@package.Id">
-                    <input type="checkbox" class="package-checkbox" value="@package.Id" /> @package.Name
-                </li> *@
                 <div>
                     <input type="checkbox" name="Appointment.PackageIds" value="@package.Id" />
                     <label>@package.Name</label>
@@ -90,8 +75,8 @@
         <input asp-for="Appointment.Status" class="form-control" value="0" />
     </div>
     <div class="mt-2">
-        <button type="submit" class="btn btn-success">Book Appointment</button>
-        <a class="btn btn-secondary" asp-page="./Index">Back to List</a>
+        <button type="submit" class="btn btn-success">Đặt lịch</button>
+        <a class="btn btn-secondary" asp-page="./Index">Quay lại danh sách</a>
     </div>
 </form>
 

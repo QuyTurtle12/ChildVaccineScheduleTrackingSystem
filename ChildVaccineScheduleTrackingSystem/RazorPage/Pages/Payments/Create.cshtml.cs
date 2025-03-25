@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace RazorPage.Pages.Payments
 {
@@ -38,7 +40,11 @@ namespace RazorPage.Pages.Payments
                 .Select(e => new SelectListItem
                 {
                     Value = ((int)e).ToString(),
-                    Text = e.ToString()
+                    // Text = e.ToString()
+                    Text = e.GetType()
+                .GetField(e.ToString())
+                ?.GetCustomAttribute<DisplayAttribute>()?
+                .Name ?? e.ToString()
                 }).ToList();
 
             return Page();
