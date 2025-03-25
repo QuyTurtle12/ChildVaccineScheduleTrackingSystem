@@ -9,5 +9,6 @@ namespace BusinessLogic.Interfaces
         Task<GetVaccineRecordDto> CreateAsync(PostVaccineRecordDto dto);
         Task<GetVaccineRecordDto?> UpdateAsync(Guid id, PutVaccineRecordDto dto);
         Task<bool> DeleteAsync(Guid id);
+        Task<IEnumerable<GetVaccineRecordDto>> GetByUserId(Guid userId);
     }
 }

@@ -21,7 +21,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                                 </div>
-                                <input asp-for="VaccineRecord.DateAdministered" class="form-control" type="date" value="@Model.VaccineRecordGet.DateAdministered.ToString("yyyy-MM-dd")" readonly="@(Model.UserRole != "staff" ? "readonly" : null)"/>
+                                <input asp-for="VaccineRecord.DateAdministered" class="form-control" type="datetime-local" value="@Model.VaccineRecordGet.DateAdministered.ToString("yyyy-MM-ddTHH:mm")" readonly="@(Model.UserRole != "staff" ? "readonly" : null)" />
                             </div>
                             <span asp-validation-for="VaccineRecord.DateAdministered" class="text-danger"></span>
                         </div>
@@ -31,7 +31,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
                                 </div>
-                                <input asp-for="VaccineRecord.NextDoseDue" class="form-control" type="date" value="@Model.VaccineRecordGet.NextDoseDue.ToString("yyyy-MM-dd")" readonly="@(Model.UserRole != "staff" ? "readonly" : null)"/>
+                                <input asp-for="VaccineRecord.NextDoseDue" class="form-control" type="datetime-local" value="@Model.VaccineRecordGet.NextDoseDue.ToString("yyyy-MM-ddTHH:mm")" readonly="@(Model.UserRole != "staff" ? "readonly" : null)" />
                             </div>
                             <span asp-validation-for="VaccineRecord.NextDoseDue" class="text-danger"></span>
                         </div>

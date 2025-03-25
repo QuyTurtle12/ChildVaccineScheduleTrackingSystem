@@ -69,12 +69,14 @@
         </div>
 
         <div class="mt-4 d-flex justify-content-end gap-2 animate__animated animate__fadeInUp">
-            <a class="btn btn-warning btn-modern" asp-page="./Edit" asp-route-id="@Model.Package.Id">
-                <i class="fas fa-edit"></i> Sửa
-            </a>
-            <a class="btn btn-danger btn-modern" asp-page="./Delete" asp-route-id="@Model.Package.Id">
-                <i class="fas fa-trash"></i> Xóa
-            </a>
+            @if(Model.UserRole == "staff"){
+                <a class="btn btn-warning btn-modern" asp-page="./Edit" asp-route-id="@Model.Package.Id">
+                    <i class="fas fa-edit"></i> Sửa
+                </a>
+                <a class="btn btn-danger btn-modern" asp-page="./Delete" asp-route-id="@Model.Package.Id">
+                    <i class="fas fa-trash"></i> Xóa
+                </a>
+            }
             <a class="btn btn-outline-secondary btn-modern" asp-page="./Index">
                 <i class="fas fa-arrow-left"></i> Quay lại danh sách
             </a>

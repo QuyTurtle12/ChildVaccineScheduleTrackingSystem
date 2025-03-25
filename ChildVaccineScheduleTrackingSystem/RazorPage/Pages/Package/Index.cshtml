@@ -15,12 +15,13 @@
     </p>
 
     <!-- Nút Create -->
-    <div class="text-center mb-4">
-        <a asp-page="./Create" class="btn btn-success btn-lg animate__animated animate__pulse animate__infinite">
-            <i class="fas fa-plus"></i> Tạo gói vaccine mới
-        </a>
-    </div>
-
+    @if(Model.UserRole == "staff"){
+        <div class="text-center mb-4">
+            <a asp-page="./Create" class="btn btn-success btn-lg animate__animated animate__pulse animate__infinite">
+                <i class="fas fa-plus"></i> Tạo gói vaccine mới
+            </a>
+        </div>
+    }
     <!-- Danh sách gói vaccine -->
     <div class="card lively-card mb-4">
         <div class="card-body">
@@ -45,12 +46,6 @@
                             <td>
                                 <a class="btn btn-primary btn-modern btn-sm" asp-page="./Details" asp-route-id="@item.Id">
                                     <i class="fas fa-eye"></i> Chi tiết
-                                </a>
-                                <a class="btn btn-warning btn-modern btn-sm" asp-page="./Edit" asp-route-id="@item.Id">
-                                    <i class="fas fa-edit"></i> Sửa
-                                </a>
-                                <a class="btn btn-danger btn-modern btn-sm" asp-page="./Delete" asp-route-id="@item.Id">
-                                    <i class="fas fa-trash"></i> Xóa
                                 </a>
                             </td>
                         </tr>

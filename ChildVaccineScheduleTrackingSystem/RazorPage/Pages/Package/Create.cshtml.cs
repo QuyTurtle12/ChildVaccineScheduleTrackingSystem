@@ -23,7 +23,7 @@ namespace RazorPage.Pages.Package
         public List<VaccineGetDto> AllVaccines { get; set; } = default!;
         [BindProperty]
         public PackagePostDTO Package { get; set; } = default!;
-        public List<string> Types { get; set; } = new List<string> { PackageType.Single.ToString(), PackageType.LongTerm.ToString() };
+        public List<string> Types { get; set; } = new List<string> { PackageType.Single.ToString(), PackageType.Combo.ToString() };
 
         public async Task<IActionResult> OnGet()
         {

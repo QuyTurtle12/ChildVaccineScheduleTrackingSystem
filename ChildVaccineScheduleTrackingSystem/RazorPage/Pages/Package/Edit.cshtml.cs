@@ -26,7 +26,7 @@ namespace RazorPage.Pages.Package
         public PackageGetDTO PackageGetDto { get; set; } = default!;
         [BindProperty]
         public PackagePutDTO Package { get; set; } = default!;
-        public List<string> Types { get; set; } = new List<string> { PackageType.Single.ToString(), PackageType.LongTerm.ToString() };
+        public List<string> Types { get; set; } = new List<string> { PackageType.Single.ToString(), PackageType.Combo.ToString() };
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
             var jwtToken = HttpContext.Session.GetString("jwt_token");
@@ -47,6 +47,8 @@ namespace RazorPage.Pages.Package
             else
             {
                 PackageGetDto = package;
+                Package = new();
+                Package.Price = package.Price;
                 VaccinesInPackage = await _vaccineService.GetVaccineByPackageId(id);
                 AllVaccines = await _vaccineService.GetAllAsync();
                 return Page();

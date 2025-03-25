@@ -13,10 +13,12 @@
     </h1>
 
     <!-- Nút tạo mới -->
-    <p class="text-center mb-4">
-        <a asp-page="Create" class="btn btn-success"><i class="fas fa-plus mr-2"></i>Thêm Hồ sơ Vaccine</a>
-    </p>
-
+    @if(Model.UserRole == "staff"){
+        <p class="text-center mb-4">
+            <a asp-page="Create" class="btn btn-success"><i class="fas fa-plus mr-2"></i>Thêm Hồ sơ Vaccine</a>
+        </p>
+    }
+    
     <!-- Bảng danh sách -->
     <div class="table-responsive">
         <table class="table table-hover animate__animated animate__fadeIn">
@@ -36,13 +38,11 @@
                     <tr class="lively-row">
                         <td>@Html.DisplayFor(modelItem => item.VaccineName)</td>
                         <td>@Html.DisplayFor(modelItem => item.ChildName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.DateAdministered)</td>
-                        <td>@Html.DisplayFor(modelItem => item.NextDoseDue)</td>
+                        <td>@item.DateAdministered.ToString("dd-MM-yyyy hh:mm:ss")</td>
+                        <td>@item.NextDoseDue.ToString("dd-MM-yyyy hh:mm:ss")</td>
                         <td>@Html.DisplayFor(modelItem => item.CustomerNote)</td>
                         <td>
                             <a class="btn btn-info btn-sm mr-2" asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i> Chi tiết</a>
-                            <a class="btn btn-primary btn-sm mr-2" asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Sửa</a>
-                            <a class="btn btn-danger btn-sm" asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i> Xóa</a>
                         </td>
                     </tr>
                 }
