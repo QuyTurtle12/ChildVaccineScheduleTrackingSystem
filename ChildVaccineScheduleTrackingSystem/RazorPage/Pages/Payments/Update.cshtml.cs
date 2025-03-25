@@ -2,12 +2,14 @@ using BusinessLogic.DTOs.PaymentDTO;
 using BusinessLogic.Interfaces;
 using Data.Entities;
 using Data.Enum;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace RazorPage.Pages.Payments
 {
+    [Authorize(Roles = "Staff")]
     public class UpdateModel : PageModel
     {
         private readonly IPaymentService _paymentService;
@@ -34,7 +36,7 @@ namespace RazorPage.Pages.Payments
             }
             // Populate status dropdown list
             StatusList = Enum.GetValues(typeof(EnumPayment))
-                .Cast<EnumAppointment>()
+                .Cast<EnumPayment>()
                 .Select(e => new SelectListItem
                 {
                     Value = ((int)e).ToString(),

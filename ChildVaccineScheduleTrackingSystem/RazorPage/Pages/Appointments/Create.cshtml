@@ -1,88 +1,102 @@
 ﻿@page
 @model RazorPage.Pages.Appointments.CreateModel
 @{
-    ViewData["Title"] = "Đặt lịch hẹn - Trung tâm Vaccine";
+    ViewData["Title"] = "Book an Appointment";
 }
 
+<form method="post" id="createAppointmentForm">
 
-
-<!-- Nội dung chính -->
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card lively-card animate__animated animate__fadeIn">
-                <div class="card-body">
-                    <h1 class="text-center text-vibrant mb-4 animate__animated animate__bounceIn">
-                        <i class="fas fa-calendar-plus mr-2"></i>Đặt lịch hẹn
-                    </h1>
-                    <form method="post" id="createAppointmentForm">
-                        @if (!ViewData.ModelState.IsValid)
-                        {
-                            <div class="alert alert-danger d-none" id="errorMessages">
-                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                                {
-                                    <p>@error.ErrorMessage</p>
-                                }
-                            </div>
-                        }
-                        <input type="hidden" asp-for="Appointment.UserId" />
-                        @if (Model.UserRole == "Staff")
-                        {
-                            <div class="form-group">
-                                <label asp-for="Appointment.CustomerPhoneNumber" class="font-weight-bold">Số điện thoại khách hàng</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                                    </div>
-                                    <input type="text" id="customerPhone" asp-for="Appointment.CustomerPhoneNumber" class="form-control" placeholder="Nhập số điện thoại khách hàng" />
-                                </div>
-                                <span asp-validation-for="Appointment.CustomerPhoneNumber" class="text-danger"></span>
-                            </div>
-                        }
-                        <div class="form-group">
-                            <label asp-for="Appointment.AppointmentDate" class="font-weight-bold">Ngày hẹn</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                </div>
-                                <input asp-for="Appointment.AppointmentDate" class="form-control" type="datetime-local" />
-                            </div>
-                            <span asp-validation-for="Appointment.AppointmentDate" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Appointment.Name" class="font-weight-bold">Tên cuộc hẹn</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                                </div>
-                                <input asp-for="Appointment.Name" class="form-control" placeholder="Nhập tên cuộc hẹn" />
-                            </div>
-                            <span asp-validation-for="Appointment.Name" class="text-danger"></span>
-                        </div>
-                        <div class="form-group" style="display: none">
-                            <input asp-for="Appointment.Status" class="form-control" value="0" />
-                        </div>
-                        <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-success btn-lg animate__animated animate__pulse animate__infinite">
-                                <i class="fas fa-save mr-2"></i>Đặt lịch
-                            </button>
-                            <a class="btn btn-secondary ml-2" asp-page="./Index"><i class="fas fa-arrow-left mr-2"></i>Quay lại</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger d-none" id="errorMessages">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
         </div>
-    </div>
-</div>
+    }
+@* <div id="errorMessages" class="alert alert-danger d-none"></div> *@
 
+
+    <input type="hidden" asp-for="Appointment.UserId" />
+    @* <input type="hidden" asp-for="Appointment.PackageId" id="selectedPackageId" /> *@
+    <input type="hidden" asp-for="Appointment.PackageIds" id="selectedPackageIds" />
+
+
+    @if (Model.UserRole == "Staff")
+    {
+        <div class="mb-3">
+            <label for="customerPhone" class="form-label">Customer Phone Number</label>
+            <input type="text" id="customerPhone" asp-for="Appointment.CustomerPhoneNumber" class="form-control" placeholder="Enter customer's phone number" />
+            <span asp-validation-for="Appointment.CustomerPhoneNumber" class="text-danger"></span>
+        </div>
+    }
+
+
+    <div class="form-group">
+        <label asp-for="Appointment.AppointmentDate">Appointment Date</label>
+        <input asp-for="Appointment.AppointmentDate" class="form-control" type="datetime-local"/>
+        <span asp-validation-for="Appointment.AppointmentDate" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Appointment.Name">Appointment Name</label>
+        <input asp-for="Appointment.Name" class="form-control"></input>
+    </div>
+    <div class="form-group">
+        <label asp-for="Appointment.PaymentName">Payment Name</label>
+        <input asp-for="Appointment.PaymentName" class="form-control"></input>
+    </div>
+
+    <!-- Package Selection -->
+    @* <div class="form-group">
+        <label>Select Package</label>
+        <ul class="list-group">
+            @foreach (var package in Model.Packages)
+            {
+                <li class="list-group-item package-option" data-package-id="@package.Id">
+                    @package.Name
+                </li>
+            }
+        </ul>
+        <span asp-validation-for="Appointment.PackageId" class="text-danger"></span>
+    </div> *@
+    <div class="form-group">
+        <label>Select Packages</label>
+        <ul class="list-group">
+            @foreach (var package in Model.Packages)
+            {
+                @* <li class="list-group-item package-option" data-package-id="@package.Id">
+                    <input type="checkbox" class="package-checkbox" value="@package.Id" /> @package.Name
+                </li> *@
+                <div>
+                    <input type="checkbox" name="Appointment.PackageIds" value="@package.Id" />
+                    <label>@package.Name</label>
+                </div>
+                
+            }
+        </ul>
+        <input type="hidden" asp-for="Appointment.PackageIds" id="selectedPackageIds" />
+        <span asp-validation-for="Appointment.PackageIds" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-group" style="display: none">
+        <label>Selected Package ID</label>
+        <input id="packageInput" class="form-control" disabled />
+    </div>
+
+    <div class="form-group" style="display: none">
+        <label asp-for="Appointment.Status">Status</label>
+        <input asp-for="Appointment.Status" class="form-control" value="0" />
+    </div>
+    <div class="mt-2">
+        <button type="submit" class="btn btn-success">Book Appointment</button>
+        <a class="btn btn-secondary" asp-page="./Index">Back to List</a>
+    </div>
+</form>
 
 
 @section Scripts {
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -99,14 +113,16 @@
 
             form.addEventListener("submit", function (event) {
                 errorMessagesDiv.innerHTML = "";
-                errorMessagesDiv.classList.add("d-none");
+                errorMessagesDiv.classList.add("d-none"); // Hide error messages by default
 
                 let errors = [];
 
-                if ('@Model.UserRole' === 'Staff' && customerPhoneInput && customerPhoneInput.value.trim() === "") {
-                    errors.push("Số điện thoại khách hàng là bắt buộc khi đặt lịch.");
+                // Check if Staff role and phone number is empty
+                if ('@Model.UserRole' === 'Staff' && customerPhoneInput.value.trim() === "") {
+                    errors.push("Customer phone number is required for booking.");
                 }
 
+                // If errors exist, prevent form submission and display errors
                 if (errors.length > 0) {
                     event.preventDefault();
                     errorMessagesDiv.innerHTML = errors.join("<br>");
@@ -114,73 +130,52 @@
                 }
             });
         });
+
+
+        // document.addEventListener("DOMContentLoaded", function () {
+        //     const packageOptions = document.querySelectorAll(".package-option");
+        //     const packageIdInput = document.getElementById("selectedPackageId"); // Correct ID
+        //     const packageDisplayInput = document.getElementById("packageInput"); // Show selected ID
+
+        //     packageOptions.forEach(option => {
+        //         option.addEventListener("click", function () {
+        //             const selectedPackageId = this.getAttribute("data-package-id");
+        //             packageIdInput.value = selectedPackageId; // Set hidden field
+        //             packageDisplayInput.value = selectedPackageId; // Show in disabled input
+
+        //             packageOptions.forEach(opt => opt.classList.remove("active")); // Remove highlight
+        //             this.classList.add("active"); // Highlight selected package
+        //         });
+        //     });
+        // });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const checkboxes = document.querySelectorAll(".package-checkbox");
+            // const packageIdInput = document.getElementById("selectedPackageIds");
+            const hiddenInput = document.getElementById("selectedPackageIds");
+
+
+            // checkboxes.forEach(checkbox => {
+            //     checkbox.addEventListener("change", function () {
+            //         const selectedIds = Array.from(document.querySelectorAll(".package-checkbox:checked"))
+            //             .map(cb => cb.value);
+            //         packageIdInput.value = JSON.stringify(selectedIds); // Store as JSON string
+            //         console.log("Selected Package IDs:", packageIdInput.value);
+            //     });
+            // });
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", function () {
+                    let selectedValues = Array.from(checkboxes)
+                        .filter(c => c.checked)
+                        .map(c => c.value);
+
+                    hiddenInput.value = JSON.stringify(selectedValues); // Store as JSON array
+                });
+            });
+        });
+
+
+
     </script>
 }
 
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f0f4f8;
-    }
-
-    .navbar {
-        background-color: #0078D4 !important;
-        color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar-brand, .nav-link {
-        color: white !important;
-        transition: color 0.3s;
-    }
-
-        .nav-link:hover {
-            color: #F28C38 !important;
-        }
-
-    .lively-card {
-        border: none;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s, box-shadow 0.3s;
-        background-color: white;
-        border-radius: 10px;
-    }
-
-        .lively-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-
-    .text-vibrant {
-        color: #F28C38;
-        font-weight: bold;
-    }
-
-    .btn-success {
-        background-color: #28A745;
-        border: none;
-        transition: transform 0.2s;
-    }
-
-        .btn-success:hover {
-            background-color: #218838;
-            transform: scale(1.05);
-        }
-
-    .input-group-text {
-        background-color: #0078D4;
-        color: white;
-    }
-
-    .form-control:focus {
-        border-color: #28A745;
-        box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
-    }
-
-    .footer {
-        background-color: #0078D4;
-        color: white;
-        padding: 20px 0;
-        text-align: center;
-    }
-</style>

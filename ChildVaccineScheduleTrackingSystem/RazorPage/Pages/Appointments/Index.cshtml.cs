@@ -2,11 +2,13 @@ using AutoMapper;
 using BusinessLogic.DTOs.AppointmentDTO;
 using BusinessLogic.Interfaces;
 using Data.PaggingItem;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace RazorPage.Pages.Appointments
 {
+    [Authorize(Roles = "Staff, Customer")]
     public class IndexModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;

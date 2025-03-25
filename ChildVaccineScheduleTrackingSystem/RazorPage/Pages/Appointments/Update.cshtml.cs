@@ -10,6 +10,7 @@ using System.Security.Claims;
 
 namespace RazorPage.Pages.Appointments
 {
+    [Authorize(Roles = "Staff, Customer")]
     public class UpdateModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;
@@ -19,12 +20,13 @@ namespace RazorPage.Pages.Appointments
             _appointmentService = appointmentService;
         }
 
-        [BindProperty]
+       
         public GetAppointmentDTO Appointment { get; set; } = default!;
         [BindProperty]
         public PutAppointmentDTO UpdatedAppointment { get; set; } = default!;
         public List<SelectListItem> StatusList { get; set; }
-
+        [BindProperty(SupportsGet = true)]
+        public string? ActionType { get; set; }
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
             var appointment = await _appointmentService.GetAppointmentById(id);
@@ -32,6 +34,13 @@ namespace RazorPage.Pages.Appointments
             {
                 return NotFound("Appointment not found!");
             }
+            if (!string.IsNullOrEmpty(ActionType) && ActionType == "Cancel")
+            {
+                // Handle the case where the user is canceling the appointment
+                TempData["Message"] = "Are you sure you want to cancel this appointment?";
+            }
+
+            Appointment = appointment;
 
             // Populate status dropdown list
             StatusList = Enum.GetValues(typeof(EnumAppointment))
@@ -67,10 +76,26 @@ namespace RazorPage.Pages.Appointments
             {
                 return NotFound("Updated appointment not found!");
             }
+            // Retrieve the existing appointment before validation
+            Appointment = await _appointmentService.GetAppointmentById(UpdatedAppointment.Id);
+            if (Appointment == null)
+            {
+                return NotFound("Appointment not found!");
+            }
             if (!ModelState.IsValid)
             {
                 return Page();
             }
+            //if (Appointment.Status == EnumAppointment.Completed && UpdatedAppointment.Status == EnumAppointment.Canceled)
+            //{
+            //    return NotFound("Cannot cancel an appointment that is already completed!");
+            //}
+            if (Appointment.Status == EnumAppointment.Completed && UpdatedAppointment.Status == EnumAppointment.Canceled)
+            {
+                ModelState.AddModelError(string.Empty, "Cannot cancel an appointment that is already completed!");
+                return Page();
+            }
+
             await _appointmentService.UpdateAppointment(UpdatedAppointment);
             return RedirectToPage("./Index");
         }

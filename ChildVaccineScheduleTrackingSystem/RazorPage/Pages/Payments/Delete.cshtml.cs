@@ -1,10 +1,12 @@
 using BusinessLogic.DTOs.PaymentDTO;
 using BusinessLogic.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace RazorPage.Pages.Payments
 {
+    [Authorize(Roles = "Staff")]
     public class DeleteModel : PageModel
     {
         private readonly IPaymentService _paymentService;

@@ -3,12 +3,14 @@ using BusinessLogic.Interfaces;
 using BusinessLogic.Services;
 using Data.Entities;
 using Data.Enum;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace RazorPage.Pages.Payments
 {
+    [Authorize(Roles = "Staff")]
     public class CreateModel : PageModel
     {
         private readonly IPaymentService _paymentService;

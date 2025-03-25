@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
 using BusinessLogic.DTOs.AppointmentDTO;
+using BusinessLogic.DTOs.PaymentDTO;
 using BusinessLogic.Interfaces;
 using Data.Constants;
 using Data.Entities;
@@ -19,13 +20,16 @@ namespace BusinessLogic.Services
         private readonly IMapper _mapper;
         private readonly IUOW _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IPackageService _packageService;
+        private readonly IPaymentService _paymentService;
 
-
-        public AppointmentService(IMapper mapper, IUOW unitOfWork, IHttpContextAccessor httpContextAccessor)
+        public AppointmentService(IMapper mapper, IUOW unitOfWork, IHttpContextAccessor httpContextAccessor, IPackageService packageService, IPaymentService paymentService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
+            _packageService = packageService;
+            _paymentService = paymentService;
         }
         private string GetCurrentUserName()
         {
@@ -184,6 +188,92 @@ namespace BusinessLogic.Services
             await _unitOfWork.GetRepository<Appointment>().InsertAsync(appointment);
             await _unitOfWork.SaveAsync();
 
+            #region Create payment
+            // Create the payment associated with this appointment
+            if (appointmentDto.PackageIds != null && appointmentDto.PackageIds.Any())
+            {
+                int totalPrice = 0;
+                foreach (var packageId in appointmentDto.PackageIds)
+                {
+                    var package = await _packageService.GetByIdAsync(packageId);
+                    
+                    if (package != null)
+                    {
+                        totalPrice += (int)package.Price;
+                    }
+
+                }
+                PostPaymentDTO paymentDto = new PostPaymentDTO
+                {
+                    AppointmentId = appointment.Id,
+                    Name = appointmentDto.PaymentName ?? "Empty",
+                    Amount =  totalPrice,
+                    PaymentMethod = "Cash",
+                    Status = 0,
+                    CreatedBy = currentUser,
+                    CreatedTime = DateTimeOffset.Now
+                };
+
+                Payment payment = _mapper.Map<Payment>(paymentDto);
+                await _unitOfWork.GetRepository<Payment>().InsertAsync(payment);
+                await _unitOfWork.SaveAsync();
+            }
+            else
+            {
+                PostPaymentDTO paymentDto = new PostPaymentDTO
+                {
+                    AppointmentId = appointment.Id,
+                    Name = appointmentDto.PaymentName ?? "Empty",
+                    Amount = 0, // Set price from appointment DTO
+                    PaymentMethod = "Cash", // Default payment method, change as needed
+                    Status = 0, // Pending payment
+                    CreatedBy = currentUser,
+                    CreatedTime = DateTimeOffset.Now
+                };
+
+                Payment payment = _mapper.Map<Payment>(paymentDto);
+                await _unitOfWork.GetRepository<Payment>().InsertAsync(payment);
+                await _unitOfWork.SaveAsync();
+            }
+            #endregion
+
+            #region PackageAppointment
+            // **Save AppointmentPackage only if a package is selected**
+            //if (appointmentDto.PackageId != null)
+            //{
+            //    AppointmentPackage appointmentPackage = new AppointmentPackage
+            //    {
+            //        AppointmentId = appointment.Id,
+            //        PackageId = (Guid)appointmentDto.PackageId,
+            //    };
+
+            //    await _unitOfWork.GetRepository<AppointmentPackage>().InsertAsync(appointmentPackage);
+            //    await _unitOfWork.SaveAsync();
+            //}
+            // Save the selected packages
+            if (appointmentDto.PackageIds == null || !appointmentDto.PackageIds.Any())
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "At least one package must be selected.");
+            }
+            var appointmentPackages = new List<AppointmentPackage>();
+
+            foreach (var packageId in appointmentDto.PackageIds)
+            {
+                var appointmentPackage = new AppointmentPackage
+                {
+                    AppointmentId = appointment.Id,
+                    PackageId = packageId
+                };
+
+                appointmentPackages.Add(appointmentPackage);
+            }
+
+            // Bulk insert all at once
+            await _unitOfWork.GetRepository<AppointmentPackage>().InsertRangeAsync(appointmentPackages);
+            await _unitOfWork.SaveAsync();
+
+            #endregion
+
         }
 
         public async Task UpdateAppointment(PutAppointmentDTO putAppointmentDto)
@@ -194,6 +284,15 @@ namespace BusinessLogic.Services
             {
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.BADREQUEST, "Appointment not found!");
             }
+
+            // Prevent canceling a completed appointment
+            if ((EnumAppointment?)existingAppointment.Status == EnumAppointment.Completed && putAppointmentDto.Status == EnumAppointment.Canceled)
+            {
+                //throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, "Cannot cancel an appointment that is already completed!");
+                return;
+            }
+            
+
             // Update properties
             string currentUser = GetCurrentUserName();
 
@@ -204,6 +303,11 @@ namespace BusinessLogic.Services
 
             repository.Update(existingAppointment);
             await _unitOfWork.SaveAsync();
+
+            if (putAppointmentDto.Status == EnumAppointment.Canceled)
+            {
+                await _paymentService.DeletePaymentByAppointmentId(existingAppointment.Id);
+            }
         }
 
         public async Task DeleteAppointment(Guid id)
