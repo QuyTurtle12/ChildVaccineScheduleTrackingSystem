@@ -43,7 +43,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                                 </div>
-                                <input asp-for="VaccineRecord.DateAdministered" class="form-control" type="date" />
+                                <input asp-for="VaccineRecord.DateAdministered" class="form-control" type="datetime-local" />
                             </div>
                             <span asp-validation-for="VaccineRecord.DateAdministered" class="text-danger"></span>
                         </div>
@@ -53,7 +53,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
                                 </div>
-                                <input asp-for="VaccineRecord.NextDoseDue" class="form-control" type="date" />
+                                <input asp-for="VaccineRecord.NextDoseDue" class="form-control" type="datetime-local" />
                             </div>
                             <span asp-validation-for="VaccineRecord.NextDoseDue" class="text-danger"></span>
                         </div>

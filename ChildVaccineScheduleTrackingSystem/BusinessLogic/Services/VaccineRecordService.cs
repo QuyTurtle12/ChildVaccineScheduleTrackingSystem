@@ -14,12 +14,10 @@ namespace BusinessLogic.Services
     {
         private readonly IUOW _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IChildrenService _childrenService;
-        public VaccineRecordService(IUOW unitOfWork, IMapper mapper, IChildrenService childrenService)
+        public VaccineRecordService(IUOW unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _childrenService = childrenService;
         }
 
         public async Task<IEnumerable<GetVaccineRecordDto>> GetAllAsync()

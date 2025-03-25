@@ -38,8 +38,8 @@
                     <tr class="lively-row">
                         <td>@Html.DisplayFor(modelItem => item.VaccineName)</td>
                         <td>@Html.DisplayFor(modelItem => item.ChildName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.DateAdministered)</td>
-                        <td>@Html.DisplayFor(modelItem => item.NextDoseDue)</td>
+                        <td>@item.DateAdministered.ToString("dd-MM-yyyy hh:mm:ss")</td>
+                        <td>@item.NextDoseDue.ToString("dd-MM-yyyy hh:mm:ss")</td>
                         <td>@Html.DisplayFor(modelItem => item.CustomerNote)</td>
                         <td>
                             <a class="btn btn-info btn-sm mr-2" asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i> Chi tiết</a>

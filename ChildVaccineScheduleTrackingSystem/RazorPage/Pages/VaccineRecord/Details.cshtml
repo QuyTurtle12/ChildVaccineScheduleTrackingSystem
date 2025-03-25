@@ -19,9 +19,9 @@
                         <dt class="col-sm-4">Trẻ em</dt>
                         <dd class="col-sm-8">@Html.DisplayFor(model => model.VaccineRecord.ChildName)</dd>
                         <dt class="col-sm-4">Ngày tiêm</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.VaccineRecord.DateAdministered)</dd>
+                        <dd class="col-sm-8">@Model.VaccineRecord.DateAdministered.ToString("dd-MM-yyyy hh:mm:ss")</dd>
                         <dt class="col-sm-4">Liều tiếp theo</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.VaccineRecord.NextDoseDue)</dd>
+                        <dd class="col-sm-8">@Model.VaccineRecord.NextDoseDue.ToString("dd-MM-yyyy hh:mm:ss")</dd>
                         <dt class="col-sm-4">Ghi chú</dt>
                         <dd class="col-sm-8">@Html.DisplayFor(model => model.VaccineRecord.CustomerNote)</dd>
                     </dl>
