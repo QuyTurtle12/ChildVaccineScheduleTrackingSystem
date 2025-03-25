@@ -46,7 +46,6 @@
                     <th>Vai trò</th>
                     <th>Số điện thoại</th>
                     <th>Địa chỉ</th>
-                    <th>Trạng thái</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
@@ -59,7 +58,6 @@
                         <td>@Html.DisplayFor(modelItem => item.RoleName)</td>
                         <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
                         <td>@Html.DisplayFor(modelItem => item.Address)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
                         <td>
                             @if (Model.loggedInUserRole == "Admin")
                             {
