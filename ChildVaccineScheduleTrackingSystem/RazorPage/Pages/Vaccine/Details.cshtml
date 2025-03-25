@@ -44,8 +44,11 @@
                         </div>
                     </div>
                     <div class="text-center mt-4">
-                        <a asp-page="./Edit" asp-route-id="@Model.Vaccine.Id" class="btn btn-primary mr-2"><i class="fas fa-edit"></i> Sửa</a>
-                        <a asp-page="./Delete" asp-route-id="@Model.Vaccine.Id" class="btn btn-danger mr-2"><i class="fas fa-trash"></i> Xóa</a>
+                        @if (Model.UserRole == "staff")
+                        {
+                            <a asp-page="./Edit" asp-route-id="@Model.Vaccine.Id" class="btn btn-primary mr-2"><i class="fas fa-edit"></i> Sửa</a>
+                            <a asp-page="./Delete" asp-route-id="@Model.Vaccine.Id" class="btn btn-danger mr-2"><i class="fas fa-trash"></i> Xóa</a>
+                        }
                         <a asp-page="./Index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay lại</a>
                     </div>
                 </div>

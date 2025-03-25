@@ -4,8 +4,6 @@
     ViewData["Title"] = "Chi tiết Hồ sơ Vaccine - Trung tâm Vaccine";
 }
 
-
-
 <!-- Nội dung chính -->
 <div class="container my-5">
     <div class="row justify-content-center">
@@ -29,7 +27,9 @@
                     </dl>
                     <div class="text-center mt-4">
                         <a class="btn btn-primary mr-2" asp-page="./Edit" asp-route-id="@Model.VaccineRecord.Id"><i class="fas fa-edit mr-2"></i>Sửa</a>
-                        <a class="btn btn-danger mr-2" asp-page="./Delete" asp-route-id="@Model.VaccineRecord.Id"><i class="fas fa-trash mr-2"></i>Xóa</a>
+                        @if(Model.UserRole == "staff"){
+                            <a class="btn btn-danger mr-2" asp-page="./Delete" asp-route-id="@Model.VaccineRecord.Id"><i class="fas fa-trash mr-2"></i>Xóa</a>
+                        }
                         <a class="btn btn-secondary" asp-page="./Index"><i class="fas fa-arrow-left mr-2"></i>Quay lại</a>
                     </div>
                 </div>

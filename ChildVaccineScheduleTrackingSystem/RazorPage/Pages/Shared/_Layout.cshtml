@@ -84,7 +84,11 @@
                         <li class="list-group-item animate__animated animate__fadeInUp">
                             <a asp-area="" asp-page="/Payments/Index"><i class="fas fa-credit-card me-2"></i>Payment</a>
                         </li>
-
+                        @if(User.IsInRole("Staff")){
+                            <li class="list-group-item animate__animated animate__fadeInUp">
+                                <a asp-area="" asp-page="/Vaccine/Index"><i class="fas fa-credit-card me-2"></i>Vaccine</a>
+                            </li>
+                        }
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="list-group-item animate__animated animate__fadeInUp">

@@ -9,15 +9,18 @@ namespace RazorPage.Pages.Package
     {
         private readonly IPackageService _packageService;
         private readonly IVaccineService _vaccineService;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public DetailsModel(IPackageService packageService, IVaccineService vaccineService)
+        public DetailsModel(IPackageService packageService, IVaccineService vaccineService, IJwtTokenService jwtTokenService)
         {
             _packageService = packageService;
             _vaccineService = vaccineService;
+            _jwtTokenService = jwtTokenService;
         }
 
         public PackageGetDTO Package { get; set; } = default!;
         public IEnumerable<VaccineGetDto> Vaccines { get; set; } = default!;
+        public string UserRole { get; set; } = string.Empty;
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
@@ -33,6 +36,11 @@ namespace RazorPage.Pages.Package
                 var vaccines = await _vaccineService.GetVaccineByPackageId(id);
                 Vaccines = vaccines;
             }
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            string loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+            UserRole = loggedInUserRole.ToLower();
+
+            
             return Page();
         }
     }
