@@ -2,6 +2,7 @@ using BusinessLogic.DTOs;
 using BusinessLogic.DTOs.AppointmentDTO;
 using BusinessLogic.Interfaces;
 using BusinessLogic.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json.Linq;
@@ -9,6 +10,7 @@ using System.Text.Json;
 
 namespace RazorPage.Pages.Appointments
 {
+    [Authorize]
     public class CreateModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;

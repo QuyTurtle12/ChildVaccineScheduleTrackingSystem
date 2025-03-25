@@ -78,13 +78,15 @@
                         <li class="list-group-item animate__animated animate__fadeInUp">
                             <a asp-area="" asp-page="/VaccineRecord/Index"><i class="fas fa-syringe me-2"></i>Vaccine Record</a>
                         </li>
-                        <li class="list-group-item animate__animated animate__fadeInUp">
-                            <a asp-area="" asp-page="/Appointments/Index"><i class="fas fa-calendar-check me-2"></i>Appointment</a>
-                        </li>
-                        <li class="list-group-item animate__animated animate__fadeInUp">
-                            <a asp-area="" asp-page="/Payments/Index"><i class="fas fa-credit-card me-2"></i>Payment</a>
-                        </li>
-
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="list-group-item animate__animated animate__fadeInUp">
+                                <a asp-area="" asp-page="/Appointments/Index"><i class="fas fa-calendar-check me-2"></i>Appointment</a>
+                            </li>
+                            <li class="list-group-item animate__animated animate__fadeInUp">
+                                <a asp-area="" asp-page="/Payments/Index"><i class="fas fa-credit-card me-2"></i>Payment</a>
+                            </li>
+                        }
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="list-group-item animate__animated animate__fadeInUp">

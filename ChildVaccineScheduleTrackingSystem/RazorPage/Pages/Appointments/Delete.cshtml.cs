@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace RazorPage.Pages.Appointments
 {
+    [Authorize]
     public class DeleteModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;

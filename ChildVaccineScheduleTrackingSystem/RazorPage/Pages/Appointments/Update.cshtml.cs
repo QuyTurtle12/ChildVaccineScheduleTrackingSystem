@@ -10,6 +10,7 @@ using System.Security.Claims;
 
 namespace RazorPage.Pages.Appointments
 {
+    [Authorize]
     public class UpdateModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;

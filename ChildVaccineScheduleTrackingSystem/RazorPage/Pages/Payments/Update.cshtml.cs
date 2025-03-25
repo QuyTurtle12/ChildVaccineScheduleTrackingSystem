@@ -2,12 +2,14 @@ using BusinessLogic.DTOs.PaymentDTO;
 using BusinessLogic.Interfaces;
 using Data.Entities;
 using Data.Enum;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace RazorPage.Pages.Payments
 {
+    [Authorize]
     public class UpdateModel : PageModel
     {
         private readonly IPaymentService _paymentService;

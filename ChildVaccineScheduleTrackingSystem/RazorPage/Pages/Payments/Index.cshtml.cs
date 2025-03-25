@@ -3,11 +3,13 @@ using BusinessLogic.DTOs.PaymentDTO;
 using BusinessLogic.Interfaces;
 using BusinessLogic.Services;
 using Data.PaggingItem;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace RazorPage.Pages.Payments
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly IPaymentService _paymentService;
