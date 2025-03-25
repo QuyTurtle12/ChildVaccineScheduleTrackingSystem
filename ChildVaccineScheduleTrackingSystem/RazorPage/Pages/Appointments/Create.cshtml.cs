@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace RazorPage.Pages.Appointments
 {
-    [Authorize]
+    [Authorize(Roles = "Staff, Customer")]
     public class CreateModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;

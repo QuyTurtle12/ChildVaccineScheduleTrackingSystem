@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace RazorPage.Pages.Payments
 {
-    [Authorize]
+    [Authorize(Roles = "Staff")]
     public class CreateModel : PageModel
     {
         private readonly IPaymentService _paymentService;

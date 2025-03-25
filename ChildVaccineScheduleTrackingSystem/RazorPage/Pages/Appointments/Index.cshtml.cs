@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace RazorPage.Pages.Appointments
 {
-    [Authorize]
+    [Authorize(Roles = "Staff, Customer")]
     public class IndexModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace RazorPage.Pages.Payments
 {
-    [Authorize]
+    [Authorize(Roles = "Staff, Customer")]
     public class IndexModel : PageModel
     {
         private readonly IPaymentService _paymentService;

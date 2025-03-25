@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace RazorPage.Pages.Appointments
 {
-    [Authorize]
+    [Authorize(Roles = "Staff")]
     public class DeleteModel : PageModel
     {
         private readonly IAppointmentService _appointmentService;
