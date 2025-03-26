@@ -33,7 +33,7 @@ namespace BusinessLogic.Services
                                      .Include(u => u.Role)
                                      .FirstOrDefault(u => u.Email == loginDto.AccountEmail);
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.AccountPassword, user.Password))
+            if ((user == null || user.DeletedTime.HasValue) || !BCrypt.Net.BCrypt.Verify(loginDto.AccountPassword, user.Password))
             {
                 return null;
             }
