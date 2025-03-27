@@ -1,0 +1,161 @@
+﻿@page
+@model RazorPage.Pages.Package.CreateModel
+
+@{
+    ViewData["Title"] = "Create Package";
+}
+
+
+
+<!-- Nội dung chính -->
+<div class="container my-5">
+    <h2 class="text-center mb-4 text-vibrant animate__animated animate__fadeIn">Tạo gói vaccine mới</h2>
+    <p class="text-muted text-center mb-4 animate__animated animate__fadeInUp">
+        Thêm một gói vaccine mới để phục vụ khách hàng.
+    </p>
+
+    <!-- Form -->
+    <div class="card lively-card p-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger text-center mb-3"></div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Package.Name" class="control-label fw-bold text-muted"></label>
+                        <input asp-for="Package.Name" class="form-control" />
+                        <span asp-validation-for="Package.Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Package.Price" class="control-label fw-bold text-muted"></label>
+                        <input asp-for="Package.Price" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="Package.Price" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Package.Description" class="control-label fw-bold text-muted"></label>
+                <input asp-for="Package.Description" class="form-control" />
+                <span asp-validation-for="Package.Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Package.Type" class="control-label fw-bold text-muted"></label>
+                <select asp-for="Package.Type" asp-items="new SelectList(Model.Types)" class="form-control"></select>
+                <span asp-validation-for="Package.Type" class="text-danger"></span>
+            </div>
+
+            <h5 class="text-vibrant mb-3 animate__animated animate__fadeInUp">Chọn vaccine cho gói</h5>
+            <div class="form-group mb-4">
+                @foreach (var vaccine in Model.AllVaccines)
+                {
+                    <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input"
+                               name="Package.SelectedVaccineIds"
+                               value="@vaccine.Id" />
+                        <label class="form-check-label">@vaccine.Name</label>
+                    </div>
+                }
+            </div>
+
+            <div class="form-group d-flex justify-content-end gap-2">
+                <input type="submit" value="Tạo mới" class="btn btn-success btn-modern animate__animated animate__pulse" />
+                <a asp-page="./Index" class="btn btn-outline-secondary btn-modern">
+                    <i class="fas fa-arrow-left"></i> Quay lại danh sách
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- CSS và JS -->
+@section Scripts {
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        .navbar {
+            background-color: #0078D4 !important;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand, .nav-link {
+            color: white !important;
+            transition: color 0.3s;
+        }
+
+            .nav-link:hover {
+                color: #F28C38 !important;
+            }
+
+        .btn-primary {
+            background-color: #0078D4;
+            border: none;
+            transition: transform 0.2s;
+        }
+
+            .btn-primary:hover {
+                background-color: #005BB5;
+                transform: scale(1.05);
+            }
+
+        .btn-success {
+            background-color: #28A745;
+            border: none;
+            transition: transform 0.2s;
+        }
+
+            .btn-success:hover {
+                background-color: #218838;
+                transform: scale(1.05);
+            }
+
+        .text-vibrant {
+            color: #F28C38;
+            font-weight: bold;
+        }
+
+        .lively-card {
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+            .lively-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            }
+
+        .footer {
+            background-color: #0078D4;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .btn-modern {
+            transition: transform 0.2s;
+        }
+
+            .btn-modern:hover {
+                transform: scale(1.05);
+            }
+    </style>
+}

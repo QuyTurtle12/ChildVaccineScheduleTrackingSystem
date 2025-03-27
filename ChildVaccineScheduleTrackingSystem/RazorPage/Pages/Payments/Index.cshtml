@@ -1,0 +1,159 @@
+﻿@page
+@model RazorPage.Pages.Payments.IndexModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Danh sách Thanh toán - Trung tâm Vaccine";
+    var jwtToken = ViewData["JwtToken"] as string;
+    var userRole = ViewData["UserRole"] as string;
+}
+
+
+
+<!-- Nội dung chính -->
+<div class="container my-5">
+    <h1 class="text-center text-vibrant mb-4 animate__animated animate__bounceIn">
+        <i class="fas fa-money-check-alt mr-2"></i>Danh sách Thanh toán
+    </h1>
+
+    <!-- Form tìm kiếm -->
+    <form asp-page="" method="get" class="mb-5 p-4 bg-light rounded shadow animate__animated animate__fadeIn">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="nameSearch" class="form-label fw-bold text-success">Tên thanh toán</label>
+                <input type="text" id="nameSearch" name="nameSearch" class="form-control" placeholder="Nhập tên..." value="@Model.NameSearch" />
+            </div>
+            <div class="col-md-3">
+                <label for="paymentMethodSearch" class="form-label fw-bold text-success">Phương thức</label>
+                <input type="text" id="paymentMethodSearch" name="paymentMethodSearch" class="form-control" placeholder="Ví dụ: Thẻ tín dụng" value="@Model.PaymentMethodSearch" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold text-success">Khoảng tiền</label>
+                <div class="input-group">
+                    <input type="number" id="fromAmountSearch" name="fromAmountSearch" class="form-control" placeholder="Từ" value="@Model.FromAmountSearch" />
+                    <span class="input-group-text">-</span>
+                    <input type="number" id="toAmountSearch" name="toAmountSearch" class="form-control" placeholder="Đến" value="@Model.ToAmountSearch" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label for="statusSearch" class="form-label fw-bold text-success">Trạng thái</label>
+                <select id="statusSearch" name="statusSearch" class="form-select">
+                    <option value="">Tất cả</option>
+                    <option value="0" selected="@(Model.StatusSearch == 0)">Chờ xử lý</option>
+                    <option value="1" selected="@(Model.StatusSearch == 1)">Hoàn thành</option>
+                    <option value="2" selected="@(Model.StatusSearch == 2)">Thất bại</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100 animate__animated animate__pulse animate__infinite">
+                    <i class="fas fa-search"></i> Tìm
+                </button>
+            </div>
+        </div>
+        <input type="hidden" id="pageNumber" name="pageNumber" value="1" />
+    </form>
+
+    <!-- Nút tạo mới (cho Staff) -->
+    @if (HttpContextAccessor.HttpContext!.User.IsInRole("Staff"))
+    {
+        <p class="text-center mb-4">
+            <a asp-page="./Create" class="btn btn-success"><i class="fas fa-plus mr-2"></i>Tạo thanh toán mới</a>
+        </p>
+    }
+
+    <!-- Bảng danh sách -->
+    <div class="table-responsive">
+        <table class="table table-hover animate__animated animate__fadeIn">
+            <thead class="thead-light">
+                <tr>
+                    <th>Tên cuộc hẹn</th>
+                    <th>Số tiền</th>
+                    <th>Phương thức</th>
+                    <th>Tên thanh toán</th>
+                    <th>Trạng thái</th>
+                    @if (HttpContextAccessor.HttpContext!.User.IsInRole("Customer"))
+                    {
+                        <th>Ngày thanh toán</th>
+                    }
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Payments.Items)
+                {
+                    <tr class="lively-row">
+                        <td>@item.AppointmentName</td>
+                        <td>@item.Amount.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</td>
+                        <td>@item.PaymentMethod</td>
+                        <td>@item.Name</td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        @if (HttpContextAccessor.HttpContext!.User.IsInRole("Customer"))
+                        {
+                            <td>@item.CreatedTime.ToString("dd-MM-yyyy")</td>
+                        }
+                        <td>
+                            @if (HttpContextAccessor.HttpContext!.User.IsInRole("Staff"))
+                            {
+                                <a class="btn btn-primary btn-sm mr-2" asp-page="./Update" asp-route-id="@item.Id"><i class="fas fa-edit"></i> Sửa</a>
+                                <a class="btn btn-danger btn-sm" asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i> Xóa</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Phân trang -->
+    <div class="text-center mt-4">
+        @if (Model.Payments.HasPreviousPage)
+        {
+            <a asp-page="/Payments/Index" asp-route-pageNumber="@(Model.Payments.PageNumber - 1)"
+               asp-route-nameSearch="@Model.NameSearch"
+               asp-route-paymentMethodSearch="@Model.PaymentMethodSearch"
+               asp-route-fromAmountSearch="@Model.FromAmountSearch"
+               asp-route-toAmountSearch="@Model.ToAmountSearch"
+               asp-route-statusSearch="@Model.StatusSearch"
+               class="btn btn-primary mr-2"><i class="fas fa-arrow-left"></i> Trước</a>
+        }
+        <span class="text-muted">Trang @Model.Payments.PageNumber / @Model.Payments.TotalPages</span>
+        @if (Model.Payments.HasNextPage)
+        {
+            <a asp-page="/Payments/Index" asp-route-pageNumber="@(Model.Payments.PageNumber + 1)"
+               asp-route-nameSearch="@Model.NameSearch"
+               asp-route-paymentMethodSearch="@Model.PaymentMethodSearch"
+               asp-route-fromAmountSearch="@Model.FromAmountSearch"
+               asp-route-toAmountSearch="@Model.ToAmountSearch"
+               asp-route-statusSearch="@Model.StatusSearch"
+               class="btn btn-primary ml-2">Tiếp <i class="fas fa-arrow-right"></i></a>
+        }
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+}
+
+<style>
+    body { font-family: 'Arial', sans-serif; background-color: #f0f4f8; }
+    .navbar { background-color: #0078D4 !important; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+    .navbar-brand, .nav-link { color: white !important; transition: color 0.3s; }
+    .nav-link:hover { color: #F28C38 !important; }
+    .text-vibrant { color: #F28C38; font-weight: bold; }
+    .btn-primary { background-color: #0078D4; border: none; transition: transform 0.2s; }
+    .btn-primary:hover { background-color: #005BB5; transform: scale(1.05); }
+    .btn-success { background-color: #28A745; border: none; transition: transform 0.2s; }
+    .btn-success:hover { background-color: #218838; transform: scale(1.05); }
+    .badge-success { background-color: #28A745; }
+    .badge-warning { background-color: #F28C38; }
+    .badge-danger { background-color: #DC3545; }
+    .lively-row:hover { background-color: #e9f7ef; transition: background-color 0.3s; }
+    .footer { background-color: #0078D4; color: white; padding: 20px 0; text-align: center; }
+</style>

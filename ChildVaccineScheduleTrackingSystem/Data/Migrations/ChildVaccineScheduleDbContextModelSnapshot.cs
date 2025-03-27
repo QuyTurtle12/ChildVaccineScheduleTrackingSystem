@@ -66,6 +66,27 @@ namespace Data.Migrations
                     b.ToTable("Appointments");
                 });
 
+            modelBuilder.Entity("Data.Entities.AppointmentPackage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AppointmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PackageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
+
+                    b.HasIndex("PackageId");
+
+                    b.ToTable("AppointmentPackage");
+                });
+
             modelBuilder.Entity("Data.Entities.Child", b =>
                 {
                     b.Property<Guid>("Id")
@@ -220,9 +241,6 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AppointmentId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -255,13 +273,11 @@ namespace Data.Migrations
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("type")
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppointmentId");
 
                     b.ToTable("Packages");
                 });
@@ -473,11 +489,17 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("ChildId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CustomerNote")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("DateAdministered")
                         .HasColumnType("datetimeoffset");
@@ -507,14 +529,11 @@ namespace Data.Migrations
                     b.Property<Guid>("VaccineId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("childId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("VaccineId");
+                    b.HasIndex("ChildId");
 
-                    b.HasIndex("childId");
+                    b.HasIndex("VaccineId");
 
                     b.ToTable("VaccineRecords");
                 });
@@ -528,6 +547,25 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Data.Entities.AppointmentPackage", b =>
+                {
+                    b.HasOne("Data.Entities.Appointment", "Appointment")
+                        .WithMany("AppointmentPackages")
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.Package", "Package")
+                        .WithMany("AppointmentPackages")
+                        .HasForeignKey("PackageId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Appointment");
+
+                    b.Navigation("Package");
                 });
 
             modelBuilder.Entity("Data.Entities.Child", b =>
@@ -579,17 +617,6 @@ namespace Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Data.Entities.Package", b =>
-                {
-                    b.HasOne("Data.Entities.Appointment", "Appointment")
-                        .WithMany("Packages")
-                        .HasForeignKey("AppointmentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Appointment");
-                });
-
             modelBuilder.Entity("Data.Entities.PackageVaccine", b =>
                 {
                     b.HasOne("Data.Entities.Package", "Package")
@@ -633,15 +660,15 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.VaccineRecord", b =>
                 {
-                    b.HasOne("Data.Entities.Vaccine", "Vaccine")
+                    b.HasOne("Data.Entities.Child", "Child")
                         .WithMany("VaccineRecords")
-                        .HasForeignKey("VaccineId")
+                        .HasForeignKey("ChildId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Data.Entities.Child", "Child")
+                    b.HasOne("Data.Entities.Vaccine", "Vaccine")
                         .WithMany("VaccineRecords")
-                        .HasForeignKey("childId")
+                        .HasForeignKey("VaccineId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -652,11 +679,11 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.Appointment", b =>
                 {
+                    b.Navigation("AppointmentPackages");
+
                     b.Navigation("Feedbacks");
 
                     b.Navigation("Notifications");
-
-                    b.Navigation("Packages");
 
                     b.Navigation("Payments");
                 });
@@ -668,6 +695,8 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.Package", b =>
                 {
+                    b.Navigation("AppointmentPackages");
+
                     b.Navigation("PackageVaccines");
                 });
 

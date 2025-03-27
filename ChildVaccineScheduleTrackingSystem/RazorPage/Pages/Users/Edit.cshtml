@@ -1,95 +1,143 @@
 ﻿@page
 @model RazorPage.Pages.Users.EditModel
-
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Sửa Người dùng - Trung tâm Vaccine";
 }
 
-<h1>Edit</h1>
 
-<h4>User</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="User.Email" class="control-label"></label>
-                <input asp-for="User.Email" class="form-control" />
-                <span asp-validation-for="User.Email" class="text-danger"></span>
+
+<!-- Nội dung chính -->
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card lively-card animate__animated animate__fadeIn">
+                <div class="card-body">
+                    <h1 class="text-center text-vibrant mb-4 animate__animated animate__bounceIn">
+                        <i class="fas fa-user-edit mr-2"></i>Sửa Người dùng
+                    </h1>
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="EditedUser.Id" />
+                        <div class="form-group">
+                            <label asp-for="EditedUser.Name" class="font-weight-bold">Họ tên</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                </div>
+                                <input asp-for="EditedUser.Name" class="form-control" />
+                            </div>
+                            <span asp-validation-for="EditedUser.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EditedUser.PhoneNumber" class="font-weight-bold">Số điện thoại</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                </div>
+                                <input asp-for="EditedUser.PhoneNumber" class="form-control" />
+                            </div>
+                            <span asp-validation-for="EditedUser.PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EditedUser.Address" class="font-weight-bold">Địa chỉ</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                </div>
+                                <input asp-for="EditedUser.Address" class="form-control" />
+                            </div>
+                            <span asp-validation-for="EditedUser.Address" class="text-danger"></span>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success btn-lg animate__animated animate__pulse animate__infinite">
+                                <i class="fas fa-save mr-2"></i>Lưu
+                            </button>
+                            <a class="btn btn-secondary ml-2" asp-page="./Index"><i class="fas fa-arrow-left mr-2"></i>Quay lại</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="User.RoleId" class="control-label"></label>
-                <select asp-for="User.RoleId" class="form-control" asp-items="ViewBag.RoleId"></select>
-                <span asp-validation-for="User.RoleId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="User.Password" class="control-label"></label>
-                <input asp-for="User.Password" class="form-control" />
-                <span asp-validation-for="User.Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="User.PhoneNumber" class="control-label"></label>
-                <input asp-for="User.PhoneNumber" class="form-control" />
-                <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="User.Address" class="control-label"></label>
-                <input asp-for="User.Address" class="form-control" />
-                <span asp-validation-for="User.Address" class="text-danger"></span>
-            </div>
-            <input type="hidden" asp-for="User.Id" />
-            <div class="form-group">
-                <label asp-for="User.Name" class="control-label"></label>
-                <input asp-for="User.Name" class="form-control" />
-                <span asp-validation-for="User.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="User.Status" class="control-label"></label>
-                <input asp-for="User.Status" class="form-control" />
-                <span asp-validation-for="User.Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="User.CreatedBy" class="control-label"></label>
-                <input asp-for="User.CreatedBy" class="form-control" />
-                <span asp-validation-for="User.CreatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="User.LastUpdatedBy" class="control-label"></label>
-                <input asp-for="User.LastUpdatedBy" class="form-control" />
-                <span asp-validation-for="User.LastUpdatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="User.DeletedBy" class="control-label"></label>
-                <input asp-for="User.DeletedBy" class="form-control" />
-                <span asp-validation-for="User.DeletedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="User.CreatedTime" class="control-label"></label>
-                <input asp-for="User.CreatedTime" class="form-control" />
-                <span asp-validation-for="User.CreatedTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="User.LastUpdatedTime" class="control-label"></label>
-                <input asp-for="User.LastUpdatedTime" class="form-control" />
-                <span asp-validation-for="User.LastUpdatedTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="User.DeletedTime" class="control-label"></label>
-                <input asp-for="User.DeletedTime" class="form-control" />
-                <span asp-validation-for="User.DeletedTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-page="./Index">Back to List</a>
-</div>
+
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f4f8;
+    }
+
+    .navbar {
+        background-color: #0078D4 !important;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand, .nav-link {
+        color: white !important;
+        transition: color 0.3s;
+    }
+
+        .nav-link:hover {
+            color: #F28C38 !important;
+        }
+
+    .lively-card {
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        background-color: white;
+        border-radius: 10px;
+    }
+
+        .lively-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .text-vibrant {
+        color: #F28C38;
+        font-weight: bold;
+    }
+
+    .btn-success {
+        background-color: #28A745;
+        border: none;
+        transition: transform 0.2s;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+    .input-group-text {
+        background-color: #0078D4;
+        color: white;
+    }
+
+    .form-control:focus {
+        border-color: #28A745;
+        box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+    }
+
+    .footer {
+        background-color: #0078D4;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+</style>

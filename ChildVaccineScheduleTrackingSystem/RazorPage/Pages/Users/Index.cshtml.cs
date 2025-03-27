@@ -1,30 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using BusinessLogic.Interfaces;
+using Data.PaggingItem;
+using BusinessLogic.DTOs.UserDTO;
+using Data.Enum;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Data.Base;
-using Data.Entities;
 
 namespace RazorPage.Pages.Users
 {
     public class IndexModel : PageModel
     {
-        private readonly Data.Base.ChildVaccineScheduleDbContext _context;
+        private readonly IUserService _userService;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public IndexModel(Data.Base.ChildVaccineScheduleDbContext context)
+        private const string ADMIN = "Admin";
+        private const string Staff = "Staff";
+
+        public IndexModel(IUserService userService, IJwtTokenService jwtTokenService)
         {
-            _context = context;
+            _userService = userService;
+            _jwtTokenService = jwtTokenService;
         }
 
-        public IList<User> User { get;set; } = default!;
+        public PaginatedList<GetUserDTO> UserDTOList { get;set; } = default!;
+        public string loggedInUserRole { get; set; }
+        public string? PhoneSearch { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int index = 1, int pageSize = 10, string? idSearch = null, string? nameSearch = null, string? emailSearch = null, string? phoneSearch = null, EnumRole? role = null)
         {
-            User = await _context.Users
-                .Include(u => u.Role).ToListAsync();
+            var jwtToken = HttpContext.Session.GetString("jwt_token");
+            loggedInUserRole = _jwtTokenService.GetRole(jwtToken!);
+
+            // Role Authorization
+            if (loggedInUserRole == null)
+            {
+                return Forbid();
+            }
+
+            PhoneSearch = phoneSearch;
+
+            if (loggedInUserRole == ADMIN)
+            {
+                UserDTOList = await _userService.GetUserAccounts(index, pageSize, idSearch, nameSearch, emailSearch, phoneSearch, role);
+            }
+
+            if (loggedInUserRole == Staff)
+            {
+                UserDTOList = await _userService.GetUserAccounts(index, pageSize, idSearch, nameSearch, emailSearch, phoneSearch, EnumRole.Customer);
+            }
+
+            return Page();
         }
     }
 }

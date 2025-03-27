@@ -12,5 +12,12 @@ namespace Data.Entities
         // Navigation Property
         public virtual User? User { get; set; }
         public virtual Appointment? Appointment { get; set; }
+
+        public Notification(Guid userId, Guid appointmentId, string? message)
+        {
+            UserId = userId;
+            AppointmentId = appointmentId;
+            Message = message;
+        }
     }
 }

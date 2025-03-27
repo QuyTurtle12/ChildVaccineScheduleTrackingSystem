@@ -28,7 +28,7 @@ public static class DependencyInjection
         services
             .AddScoped<IUOW, UOW>();
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
+        
     }
 
     private static void AddAutoMapper(this IServiceCollection services)
@@ -39,23 +39,42 @@ public static class DependencyInjection
     public static void AddServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<ISystemAccountService, SystemAccountService>();
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IChildrenService, ChildrenService>();
+        services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<IFeedbackService, FeedbackService>();
+        services.AddScoped<INotificationService, NotificationService>();
 
         // JWT Authentication configuration
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            var secretKey = configuration["Jwt:SecretKey"];
+            // Log the key length for debugging
+            Console.WriteLine($"[DI] JWT SecretKey Length: {secretKey?.Length}");
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration["Jwt:Issuer"],
-                    ValidAudience = configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]))
-                };
-            });
-
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidAudience = configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+            };
+        });
         services.AddAuthorization();
+        services.AddScoped<IPackageService, PackageService>();
+        services.AddScoped<IVaccineRecordService, VaccineRecordService>();
+        services.AddScoped<IVaccineService, VaccineService>();
+        services.AddScoped<IAppointmentService, AppointmentService>();
+        services.AddScoped<IPaymentService, PaymentService>();
+        
     }
 }

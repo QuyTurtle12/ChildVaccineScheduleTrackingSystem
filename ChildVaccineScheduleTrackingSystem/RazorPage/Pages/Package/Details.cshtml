@@ -1,0 +1,170 @@
+﻿@page
+@model RazorPage.Pages.Package.DetailsModel
+
+@{
+    ViewData["Title"] = "Package Details";
+}
+
+
+
+<!-- Nội dung chính -->
+<div class="container my-5">
+    <h2 class="text-center mb-4 text-vibrant animate__animated animate__fadeIn">Chi tiết gói vaccine</h2>
+    <p class="text-muted text-center mb-4 animate__animated animate__fadeInUp">
+        Thông tin chi tiết về gói vaccine.
+    </p>
+
+    <!-- Details -->
+    <div class="card lively-card p-4">
+        <div class="row dl-modern animate__animated animate__fadeInUp">
+            <div class="col-sm-3 col-md-2">
+                <dt class="fw-bold text-muted">Tên gói</dt>
+            </div>
+            <dd class="col-sm-9 col-md-10">
+                @Html.DisplayFor(model => model.Package.Name)
+            </dd>
+
+            <div class="col-sm-3 col-md-2">
+                <dt class="fw-bold text-muted">Mô tả</dt>
+            </div>
+            <dd class="col-sm-9 col-md-10">
+                @Html.DisplayFor(model => model.Package.Description)
+            </dd>
+
+            <div class="col-sm-3 col-md-2">
+                <dt class="fw-bold text-muted">Giá</dt>
+            </div>
+            <dd class="col-sm-9 col-md-10">
+                @Html.DisplayFor(model => model.Package.Price)
+            </dd>
+
+            <div class="col-sm-3 col-md-2">
+                <dt class="fw-bold text-muted">Loại</dt>
+            </div>
+            <dd class="col-sm-9 col-md-10">
+                @Html.DisplayFor(model => model.Package.Type)
+            </dd>
+
+            <div class="col-sm-3 col-md-2">
+                <dt class="fw-bold text-muted">Ngày tạo</dt>
+            </div>
+            <dd class="col-sm-9 col-md-10">
+                @Html.DisplayFor(model => model.Package.CreatedTime)
+            </dd>
+
+            <div class="col-sm-3 col-md-2">
+                <dt class="fw-bold text-muted">Danh sách vaccine</dt>
+            </div>
+            <dd class="col-sm-9 col-md-10">
+                <div>
+                    <h5 class="text-vibrant mb-3">Vaccines</h5>
+                    <ul class="list-group">
+                        @foreach (var vaccine in Model.Vaccines)
+                        {
+                            <li class="list-group-item">@vaccine.Name</li>
+                        }
+                    </ul>
+                </div>
+            </dd>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-end gap-2 animate__animated animate__fadeInUp">
+            @if(Model.UserRole == "staff"){
+                <a class="btn btn-warning btn-modern" asp-page="./Edit" asp-route-id="@Model.Package.Id">
+                    <i class="fas fa-edit"></i> Sửa
+                </a>
+                <a class="btn btn-danger btn-modern" asp-page="./Delete" asp-route-id="@Model.Package.Id">
+                    <i class="fas fa-trash"></i> Xóa
+                </a>
+            }
+            <a class="btn btn-outline-secondary btn-modern" asp-page="./Index">
+                <i class="fas fa-arrow-left"></i> Quay lại danh sách
+            </a>
+        </div>
+    </div>
+</div>
+
+
+<!-- CSS và JS -->
+@section Scripts {
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        .navbar {
+            background-color: #0078D4 !important;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand, .nav-link {
+            color: white !important;
+            transition: color 0.3s;
+        }
+
+            .nav-link:hover {
+                color: #F28C38 !important;
+            }
+
+        .btn-primary {
+            background-color: #0078D4;
+            border: none;
+            transition: transform 0.2s;
+        }
+
+            .btn-primary:hover {
+                background-color: #005BB5;
+                transform: scale(1.05);
+            }
+
+        .btn-success {
+            background-color: #28A745;
+            border: none;
+            transition: transform 0.2s;
+        }
+
+            .btn-success:hover {
+                background-color: #218838;
+                transform: scale(1.05);
+            }
+
+        .text-vibrant {
+            color: #F28C38;
+            font-weight: bold;
+        }
+
+        .lively-card {
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+            .lively-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            }
+
+        .footer {
+            background-color: #0078D4;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .btn-modern {
+            transition: transform 0.2s;
+        }
+
+            .btn-modern:hover {
+                transform: scale(1.05);
+            }
+    </style>
+}

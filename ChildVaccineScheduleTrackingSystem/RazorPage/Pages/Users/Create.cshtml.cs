@@ -1,32 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Data.Base;
-using Data.Entities;
+using BusinessLogic.Interfaces;
+using BusinessLogic.DTOs.UserDTO;
 
 namespace RazorPage.Pages.Users
 {
     public class CreateModel : PageModel
     {
-        private readonly Data.Base.ChildVaccineScheduleDbContext _context;
+        private readonly IUserService _userService;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public CreateModel(Data.Base.ChildVaccineScheduleDbContext context)
+        public CreateModel(IUserService userService, IJwtTokenService jwtTokenService)
         {
-            _context = context;
+            _userService = userService;
+            _jwtTokenService = jwtTokenService;
         }
 
         public IActionResult OnGet()
         {
-        ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name");
             return Page();
         }
 
         [BindProperty]
-        public User User { get; set; } = default!;
+        public PostUserDTO NewUser { get; set; } = default!;
 
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
@@ -36,8 +32,7 @@ namespace RazorPage.Pages.Users
                 return Page();
             }
 
-            _context.Users.Add(User);
-            await _context.SaveChangesAsync();
+            await _userService.CreateUserAccount(NewUser);
 
             return RedirectToPage("./Index");
         }

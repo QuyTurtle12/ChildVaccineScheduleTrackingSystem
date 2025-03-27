@@ -2,6 +2,7 @@ using BusinessLogic;
 using Data.Base;
 using Microsoft.EntityFrameworkCore;
 using RazorPage.Middleware;
+using System.Globalization;
 
 namespace RazorPage
 {
@@ -10,6 +11,8 @@ namespace RazorPage
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddSession(options =>
             {
@@ -28,6 +31,7 @@ namespace RazorPage
                 config.AddConsole();
                 config.AddDebug();
             });
+            builder.Services.AddSession();
 
             // Get connection string from appsettings.json
             var connectionString = builder.Configuration.GetConnectionString("MyCnn");
@@ -68,7 +72,9 @@ namespace RazorPage
          //   app.MapGet("/", () => Results.Redirect("/Auth/Login"));
 
             app.UseRouting();
+            app.UseSession();
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseSession();
 

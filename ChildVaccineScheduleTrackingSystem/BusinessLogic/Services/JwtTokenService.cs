@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace BusinessLogic.Services
 {
@@ -7,22 +8,22 @@ namespace BusinessLogic.Services
     {
         public string GetName(string jwtToken)
         {
-            return GetClaimValue(jwtToken, "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name");
+            return GetClaimValue(jwtToken, "unique_name");
         }
 
         public string GetEmail(string jwtToken)
         {
-            return GetClaimValue(jwtToken, "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress");
+            return GetClaimValue(jwtToken, "email");
         }
 
         public string GetRole(string jwtToken)
         {
-            return GetClaimValue(jwtToken, "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+            return GetClaimValue(jwtToken, "role");
         }
 
         public string GetId(string jwtToken)
         {
-            return GetClaimValue(jwtToken, "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+            return GetClaimValue(jwtToken, "nameid");
         }
 
         private string GetClaimValue(string jwtToken, string claimType)
